@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { RootLayout } from '../layouts/RootLayout'
 import { AuthLayout } from '@/features/auth/components/auth-layout'
+import { LandingPage } from '@/features/landing/pages/landing-page'
 import { HomePage } from '@/features/home/components/HomePage'
 import { LoginPage } from '@/features/auth/components/login-page'
 import { SignupPage } from '@/features/auth/components/signup-page'
@@ -11,6 +12,10 @@ import { NotFoundPage } from './NotFoundPage'
 export const router = createBrowserRouter([
   {
     path: '/',
+    element: <LandingPage />,
+  },
+  {
+    path: '/app',
     element: <RootLayout />,
     children: [
       {
@@ -33,3 +38,4 @@ export const router = createBrowserRouter([
     element: <NotFoundPage />,
   },
 ])
+
