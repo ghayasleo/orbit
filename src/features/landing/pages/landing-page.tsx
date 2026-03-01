@@ -15,7 +15,7 @@ export function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen font-inter bg-bg-base text-text-primary selection:bg-primary/50 selection:text-white">
       {/* 01 — Navbar */}
-      <LandingNavbar />
+      {/* <LandingNavbar /> */}
       
       <main className="flex-1">
         {/* 02 — Hero */}

@@ -1,213 +1,334 @@
-import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { Button } from '@/shared/components/ui/button';
-import { useEffect, useState } from 'react';
+import React from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight, ChevronRight, Menu, X } from "lucide-react";
+import { Button } from "@/shared/components/ui/button";
+import { AnimatedGroup } from "@/shared/components/ui/animated-group";
+import { cn } from "@/lib/utils";
 
-// A simple counter component that animates up to a target number
-const AnimatedCounter = ({ end, duration = 1.5 }: { end: number, duration?: number }) => {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    let startTime: number | null = null;
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = timestamp - startTime;
-      const percentage = Math.min(progress / (duration * 1000), 1);
-      
-      // easeOut function
-      const easeOut = 1 - Math.pow(1 - percentage, 3);
-      setCount(Math.floor(end * easeOut));
-
-      if (percentage < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        setCount(end);
-      }
-    };
-    
-    requestAnimationFrame(animate);
-  }, [end, duration]);
-
-  // Format with commas, e.g., 10,000
-  return <span>{count.toLocaleString()}</span>;
+const transitionVariants = {
+  item: {
+    hidden: {
+      opacity: 0,
+      filter: "blur(12px)",
+      y: 12,
+    },
+    visible: {
+      opacity: 1,
+      filter: "blur(0px)",
+      y: 0,
+      transition: {
+        type: "spring" as const,
+        bounce: 0.3,
+        duration: 1.5,
+      },
+    },
+  },
 };
 
 export function HeroSection() {
   return (
-    <section className="relative w-full overflow-hidden bg-bg-base pt-[140px] md:pt-[180px] pb-14 md:pb-28">
-      {/* Background Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[800px] h-[400px] bg-[radial-gradient(ellipse_at_top,rgba(91,106,240,0.07)_0%,transparent_70%)] dark:bg-[radial-gradient(ellipse_at_top,rgba(91,106,240,0.14)_0%,transparent_70%)] pointer-events-none" />
-
-      <div className="mx-auto max-w-[1160px] px-6 relative z-10">
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-          
-          {/* Left Column — Text Content */}
-          <motion.div 
-            className="flex-1 flex flex-col items-start text-left"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10%" }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-          >
-            {/* Eyebrow Badge */}
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-subtle px-3 py-1 mb-6">
-              <span className="text-brand text-[10px] leading-tight mt-[1px]">✦</span>
-              <span className="text-brand text-xs font-semibold uppercase tracking-[0.06em]">Free & Open Source</span>
-            </div>
-
-            {/* Headline */}
-            <h1 className="font-display text-[44px] leading-[1.1] md:text-[68px] font-extrabold text-text-primary mb-6 tracking-tight max-w-[600px]">
-              Everything you need<br className="hidden md:block"/> to run your <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#5B6AF0] to-[#9B6BF2]">life.</span>
-            </h1>
-
-            {/* Subheadline */}
-            <p className="text-lg text-text-secondary leading-[1.6] max-w-[500px] mb-8 font-normal">
-              Orbit is a free, open source app that brings your tasks, habits, expenses, goals, reminders, loans, notes, and more into one beautifully organised place.<br/><br/>
-              No subscription required. No data sold. Just a better way to manage your everyday life.
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-4 mb-6">
-              <Button
-                className="h-12 rounded-[10px] bg-gradient-to-br from-[#5B6AF0] to-[#9B6BF2] px-6 text-base font-semibold text-white transition-all hover:-translate-y-[1px] hover:shadow-lg border-0"
-                asChild
-              >
-                <Link to="/login">Get Started — It's Free</Link>
-              </Button>
-              <Button
-                variant="outline"
-                className="h-12 rounded-[10px] px-6 text-base font-medium border-border-medium text-text-primary hover:text-brand hover:border-brand transition-colors bg-transparent"
-                asChild
-              >
-                <a href="https://github.com" target="_blank" rel="noreferrer" className="flex items-center gap-2">
-                  View on GitHub <ArrowRight className="h-4 w-4" />
-                </a>
-              </Button>
-            </div>
-
-            {/* Trust Line */}
-            <p className="text-[13px] text-text-muted mb-10">
-              No account needed to explore · Works offline · MIT Licensed
-            </p>
-
-            {/* Stats Row */}
-            <div className="flex items-center gap-6 sm:gap-8">
-              <div className="flex flex-col gap-1">
-                <span className="font-display text-3xl md:text-[38px] font-bold text-text-primary tracking-tight">
-                  <AnimatedCounter end={10000} />+
-                </span>
-                <span className="text-sm text-text-secondary">People using Orbit</span>
-              </div>
-              <div className="w-px h-12 bg-border-subtle shrink-0"></div>
-              <div className="flex flex-col gap-1">
-                <span className="font-display text-3xl md:text-[38px] font-bold text-text-primary tracking-tight">100%</span>
-                <span className="text-sm text-text-secondary">Free, forever</span>
-              </div>
-              <div className="w-px h-12 bg-border-subtle shrink-0 hidden sm:block"></div>
-              <div className="flex flex-col gap-1 hidden sm:flex">
-                <span className="font-display text-3xl md:text-[38px] font-bold text-text-primary tracking-tight">MIT</span>
-                <span className="text-sm text-text-secondary">Open Source License</span>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Right Column — App Mockup */}
-          <motion.div 
-            className="flex-1 w-full max-w-[500px] lg:max-w-none relative"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
-          >
-             {/* Float Animation Wrapper */}
-            <motion.div
-               animate={{ y: [-8, 8, -8] }}
-               transition={{ 
-                 repeat: Infinity, 
-                 duration: 5, 
-                 ease: "easeInOut" 
-               }}
-               className="relative z-10"
-            >
-              {/* Diffused Glow Behind Mockup */}
-              <div className="absolute inset-0 bg-brand/10 dark:bg-brand/20 blur-[60px] rounded-full scale-90" />
-              
-              {/* Glass Mockup Card */}
-              <div className="relative bg-glass-bg border border-glass-border backdrop-blur-[16px] shadow-glass rounded-2xl p-6 overflow-hidden">
-                 
-                 {/* Mockup Header */}
-                 <div className="flex items-center justify-between mb-6 pb-4 border-b border-border-subtle">
-                   <div className="flex items-center gap-3">
-                     <div className="h-8 w-8 rounded-full bg-brand flex items-center justify-center text-white font-bold text-sm">Z</div>
-                     <span className="font-display font-semibold text-text-primary">Good afternoon, Zara ☀️</span>
-                   </div>
-                 </div>
-
-                 {/* Mockup Summary Chips */}
-                 <div className="grid grid-cols-2 gap-3 mb-6">
-                   <div className="bg-bg-subtle rounded-xl p-3 border border-border-subtle">
-                     <p className="text-text-primary font-medium text-sm">4 tasks due</p>
-                   </div>
-                   <div className="bg-bg-subtle rounded-xl p-3 border border-border-subtle">
-                     <p className="text-text-primary font-medium text-sm">3 habits today</p>
-                   </div>
-                   <div className="bg-bg-subtle rounded-xl p-3 border border-border-subtle">
-                     <p className="text-text-primary font-medium text-sm">Budget: <span className="text-emerald-500">61% used</span></p>
-                   </div>
-                   <div className="bg-bg-subtle rounded-xl p-3 border border-border-subtle">
-                     <p className="text-text-primary font-medium text-sm">Goal: 42% to target</p>
-                   </div>
-                 </div>
-
-                 {/* Mockup Tasks Section */}
-                 <div className="mb-6">
-                    <h4 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">Today's Tasks</h4>
-                    <div className="flex flex-col gap-2">
-                      <div className="flex items-center gap-3 p-3 bg-bg-card border border-border-subtle rounded-xl opacity-50">
-                        <div className="h-5 w-5 rounded border border-border-medium flex items-center justify-center bg-brand border-brand">
-                          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        </div>
-                        <span className="text-sm text-text-secondary line-through">Review pull requests</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-3 bg-bg-card border border-border-subtle rounded-xl shadow-sm">
-                        <div className="h-5 w-5 rounded border border-border-medium"></div>
-                        <span className="text-sm text-text-primary font-medium">Pay electricity bill</span>
-                        <div className="ml-auto w-2 h-2 rounded-full bg-red-500"></div>
-                      </div>
-                      <div className="flex items-center gap-3 p-3 bg-bg-card border border-border-subtle rounded-xl shadow-sm">
-                        <div className="h-5 w-5 rounded border border-border-medium"></div>
-                        <span className="text-sm text-text-primary font-medium">Grocery shopping</span>
-                      </div>
-                    </div>
-                 </div>
-
-                 {/* Mockup Habits Section */}
-                 <div>
-                    <h4 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">Habits</h4>
-                    <div className="flex items-center gap-3">
-                      {/* Filled Habit Ring */}
-                      <div className="h-10 w-10 rounded-full border-[3px] border-emerald-500 flex items-center justify-center bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                      </div>
-                      {/* Filled Habit Ring */}
-                      <div className="h-10 w-10 rounded-full border-[3px] border-blue-500 flex items-center justify-center bg-blue-500/10 text-blue-600 dark:text-blue-400">
-                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                      </div>
-                      {/* Empty Habit Ring */}
-                      <div className="h-10 w-10 rounded-full border-[3px] border-border-medium flex items-center justify-center text-text-muted">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                      </div>
-                    </div>
-                 </div>
-
-              </div>
-            </motion.div>
-          </motion.div>
-
+    <>
+      <HeroHeader />
+      <main className="overflow-hidden">
+        <div
+          aria-hidden
+          className="z-2 absolute inset-0 pointer-events-none isolate opacity-50 contain-strict hidden lg:block"
+        >
+          <div className="w-140 h-320 -translate-y-[350px] absolute left-0 top-0 -rotate-45 rounded-full bg-[radial-gradient(68.54%_68.72%_at_55.02%_31.46%,hsla(0,0%,85%,.08)_0,hsla(0,0%,55%,.02)_50%,hsla(0,0%,45%,0)_80%)]" />
+          <div className="h-320 absolute left-0 top-0 w-56 -rotate-45 rounded-full bg-[radial-gradient(50%_50%_at_50%_50%,hsla(0,0%,85%,.06)_0,hsla(0,0%,45%,.02)_80%,transparent_100%)] [translate:5%_-50%]" />
+          <div className="h-320 -translate-y-[350px] absolute left-0 top-0 w-56 -rotate-45 bg-[radial-gradient(50%_50%_at_50%_50%,hsla(0,0%,85%,.04)_0,hsla(0,0%,45%,.02)_80%,transparent_100%)]" />
         </div>
-      </div>
-    </section>
+        <section>
+          <div className="relative pt-24 md:pt-36">
+            <AnimatedGroup
+              variants={{
+                container: {
+                  visible: {
+                    transition: {
+                      delayChildren: 1,
+                    },
+                  },
+                },
+                item: {
+                  hidden: {
+                    opacity: 0,
+                    y: 20,
+                  },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    transition: {
+                      type: "spring",
+                      bounce: 0.3,
+                      duration: 2,
+                    },
+                  },
+                },
+              }}
+              className="absolute inset-0 -z-20"
+            >
+              <img
+                src="https://ik.imagekit.io/lrigu76hy/tailark/night-background.jpg?updatedAt=1745733451120"
+                alt="background"
+                className="absolute inset-x-0 top-56 -z-20 hidden lg:top-32 dark:block"
+                width="3276"
+                height="4095"
+              />
+            </AnimatedGroup>
+            <div
+              aria-hidden
+              className="absolute inset-0 -z-10 size-full [background:radial-gradient(125%_125%_at_50%_100%,transparent_0%,var(--background)_75%)]"
+            />
+            <div className="mx-auto max-w-7xl px-6 relative z-10">
+              <div className="text-center sm:mx-auto lg:mr-auto lg:mt-0">
+                <AnimatedGroup variants={transitionVariants}>
+                  <Link
+                    to="#link"
+                    className="hover:bg-bg-subtle dark:hover:border-t-border bg-bg-card group mx-auto flex w-fit items-center gap-4 rounded-full border border-border-subtle p-1 pl-4 shadow-sm shadow-black/5 transition-all duration-300 dark:border-t-white/5 dark:shadow-zinc-950"
+                  >
+                    <span className="text-foreground text-sm">
+                      Introducing Orbit Modules v2
+                    </span>
+                    <span className="dark:border-background block h-4 w-0.5 border-l bg-white dark:bg-zinc-700"></span>
+
+                    <div className="bg-background group-hover:bg-muted size-6 overflow-hidden rounded-full duration-500">
+                      <div className="flex w-12 -translate-x-1/2 duration-500 ease-in-out group-hover:translate-x-0">
+                        <span className="flex size-6">
+                          <ArrowRight className="m-auto size-3" />
+                        </span>
+                        <span className="flex size-6">
+                          <ArrowRight className="m-auto size-3" />
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+
+                  <h1 className="mt-8 max-w-4xl mx-auto text-balance text-5xl md:text-7xl lg:mt-16 xl:text-[5.25rem] font-bdogrotesk font-medium tracking-tight bg-clip-text text-transparent bg-linear-to-t from-neutral-500 to-text-primary pb-1.5">
+                    Modern Solutions for Finding Clarity
+                  </h1>
+                  <p className="mx-auto mt-6 max-w-2xl text-balance text-lg text-text-secondary leading-relaxed">
+                    Highly customizable modules for organizing your complete
+                    personal ecosystem. Build systems that look and feel exactly
+                    the way you need.
+                  </p>
+                </AnimatedGroup>
+
+                <AnimatedGroup
+                  variants={{
+                    container: {
+                      visible: {
+                        transition: {
+                          staggerChildren: 0.05,
+                          delayChildren: 0.75,
+                        },
+                      },
+                    },
+                    ...transitionVariants,
+                  }}
+                  className="mt-10 flex flex-col items-center justify-center gap-3 md:flex-row shadow-none relative z-20 pointer-events-auto"
+                >
+                  <div
+                    key={1}
+                    className="bg-brand/10 rounded-[14px] border border-brand/20 p-0.5 shadow-sm"
+                  >
+                    <Button
+                      asChild
+                      size="lg"
+                      className="rounded-xl px-6 text-base bg-brand hover:bg-brand-hover text-white shadow-md cursor-pointer relative z-20"
+                    >
+                      <Link to="/auth/login">
+                        <span className="text-nowrap">Start Building</span>
+                      </Link>
+                    </Button>
+                  </div>
+                  <div key={2} className="relative z-20 cursor-pointer">
+                    <Button
+                      asChild
+                      size="lg"
+                      variant="outline"
+                      className="rounded-xl px-6 border-border-medium bg-bg-card hover:bg-bg-card-hover text-text-primary shadow-sm hover:shadow-md transition-all cursor-pointer"
+                    >
+                      <Link to="#features">
+                        <span className="text-nowrap">View features</span>
+                      </Link>
+                    </Button>
+                  </div>
+                </AnimatedGroup>
+              </div>
+            </div>
+
+            <AnimatedGroup
+              variants={{
+                container: {
+                  visible: {
+                    transition: {
+                      staggerChildren: 0.05,
+                      delayChildren: 0.75,
+                    },
+                  },
+                },
+                ...transitionVariants,
+              }}
+            >
+              <div className="relative -mr-56 mt-8 overflow-hidden px-2 sm:mr-0 sm:mt-12 md:mt-20 pb-20">
+                <div
+                  aria-hidden
+                  className="bg-linear-to-b to-background absolute inset-0 z-10 from-transparent from-35%"
+                />
+                <div className="inset-shadow-2xs ring-background dark:inset-shadow-white/20 bg-background relative mx-auto max-w-6xl overflow-hidden rounded-2xl border p-4 shadow-lg shadow-zinc-950/15 ring-1">
+                  <img
+                    className="bg-background aspect-15/8 relative hidden rounded-2xl dark:block"
+                    src="https://tailark.com//_next/image?url=%2Fmail2.png&w=3840&q=75"
+                    alt="app screen"
+                    width="2700"
+                    height="1440"
+                  />
+                  <img
+                    className="z-2 border-border/25 aspect-15/8 relative rounded-2xl border dark:hidden"
+                    src="https://tailark.com/_next/image?url=%2Fmail2-light.png&w=3840&q=75"
+                    alt="app screen"
+                    width="2700"
+                    height="1440"
+                  />
+                </div>
+              </div>
+            </AnimatedGroup>
+          </div>
+        </section>
+      </main>
+    </>
   );
 }
+
+const menuItems = [
+  { name: "Features", href: "#link" },
+  { name: "Solution", href: "#link" },
+  { name: "Pricing", href: "#link" },
+  { name: "About", href: "#link" },
+];
+
+const HeroHeader = () => {
+  const [menuState, setMenuState] = React.useState(false);
+  const [isScrolled, setIsScrolled] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+  return (
+    <header>
+      <nav
+        data-state={menuState && "active"}
+        className="fixed z-20 w-full px-2 group"
+      >
+        <div
+          className={cn(
+            "mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12",
+            isScrolled &&
+              "bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5",
+          )}
+        >
+          <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
+            <div className="flex w-full justify-between lg:w-auto">
+              <Link
+                to="/"
+                aria-label="home"
+                className="flex items-center space-x-2"
+              >
+                <Logo />
+              </Link>
+
+              <button
+                onClick={() => setMenuState(!menuState)}
+                aria-label={menuState == true ? "Close Menu" : "Open Menu"}
+                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden"
+              >
+                <Menu className="in-data-[state=active]:rotate-180 group-data-[state=active]:scale-0 group-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
+                <X className="group-data-[state=active]:rotate-0 group-data-[state=active]:scale-100 group-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
+              </button>
+            </div>
+
+            <div className="absolute inset-0 m-auto hidden size-fit lg:block">
+              <ul className="flex gap-8 text-sm">
+                {menuItems.map((item, index) => (
+                  <li key={index}>
+                    <Link
+                      to={item.href}
+                      className="text-muted-foreground hover:text-accent-foreground block duration-150"
+                    >
+                      <span>{item.name}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="bg-background group-data-[state=active]:block lg:group-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
+              <div className="lg:hidden">
+                <ul className="space-y-6 text-base">
+                  {menuItems.map((item, index) => (
+                    <li key={index}>
+                      <Link
+                        to={item.href}
+                        className="text-muted-foreground hover:text-accent-foreground block duration-150"
+                      >
+                        <span>{item.name}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className={cn(isScrolled && "lg:hidden")}
+                >
+                  <Link to="#">
+                    <span>Login</span>
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  size="sm"
+                  className={cn(isScrolled && "lg:hidden")}
+                >
+                  <Link to="#">
+                    <span>Sign Up</span>
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  size="sm"
+                  className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
+                >
+                  <Link to="#">
+                    <span>Get Started</span>
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+  );
+};
+
+const Logo = ({ className }: { className?: string }) => {
+  return (
+    <div
+      className={cn(
+        "relative flex h-8 w-8 items-center justify-center",
+        className,
+      )}
+    >
+      <div className="absolute h-6 w-6 rounded-full border-[2.5px] border-brand group-hover:border-brand-hover transition-colors opacity-80" />
+      <div className="absolute h-3 w-3 rounded-full bg-brand group-hover:bg-brand-hover transition-colors ml-3 mt-3" />
+    </div>
+  );
+};
