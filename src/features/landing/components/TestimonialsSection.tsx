@@ -16,7 +16,7 @@ export function TestimonialsSection() {
           <div className="inline-flex items-center tracking-[0.06em] text-[12px] font-semibold uppercase text-text-muted mb-4">
             WHAT PEOPLE ARE SAYING
           </div>
-          <h2 className="font-display text-[32px] md:text-[38px] font-bold text-text-primary leading-tight max-w-[640px] tracking-tight">
+          <h2 className="font-display text-[32px] text-balance md:text-[38px] font-bold text-text-primary leading-tight max-w-[640px] tracking-tight">
             People switched. They didn't go back.
           </h2>
         </motion.div>
