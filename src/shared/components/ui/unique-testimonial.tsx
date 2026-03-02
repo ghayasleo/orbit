@@ -58,9 +58,10 @@ function getResponsiveHeight(
 export function Testimonials() {
   const [activeIndex, setActiveIndex] = useState(0);
   const isAnimatingRef = useRef(false);
-  const [height, setHeight] = useState<number | "auto">(() =>
-    getResponsiveHeight(testimonials[0].breakpoints),
-  );
+  const [height, setHeight] = useState<number | "auto">(() => {
+    if (typeof window === "undefined") return "auto"; // ← SSR guard
+    return getResponsiveHeight(testimonials[0].breakpoints);
+  });
 
   const activeTestimonial = useMemo(
     () => testimonials[activeIndex] || testimonials[0],
