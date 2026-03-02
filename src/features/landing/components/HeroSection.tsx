@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ChevronRight, Menu, X } from "lucide-react";
+import { ArrowRight, Menu, X } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { AnimatedGroup } from "@/shared/components/ui/animated-group";
 import { cn } from "@/lib/utils";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+} from "framer-motion";
 
 const transitionVariants = {
   item: {
@@ -26,10 +32,23 @@ const transitionVariants = {
 };
 
 export function HeroSection() {
+  const ref = useRef(null);
+  const reduce = useReducedMotion();
+
+  // progress 0..1 across the viewport intersection window
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    // start when element enters viewport, end when it leaves
+    offset: ["start 100%", "end 80%"],
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], [200, 0]);
+  const rotateX = useTransform(scrollYProgress, [0, 1], [70, 0]);
+
   return (
     <>
       <HeroHeader />
-      <main className="overflow-hidden">
+      <main>
         <div
           aria-hidden
           className="z-2 absolute inset-0 pointer-events-none isolate opacity-50 contain-strict hidden lg:block"
@@ -40,41 +59,6 @@ export function HeroSection() {
         </div>
         <section>
           <div className="relative pt-24 md:pt-36">
-            <AnimatedGroup
-              variants={{
-                container: {
-                  visible: {
-                    transition: {
-                      delayChildren: 1,
-                    },
-                  },
-                },
-                item: {
-                  hidden: {
-                    opacity: 0,
-                    y: 20,
-                  },
-                  visible: {
-                    opacity: 1,
-                    y: 0,
-                    transition: {
-                      type: "spring",
-                      bounce: 0.3,
-                      duration: 2,
-                    },
-                  },
-                },
-              }}
-              className="absolute inset-0 -z-20"
-            >
-              <img
-                src="https://ik.imagekit.io/lrigu76hy/tailark/night-background.jpg?updatedAt=1745733451120"
-                alt="background"
-                className="absolute inset-x-0 top-56 -z-20 hidden lg:top-32 dark:block"
-                width="3276"
-                height="4095"
-              />
-            </AnimatedGroup>
             <div
               aria-hidden
               className="absolute inset-0 -z-10 size-full [background:radial-gradient(125%_125%_at_50%_100%,transparent_0%,var(--background)_75%)]"
@@ -157,42 +141,56 @@ export function HeroSection() {
               </div>
             </div>
 
-            <AnimatedGroup
-              variants={{
-                container: {
-                  visible: {
-                    transition: {
-                      staggerChildren: 0.05,
-                      delayChildren: 0.75,
-                    },
-                  },
-                },
-                ...transitionVariants,
-              }}
-            >
-              <div className="relative -mr-56 mt-8 overflow-hidden px-2 sm:mr-0 sm:mt-12 md:mt-20 pb-20">
-                <div
-                  aria-hidden
-                  className="bg-linear-to-b to-background absolute inset-0 z-10 from-transparent from-35%"
-                />
-                <div className="inset-shadow-2xs ring-background dark:inset-shadow-white/20 bg-background relative mx-auto max-w-6xl overflow-hidden rounded-2xl border p-4 shadow-lg shadow-zinc-950/15 ring-1">
-                  <img
-                    className="bg-background aspect-15/8 max-w-full relative hidden rounded-2xl dark:block"
-                    src="https://tailark.com//_next/image?url=%2Fmail2.png&w=3840&q=75"
-                    alt="app screen"
-                    width="2700"
-                    height="1440"
-                  />
-                  <img
-                    className="z-2 border-border/25 aspect-15/8 max-w-full relative rounded-2xl border dark:hidden"
-                    src="https://tailark.com/_next/image?url=%2Fmail2-light.png&w=3840&q=75"
-                    alt="app screen"
-                    width="2700"
-                    height="1440"
-                  />
-                </div>
+            <div className="overflow-hidden">
+              <div className="perspective-distant">
+                <motion.div
+                  ref={ref}
+                  className="hero-img will-change-transform"
+                  style={
+                    reduce
+                      ? undefined
+                      : { y, rotateX, transformStyle: "preserve-3d" }
+                  }
+                >
+                  <AnimatedGroup
+                    variants={{
+                      container: {
+                        visible: {
+                          transition: {
+                            staggerChildren: 0.05,
+                            delayChildren: 0.75,
+                          },
+                        },
+                      },
+                      ...transitionVariants,
+                    }}
+                  >
+                    <div className="relative -mr-56 mt-8 overflow-hidden px-2 sm:mr-0 sm:mt-12 md:mt-20 pb-20">
+                      <div
+                        aria-hidden
+                        className="bg-linear-to-b to-background absolute inset-0 z-10 from-transparent from-35%"
+                      />
+                      <div className="inset-shadow-2xs ring-background dark:inset-shadow-white/20 bg-background relative mx-auto max-w-6xl overflow-hidden rounded-2xl border p-4 shadow-lg shadow-zinc-950/15 ring-1">
+                        <img
+                          className="bg-background aspect-15/8 max-w-full relative hidden rounded-2xl dark:block"
+                          src="https://tailark.com//_next/image?url=%2Fmail2.png&w=3840&q=75"
+                          alt="app screen"
+                          width="2700"
+                          height="1440"
+                        />
+                        <img
+                          className="z-2 border-border/25 aspect-15/8 max-w-full relative rounded-2xl border dark:hidden"
+                          src="https://tailark.com/_next/image?url=%2Fmail2-light.png&w=3840&q=75"
+                          alt="app screen"
+                          width="2700"
+                          height="1440"
+                        />
+                      </div>
+                    </div>
+                  </AnimatedGroup>
+                </motion.div>
               </div>
-            </AnimatedGroup>
+            </div>
           </div>
         </section>
       </main>

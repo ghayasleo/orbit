@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -46,7 +44,6 @@ const testimonials = [
   },
 ] as const;
 
-// Stable helper: no need to recreate per render
 function getResponsiveHeight(
   breakpoints: Record<number, number>,
 ): number | "auto" {
@@ -60,27 +57,25 @@ function getResponsiveHeight(
 
 export function Testimonials() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const isAnimatingRef = useRef(false); // ref instead of state — avoids extra re-render
-  const [height, setHeight] = useState<number | "auto">("auto");
+  const isAnimatingRef = useRef(false);
+  const [height, setHeight] = useState<number | "auto">(() =>
+    getResponsiveHeight(testimonials[0].breakpoints),
+  );
 
-  // Memoize active testimonial lookup
   const activeTestimonial = useMemo(
     () => testimonials[activeIndex] || testimonials[0],
     [activeIndex],
   );
 
-  // Stable resize handler — only depends on activeTestimonial.breakpoints
   const updateHeight = useCallback(() => {
     setHeight(getResponsiveHeight(activeTestimonial.breakpoints));
   }, [activeTestimonial.breakpoints]);
 
   useEffect(() => {
-    updateHeight();
     window.addEventListener("resize", updateHeight);
     return () => window.removeEventListener("resize", updateHeight);
   }, [updateHeight]);
 
-  // Stable select handler — uses ref so it doesn't re-create on every render
   const handleSelect = useCallback(
     (index: number) => {
       if (index === activeIndex || isAnimatingRef.current) return;
@@ -94,7 +89,6 @@ export function Testimonials() {
   return (
     <div className="flex flex-col items-center gap-10 py-16 w-full max-w-2xl mx-auto">
       <div className="flex flex-col items-center gap-6 mt-2">
-        {/* Role text */}
         <div className="h-6 flex items-center justify-center">
           <AnimatePresence mode="wait">
             <motion.p
@@ -126,11 +120,9 @@ export function Testimonials() {
                 )}
               >
                 <div className="relative shrink-0">
-                  {/* Preload all avatars; hide inactive ones visually only */}
                   <img
                     src={testimonial.avatar}
                     alt={testimonial.author}
-                    // Eagerly load all avatars to prevent flicker on switch
                     loading="eager"
                     decoding="async"
                     className={cn(
