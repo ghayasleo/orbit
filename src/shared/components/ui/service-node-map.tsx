@@ -235,6 +235,87 @@ const INITIAL_NODES = [
   },
 ];
 
+const getInitialNodes = (width: number, height: number): NodeTypes => {
+  const paddingX = 20;
+  const paddingTop = 40;
+  const usableHeight = height - paddingTop - 40;
+
+  return [
+    // Column 1: Sources
+    {
+      id: "notes",
+      type: "custom",
+      position: {
+        x: width * 0.05 + paddingX,
+        y: paddingTop + usableHeight * 0.02,
+      },
+      data: MODULE_DATA.notes,
+    },
+    {
+      id: "habits",
+      type: "custom",
+      position: {
+        x: width * 0.05 + paddingX,
+        y: paddingTop + usableHeight * 0.2,
+      },
+      data: MODULE_DATA.habits,
+    },
+    {
+      id: "tasks",
+      type: "custom",
+      position: {
+        x: width * 0.05 + paddingX,
+        y: paddingTop + usableHeight * 0.38,
+      },
+      data: MODULE_DATA.tasks,
+    },
+    {
+      id: "subscriptions",
+      type: "custom",
+      position: {
+        x: width * 0.05 + paddingX,
+        y: paddingTop + usableHeight * 0.56,
+      },
+      data: MODULE_DATA.subscriptions,
+    },
+    {
+      id: "loans",
+      type: "custom",
+      position: {
+        x: width * 0.05 + paddingX,
+        y: paddingTop + usableHeight * 0.74,
+      },
+      data: MODULE_DATA.loans,
+    },
+    // Column 2: Orchestration
+    {
+      id: "expenses",
+      type: "custom",
+      position: { x: width * 0.4, y: paddingTop + usableHeight * 0.25 },
+      data: MODULE_DATA.expenses,
+    },
+    {
+      id: "reminders",
+      type: "custom",
+      position: { x: width * 0.4, y: paddingTop + usableHeight * 0.55 },
+      data: MODULE_DATA.reminders,
+    },
+    // Column 3: Insights
+    {
+      id: "budget",
+      type: "custom",
+      position: { x: width * 0.72, y: paddingTop + usableHeight * 0.2 },
+      data: MODULE_DATA.budget,
+    },
+    {
+      id: "goals",
+      type: "custom",
+      position: { x: width * 0.72, y: paddingTop + usableHeight * 0.55 },
+      data: MODULE_DATA.goals,
+    },
+  ];
+};
+
 const INITIAL_EDGES = [
   { id: "e-sub-exp", source: "subscriptions", target: "expenses" },
   { id: "e-sub-bud", source: "subscriptions", target: "budget" },
