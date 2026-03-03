@@ -1,28 +1,21 @@
 "use client";
 
-import React, {
-  useState,
-  useCallback,
-  useMemo,
-  useRef,
-  useEffect,
-} from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import {
   ReactFlow,
   Background,
-  Controls,
   Handle,
   Position,
   useNodesState,
   useEdgesState,
   useReactFlow,
-  Panel,
   ReactFlowProvider,
   MarkerType,
+  BackgroundVariant,
+  NodeTypes,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import {
-  LayoutDashboard,
   CheckSquare,
   Bell,
   Receipt,
@@ -52,29 +45,18 @@ interface ModuleData {
 }
 
 // --- Data ---
+type LayerConfig = Record<
+  LayerType,
+  { color: string; bg: string; icon: string }
+>;
 
-const LAYER_CONFIG: Record<LayerType, { color: string; bg: string }> = {
-  Sources: { color: "#4F8EF7", bg: "bg-blue-500/10" },
-  Orchestration: { color: "#F5A623", bg: "bg-amber-500/10" },
-  Insights: { color: "#A855F7", bg: "bg-purple-500/10" },
+const LAYER_CONFIG: LayerConfig = {
+  Sources: { color: "#4F8EF7", bg: "bg-blue-500/10", icon: "🔵" },
+  Orchestration: { color: "#F5A623", bg: "bg-amber-500/10", icon: "🟡" },
+  Insights: { color: "#A855F7", bg: "bg-purple-500/10", icon: "🟣" },
 };
 
 const MODULE_DATA: Record<string, ModuleData> = {
-  dashboard: {
-    id: "dashboard",
-    name: "Dashboard",
-    icon: LayoutDashboard,
-    layer: "Insights",
-    color: LAYER_CONFIG.Insights.color,
-    description:
-      "Your command center. Dashboard surfaces live data from every module so you always know what needs attention right now — no digging required.",
-    connections: [
-      { id: "expenses", dir: "←" },
-      { id: "tasks", dir: "←" },
-      { id: "habits", dir: "←" },
-      { id: "reminders", dir: "←" },
-    ],
-  },
   tasks: {
     id: "tasks",
     name: "Tasks",
@@ -82,7 +64,7 @@ const MODULE_DATA: Record<string, ModuleData> = {
     layer: "Sources",
     color: LAYER_CONFIG.Sources.color,
     description:
-      "Actionable to-dos with priorities, due dates, and subtasks. Tasks plug into Reminders for alerts and into Goals to track meaningful progress.",
+      "Everything you need to get done. Create tasks with priorities, due dates, and subtasks — they automatically create Reminders and feed progress into your Goals.",
     connections: [
       { id: "reminders", dir: "→" },
       { id: "goals", dir: "→" },
@@ -95,7 +77,7 @@ const MODULE_DATA: Record<string, ModuleData> = {
     layer: "Orchestration",
     color: LAYER_CONFIG.Orchestration.color,
     description:
-      "Precision alerts that fire at exactly the right time. Reminders are auto-created by Tasks and Loans so nothing is manually re-entered.",
+      "Never miss a moment. Reminders fire at exactly the right time and are auto-created when you add Tasks or set up Loan repayment schedules.",
     connections: [
       { id: "tasks", dir: "←" },
       { id: "loans", dir: "←" },
@@ -108,12 +90,11 @@ const MODULE_DATA: Record<string, ModuleData> = {
     layer: "Orchestration",
     color: LAYER_CONFIG.Orchestration.color,
     description:
-      "The hub for all outgoing money. Every expense instantly updates your Budget Planner and Dashboard — log once, reflected everywhere.",
+      "Log once, reflected everywhere. Every expense you record automatically updates your Budget Planner — Subscriptions and Loans also push charges here automatically.",
     connections: [
       { id: "subscriptions", dir: "←" },
       { id: "loans", dir: "←" },
       { id: "budget", dir: "→" },
-      { id: "dashboard", dir: "→" },
     ],
   },
   loans: {
@@ -123,7 +104,7 @@ const MODULE_DATA: Record<string, ModuleData> = {
     layer: "Sources",
     color: LAYER_CONFIG.Sources.color,
     description:
-      "Track borrowed money and repayment schedules. Loans auto-generate Reminders for due dates and optionally log repayments as Expenses.",
+      "Stay on top of what you owe. Loans auto-schedule Reminders for upcoming EMIs and can automatically log repayments as Expenses.",
     connections: [
       { id: "reminders", dir: "→" },
       { id: "expenses", dir: "→" },
@@ -136,7 +117,7 @@ const MODULE_DATA: Record<string, ModuleData> = {
     layer: "Sources",
     color: LAYER_CONFIG.Sources.color,
     description:
-      "Daily routines that compound over time. Each habit check-in automatically moves the needle on any linked Goal.",
+      "Small actions, big results. Track daily routines and each check-in automatically contributes momentum toward any Goal you've linked.",
     connections: [{ id: "goals", dir: "→" }],
   },
   budget: {
@@ -146,7 +127,7 @@ const MODULE_DATA: Record<string, ModuleData> = {
     layer: "Insights",
     color: LAYER_CONFIG.Insights.color,
     description:
-      "Your financial clarity engine. Budget Planner aggregates data from Expenses, Subscriptions, and Goals to give you a real-time health score.",
+      "Your financial clarity engine. Set spending limits per category and Budget Planner automatically tracks actuals from Expenses, Subscriptions, and Goal savings targets.",
     connections: [
       { id: "expenses", dir: "←" },
       { id: "subscriptions", dir: "←" },
@@ -160,7 +141,7 @@ const MODULE_DATA: Record<string, ModuleData> = {
     layer: "Sources",
     color: LAYER_CONFIG.Sources.color,
     description:
-      "Capture anything, instantly. Notes is the free-form entry point for raw thoughts, ideas, and context that doesn't fit anywhere else.",
+      "Capture anything, instantly. A free-form space for raw thoughts, ideas, and context — the universal entry point that requires no structure.",
     connections: [],
   },
   subscriptions: {
@@ -170,7 +151,7 @@ const MODULE_DATA: Record<string, ModuleData> = {
     layer: "Sources",
     color: LAYER_CONFIG.Sources.color,
     description:
-      "Never forget a renewal. Subscriptions auto-logs charges as Expenses and feeds fixed costs into your Budget Planner automatically.",
+      "Never forget a renewal. Subscriptions auto-logs charges as Expenses and feeds your fixed monthly costs into Budget Planner.",
     connections: [
       { id: "expenses", dir: "→" },
       { id: "budget", dir: "→" },
@@ -180,10 +161,10 @@ const MODULE_DATA: Record<string, ModuleData> = {
     id: "goals",
     name: "Goals",
     icon: Target,
-    layer: "Orchestration",
-    color: LAYER_CONFIG.Orchestration.color,
+    layer: "Insights",
+    color: LAYER_CONFIG.Insights.color,
     description:
-      "Your north star. Goals track long-term progress driven by Habits and Tasks, and can link to Budget Planner for financial targets.",
+      "Your north star. Set targets with deadlines, link Habits and Tasks to drive progress automatically, and connect financial goals to Budget Planner for savings tracking.",
     connections: [
       { id: "habits", dir: "←" },
       { id: "tasks", dir: "←" },
@@ -203,89 +184,76 @@ const INITIAL_NODES = [
   {
     id: "habits",
     type: "custom",
-    position: { x: 50, y: 120 },
+    position: { x: 50, y: 110 },
     data: MODULE_DATA.habits,
   },
   {
     id: "tasks",
     type: "custom",
-    position: { x: 50, y: 240 },
+    position: { x: 50, y: 220 },
     data: MODULE_DATA.tasks,
   },
   {
     id: "subscriptions",
     type: "custom",
-    position: { x: 50, y: 360 },
+    position: { x: 50, y: 330 },
     data: MODULE_DATA.subscriptions,
   },
   {
     id: "loans",
     type: "custom",
-    position: { x: 50, y: 480 },
+    position: { x: 50, y: 440 },
     data: MODULE_DATA.loans,
   },
 
-  // Column 2: Orchestration (x: 400)
+  // Column 2: Orchestration (x: 380)
   {
     id: "expenses",
     type: "custom",
-    position: { x: 400, y: 100 },
+    position: { x: 380, y: 140 },
     data: MODULE_DATA.expenses,
-  },
-  {
-    id: "goals",
-    type: "custom",
-    position: { x: 400, y: 250 },
-    data: MODULE_DATA.goals,
   },
   {
     id: "reminders",
     type: "custom",
-    position: { x: 400, y: 400 },
+    position: { x: 380, y: 300 },
     data: MODULE_DATA.reminders,
   },
 
-  // Column 3: Insights (x: 750)
+  // Column 3: Insights (x: 700)
   {
     id: "budget",
     type: "custom",
-    position: { x: 750, y: 150 },
+    position: { x: 700, y: 130 },
     data: MODULE_DATA.budget,
   },
   {
-    id: "dashboard",
+    id: "goals",
     type: "custom",
-    position: { x: 750, y: 330 },
-    data: MODULE_DATA.dashboard,
+    position: { x: 700, y: 310 },
+    data: MODULE_DATA.goals,
   },
 ];
 
 const INITIAL_EDGES = [
-  {
-    id: "e-sub-exp",
-    source: "subscriptions",
-    target: "expenses",
-    animated: true,
-  },
-  {
-    id: "e-sub-bud",
-    source: "subscriptions",
-    target: "budget",
-    animated: true,
-  },
-  { id: "e-loan-rem", source: "loans", target: "reminders", animated: true },
-  { id: "e-loan-exp", source: "loans", target: "expenses", animated: true },
-  { id: "e-task-rem", source: "tasks", target: "reminders", animated: true },
-  { id: "e-task-goal", source: "tasks", target: "goals", animated: true },
-  { id: "e-habit-goal", source: "habits", target: "goals", animated: true },
-  { id: "e-exp-bud", source: "expenses", target: "budget", animated: true },
-  { id: "e-exp-dash", source: "expenses", target: "dashboard", animated: true },
-  { id: "e-goal-bud", source: "goals", target: "budget", animated: true },
+  { id: "e-sub-exp", source: "subscriptions", target: "expenses" },
+  { id: "e-sub-bud", source: "subscriptions", target: "budget" },
+  { id: "e-loan-rem", source: "loans", target: "reminders" },
+  { id: "e-loan-exp", source: "loans", target: "expenses" },
+  { id: "e-task-rem", source: "tasks", target: "reminders" },
+  { id: "e-task-goal", source: "tasks", target: "goals" },
+  { id: "e-habit-goal", source: "habits", target: "goals" },
+  { id: "e-exp-bud", source: "expenses", target: "budget" },
+  { id: "e-goal-bud", source: "goals", target: "budget" },
 ].map((e) => ({
   ...e,
-  type: "bezier",
-  markerEnd: { type: MarkerType.ArrowClosed, color: "#ffffff20" },
-  style: { stroke: "#ffffff20", strokeWidth: 1.5 },
+  type: "smoothstep",
+  animated: true,
+  markerEnd: {
+    type: MarkerType.ArrowClosed,
+    color: MODULE_DATA[e.source]!.color,
+  },
+  style: { stroke: "#ffffff25", strokeWidth: 1.5 },
 }));
 
 // --- Custom Node ---
@@ -304,15 +272,11 @@ const CustomNode = ({
     <div
       className={cn(
         "relative w-48 bg-[#1a1a1f] border border-white/10 rounded-xl px-4 py-3 shadow-xl transition-all duration-300",
-        selected
-          ? "ring-2 brightness-110 shadow-[0_0_20px_rgba(255,255,255,0.05)]"
-          : "hover:border-white/20",
+        selected ? "brightness-110" : "hover:border-white/20",
       )}
       style={{
         borderLeft: `4px solid ${accent}`,
-        boxShadow: selected
-          ? `0 0 0 2px ${accent}, 0 0 20px ${accent}20`
-          : undefined,
+        boxShadow: selected ? `0 0 0 2px ${accent}` : undefined,
         backgroundColor: selected ? "#22222a" : undefined,
       }}
     >
@@ -322,8 +286,8 @@ const CustomNode = ({
         className="bg-current! border-none! w-2! h-2!"
         style={{ color: accent }}
       />
-      <div className="flex items-center gap-3">
-        <div className="text-white/80">
+      <div className="flex items-center gap-3 select-none">
+        <div className="text-white/80 shrink-0">
           <Icon className="size-5" />
         </div>
         <div className="flex flex-col min-w-0">
@@ -355,42 +319,35 @@ interface PopupProps {
   nodeId: string;
   onClose: () => void;
   onNavigate: (targetId: string) => void;
-  anchorRect: DOMRect | null;
 }
 
-const PopupAtNode = ({
-  nodeId,
-  onClose,
-  onNavigate,
-  anchorRect,
-}: PopupProps) => {
+const PopupAtNode = ({ nodeId, onClose, onNavigate }: PopupProps) => {
   const data = MODULE_DATA[nodeId];
-  if (!data || !anchorRect) return null;
+  if (!data) return null;
 
-  const [pos, setPos] = useState({
-    top: 0,
-    left: 0,
-    placement: "bottom" as "bottom" | "top",
-  });
+  const [pos, setPos] = useState({ top: 0, left: 0 });
   const popupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (popupRef.current) {
+    let rafId: number;
+
+    const updatePos = () => {
+      if (!popupRef.current) return;
+
+      const nodeElement = document.querySelector(`[data-id="${nodeId}"]`);
+      if (!nodeElement) return;
+
+      const anchorRect = nodeElement.getBoundingClientRect();
       const popupRect = popupRef.current.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
       const viewportWidth = window.innerWidth;
 
       let top = anchorRect.bottom + 12;
       let left = anchorRect.left + anchorRect.width / 2 - popupRect.width / 2;
-      let placement: "bottom" | "top" = "bottom";
 
-      // Flip logic
       if (top + popupRect.height > viewportHeight - 20) {
         top = anchorRect.top - popupRect.height - 12;
-        placement = "top";
       }
-
-      // Horizontal overflow logic
       if (left + popupRect.width > viewportWidth - 20) {
         left = anchorRect.right - popupRect.width;
       }
@@ -398,9 +355,13 @@ const PopupAtNode = ({
         left = anchorRect.left;
       }
 
-      setPos({ top, left, placement });
-    }
-  }, [anchorRect]);
+      setPos({ top, left });
+      rafId = requestAnimationFrame(updatePos);
+    };
+
+    rafId = requestAnimationFrame(updatePos);
+    return () => cancelAnimationFrame(rafId);
+  }, [nodeId]);
 
   return (
     <motion.div
@@ -408,55 +369,62 @@ const PopupAtNode = ({
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="fixed z-100 w-72 bg-[#1a1a1f] border border-white/10 rounded-2xl p-5 shadow-2xl backdrop-blur-xl pointer-events-auto"
+      className="fixed z-100 w-72 bg-[#1a1a1f] border border-white/10 rounded-2xl p-5 shadow-2xl backdrop-blur-xl pointer-events-auto overflow-hidden"
       style={{
         top: pos.top,
         left: pos.left,
-        boxShadow: `0 0 0 1px ${data.color}40, 0 10px 40px rgba(0,0,0,0.5)`,
+        boxShadow: `0 0 0 1px ${data.color}80, 0 10px 40px rgba(0,0,0,0.5)`,
       }}
     >
       <button
-        onClick={onClose}
-        className="absolute top-3 right-3 p-1 text-white/30 hover:text-white transition-colors"
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        className="absolute top-3 right-3 p-1 text-white/30 hover:text-white transition-colors z-10"
       >
         <X className="size-4" />
       </button>
 
-      <div className="flex items-center gap-3 mb-3">
+      <div className="flex items-center gap-3 mb-3 relative">
         <div style={{ color: data.color }}>
           <data.icon className="size-5" />
         </div>
         <h3 className="text-base font-bold text-white">{data.name}</h3>
       </div>
 
-      <p className="text-xs text-white/70 leading-relaxed mb-4">
+      <p className="text-xs text-white/70 leading-relaxed mb-4 relative">
         {data.description}
       </p>
 
       <div className="h-px bg-white/10 mb-4" />
 
-      <div>
+      <div className="relative">
         <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest block mb-2">
           Connects with:
         </span>
         <div className="flex flex-wrap gap-1.5">
           {data.connections.length > 0 ? (
             data.connections.map((conn) => {
-              const connectedNode = MODULE_DATA[conn.id];
+              const target = MODULE_DATA[conn.id];
+              if (!target) return null;
               return (
                 <button
                   key={conn.id}
-                  onClick={() => onNavigate(conn.id)}
-                  title={`Jump to ${connectedNode.name}`}
-                  className="px-2 py-1 bg-white/5 border border-white/5 rounded-md text-[10px] font-semibold text-white/60 hover:brightness-125 transition-all flex items-center gap-1 group"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onNavigate(conn.id);
+                  }}
+                  title={`Jump to ${target.name}`}
+                  className="px-2 py-1 bg-white/5 border border-white/5 rounded-md text-[10px] font-semibold text-white/60 hover:brightness-125 transition-all flex items-center gap-1"
                 >
-                  <span style={{ color: connectedNode.color }}>{conn.dir}</span>
-                  {connectedNode.name}
+                  <span style={{ color: target.color }}>{conn.dir}</span>
+                  {target.name}
                 </button>
               );
             })
           ) : (
-            <span className="text-[10px] text-white/40 italic">
+            <span className="text-[10px] text-white/40 italic font-medium">
               No direct connections.
             </span>
           )}
@@ -475,11 +443,23 @@ function FlowMap() {
   const [popupAnchor, setPopupAnchor] = useState<DOMRect | null>(null);
   const { fitView } = useReactFlow();
 
-  const handleNodeClick = useCallback((event: React.MouseEvent, node: any) => {
-    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-    setActiveId(node.id);
-    setPopupAnchor(rect);
+  useEffect(() => {
+    if (flowRef.current) {
+      const { width, height } = flowRef.current.getBoundingClientRect();
+      setContainerSize({ width, height });
+      setNodes(getInitialNodes(width, height)); // 👈 add this line
+    }
   }, []);
+
+  const handleNodeClick = useCallback(
+    (event: React.MouseEvent, node: any) => {
+      const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+      setActiveId(node.id);
+      setPopupAnchor(rect);
+      setNodes((nds) => nds.map((n) => ({ ...n, selected: n.id === node.id })));
+    },
+    [setNodes],
+  );
 
   const handleNavigate = useCallback(
     (targetId: string) => {
@@ -509,6 +489,15 @@ function FlowMap() {
     setNodes((nds) => nds.map((n) => ({ ...n, selected: false })));
   }, [setNodes]);
 
+  // Handle Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleClosePopup();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleClosePopup]);
+
   // Update edges when activeId changes
   useEffect(() => {
     setEdges((eds) =>
@@ -522,9 +511,9 @@ function FlowMap() {
               ...edge,
               style: {
                 ...edge.style,
-                stroke: sourceNode.color,
+                stroke: sourceNode!.color,
                 strokeWidth: 2,
-                opacity: 0.8,
+                opacity: 1,
               },
             };
           } else {
@@ -541,15 +530,66 @@ function FlowMap() {
         }
         return {
           ...edge,
-          style: { stroke: "#ffffff20", strokeWidth: 1.5, opacity: 0.4 },
+          style: { stroke: "#ffffff", strokeWidth: 1.5, opacity: 0.15 },
         };
       }),
     );
   }, [activeId, setEdges]);
 
+  const flowRef = useRef<HTMLDivElement>(null);
+
+  const onNodeDrag = useCallback(
+    (_: React.MouseEvent, node: any) => {
+      const container = flowRef.current;
+      if (!container) return;
+
+      const { width: cW, height: cH } = container.getBoundingClientRect();
+      const nodeW = 192; // w-48 = 192px
+      const nodeH = 64; // approximate node height
+
+      const clampedX = Math.max(0, Math.min(node.position.x, cW - nodeW));
+      const clampedY = Math.max(0, Math.min(node.position.y, cH - nodeH));
+
+      if (clampedX !== node.position.x || clampedY !== node.position.y) {
+        setNodes((nds) =>
+          nds.map((n) =>
+            n.id === node.id
+              ? { ...n, position: { x: clampedX, y: clampedY } }
+              : n,
+          ),
+        );
+      }
+    },
+    [setNodes],
+  );
+
+  const [containerSize, setContainerSize] = useState({
+    width: 800,
+    height: 600,
+  });
+
+  useEffect(() => {
+    if (flowRef.current) {
+      const { width, height } = flowRef.current.getBoundingClientRect();
+      setContainerSize({ width, height });
+    }
+  }, []);
+
+  const [viewport, setViewport] = useState({ x: 0, y: 0, zoom: 1 });
+
+  const onMove = useCallback((_: any, newViewport: any) => {
+    // If viewport tries to move from origin, reset it immediately
+    if (newViewport.x !== 0 || newViewport.y !== 0) {
+      setViewport({ x: 0, y: 0, zoom: newViewport.zoom });
+    }
+  }, []);
+
   return (
-    <div className="w-full h-full relative bg-[#0d0d0f]">
+    <div ref={flowRef} className="w-full h-full relative bg-[#0d0d0f]">
       <ReactFlow
+        viewport={viewport}
+        onViewportChange={setViewport}
+        onMove={onMove}
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
@@ -558,36 +598,32 @@ function FlowMap() {
         onNodeClick={handleNodeClick}
         onPaneClick={handleClosePopup}
         fitView
+        onNodeDrag={onNodeDrag}
         colorMode="dark"
+        zoomOnScroll={false}
+        zoomOnPinch={false}
+        zoomOnDoubleClick={false}
+        preventScrolling={false}
+        selectionOnDrag={false}
+        multiSelectionKeyCode={null}
+        panOnDrag={false}
+        panOnScroll={false}
+        proOptions={{ hideAttribution: true }}
+        nodeExtent={[
+          [0, 0],
+          [containerSize.width - 0, containerSize.height - 0],
+        ]}
+        translateExtent={[
+          [0, 0],
+          [containerSize.width, containerSize.height],
+        ]}
       >
-        <Background variant="dots" gap={32} size={1} color="#ffffff10" />
-        <Controls
-          showInteractive={false}
-          className="bg-[#1a1a1f]! border-white/10! fill-white/50!"
+        <Background
+          variant={BackgroundVariant.Dots}
+          gap={32}
+          size={1}
+          color="#ffffff10"
         />
-
-        <Panel position="top-left" className="pointer-events-none">
-          <div className="flex flex-col gap-6 mt-10 ml-4">
-            <div className="space-y-1">
-              <div className="text-[11px] font-bold text-white/10 uppercase tracking-[0.3em]">
-                Capture Layer
-              </div>
-              <div className="w-12 h-px bg-white/5" />
-            </div>
-            <div className="space-y-1 mt-32">
-              <div className="text-[11px] font-bold text-white/10 uppercase tracking-[0.3em]">
-                Logic Layer
-              </div>
-              <div className="w-12 h-px bg-white/5" />
-            </div>
-            <div className="space-y-1 mt-40">
-              <div className="text-[11px] font-bold text-white/10 uppercase tracking-[0.3em]">
-                Outcome Layer
-              </div>
-              <div className="w-12 h-px bg-white/5" />
-            </div>
-          </div>
-        </Panel>
       </ReactFlow>
 
       <AnimatePresence>
@@ -596,7 +632,6 @@ function FlowMap() {
             nodeId={activeId}
             onClose={handleClosePopup}
             onNavigate={handleNavigate}
-            anchorRect={popupAnchor}
           />
         )}
       </AnimatePresence>
@@ -606,32 +641,18 @@ function FlowMap() {
 
 export function ServiceNodeMap() {
   return (
-    <div className="flex flex-col gap-8">
-      {/* Legend */}
-      <div className="flex flex-wrap items-center justify-center gap-6">
-        {Object.entries(LAYER_CONFIG).map(([layer, config]) => (
-          <div key={layer} className="flex items-center gap-2">
-            <div
-              className="size-2 rounded-full"
-              style={{ backgroundColor: config.color }}
-            />
-            <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">
-              {layer}
-            </span>
-          </div>
-        ))}
-      </div>
-
+    <div className="flex flex-col gap-12">
       <div className="w-full h-[400px] md:h-[600px] rounded-3xl overflow-hidden border border-white/5 shadow-2xl bg-[#0d0d0f]">
         <ReactFlowProvider>
           <FlowMap />
         </ReactFlowProvider>
       </div>
 
-      {/* Mobile Hint */}
-      <div className="md:hidden text-center text-[10px] text-white/30 uppercase tracking-widest">
-        Tip: Tap a node to explore. Tap a connection pill to jump to that
-        module.
+      <div className="text-center md:hidden">
+        <p className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-bold">
+          Tip: Tap a node to explore. Tap a connection pill to jump to that
+          module.
+        </p>
       </div>
     </div>
   );

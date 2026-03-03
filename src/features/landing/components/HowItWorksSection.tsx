@@ -22,10 +22,31 @@ export function HowItWorksSection() {
           <h2 className="font-display text-[40px] md:text-[56px] font-bold text-text-primary leading-tight max-w-[800px] mb-6 tracking-tight">
             Everything connects. Nothing slips.
           </h2>
-          <p className="text-lg md:text-xl text-text-secondary leading-relaxed max-w-[640px] font-normal mx-auto">
-            Orbit&apos;s 10 modules work as one integrated system — data flows
-            automatically so you never have to.
+          <p className="text-lg md:text-xl text-text-secondary leading-relaxed max-w-[640px] font-normal mx-auto mb-8">
+            9 modules. One integrated brain. Data flows automatically so you
+            never enter anything twice.
           </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-full">
+              <span className="text-sm">🔵</span>
+              <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">
+                Sources
+              </span>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-full">
+              <span className="text-sm">🟡</span>
+              <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">
+                Orchestration
+              </span>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-purple-500/10 border border-purple-500/20 rounded-full">
+              <span className="text-sm">🟣</span>
+              <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">
+                Insights
+              </span>
+            </div>
+          </div>
         </motion.div>
 
         <ServiceNodeMap />
