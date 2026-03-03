@@ -17,7 +17,7 @@ export function TestimonialsSection() {
             WHAT PEOPLE ARE SAYING
           </div>
           <h2 className="font-display text-[32px] text-balance md:text-[38px] font-bold text-text-primary leading-tight max-w-[640px] tracking-tight">
-            People switched. They didn't go back.
+            Once They Tried It, There Was No Going Back.
           </h2>
         </motion.div>
 

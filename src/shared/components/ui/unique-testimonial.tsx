@@ -12,8 +12,8 @@ const testimonials = [
     avatar:
       "https://images.unsplash.com/photo-1701615004837-40d8573b6652?q=80&w=1480&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     breakpoints: {
-      992: 372.5,
-      0: 275,
+      992: 235.9,
+      0: 255.5,
     },
   },
   {
@@ -25,8 +25,8 @@ const testimonials = [
     avatar:
       "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=1480&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     breakpoints: {
-      992: 372.5,
-      0: 307.5,
+      992: 235.9,
+      0: 255.5,
     },
   },
   {
@@ -38,8 +38,8 @@ const testimonials = [
     avatar:
       "https://images.unsplash.com/photo-1607746882042-944635dfe10e?q=80&w=1480&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     breakpoints: {
-      992: 372.5,
-      0: 307.5,
+      992: 235.9,
+      0: 255.5,
     },
   },
 ] as const;
@@ -88,7 +88,36 @@ export function Testimonials() {
   );
 
   return (
-    <div className="flex flex-col items-center gap-10 py-16 w-full max-w-2xl mx-auto">
+    <div className="flex flex-col items-center gap-10 pt-16 w-full max-w-4xl mx-auto">
+      <motion.div
+        animate={{ height }}
+        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+        className="relative w-full md:px-8 max-w-80.25 mx-auto sm:max-w-full"
+      >
+        <span className="absolute h-6.75 -left-3 top-0 text-7xl font-serif text-foreground/6 select-none pointer-events-none">
+          "
+        </span>
+
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={activeIndex}
+            initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="flex flex-col items-center justify-center py-10"
+          >
+            <p className="text-lg md:text-2xl font-light text-foreground text-center max-w-2xl leading-relaxed">
+              {activeTestimonial.quote}
+            </p>
+          </motion.div>
+        </AnimatePresence>
+
+        <span className="absolute h-6.75 -right-3 bottom-0 text-7xl font-serif text-foreground/6 select-none pointer-events-none">
+          "
+        </span>
+      </motion.div>
+
       <div className="flex flex-col items-center gap-6 mt-2">
         <div className="h-6 flex items-center justify-center">
           <AnimatePresence mode="wait">
@@ -159,35 +188,6 @@ export function Testimonials() {
           })}
         </div>
       </div>
-
-      <motion.div
-        animate={{ height }}
-        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-        className="relative w-full md:px-8"
-      >
-        <span className="absolute -left-3 top-0 text-7xl font-serif text-foreground/6 select-none pointer-events-none">
-          "
-        </span>
-
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={activeIndex}
-            initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="flex flex-col items-center justify-center py-10"
-          >
-            <p className="text-xl md:text-3xl font-light text-foreground text-center max-w-lg leading-relaxed">
-              {activeTestimonial.quote}
-            </p>
-          </motion.div>
-        </AnimatePresence>
-
-        <span className="absolute -right-3 bottom-0 text-7xl font-serif text-foreground/6 select-none pointer-events-none">
-          "
-        </span>
-      </motion.div>
     </div>
   );
 }
