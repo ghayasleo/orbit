@@ -92,10 +92,13 @@ export const QuantumTimeline = ({
   return (
     <div className="w-full mx-auto font-sans bg-bg-base">
       {/* Top Navigation */}
-      <TimelineNav
+      <TimelineNav />
+
+      {/* Bottom Timeline */}
+      <BottomTimeline
         steps={steps}
-        activeStep={activeStep || ""}
-        onStepClick={setActiveStep}
+        activeIdx={activeIndex}
+        onClick={setActiveStep}
       />
 
       {/* Main Content */}
@@ -114,55 +117,26 @@ export const QuantumTimeline = ({
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Bottom Timeline */}
-      <div className="max-w-4xl mx-auto">
-        <BottomTimeline
-          steps={steps}
-          activeIndex={activeIndex}
-          onStepClick={setActiveStep}
-        />
-      </div>
     </div>
   );
 };
 
 // --- Sub-components ---
 
-interface TimelineNavProps {
-  steps: ProcessStep[];
-  activeStep: string;
-  onStepClick: (id: string) => void;
-}
-
-const TimelineNav = ({ steps, activeStep, onStepClick }: TimelineNavProps) => (
-  <div className="flex flex-col md:flex-row items-center justify-between gap-6 max-w-5xl mx-auto">
-    <div className="flex items-center gap-4">
-      <div className="w-10 h-10 bg-brand-subtle text-brand rounded-full flex items-center justify-center font-bold font-display shadow-sm">
-        <Rocket className="w-5 h-5" />
+const TimelineNav = () => {
+  return (
+    <div className="flex flex-col md:flex-row items-center justify-between gap-6 max-w-5xl mx-auto">
+      <div className="flex items-center gap-4">
+        <div className="w-10 h-10 bg-brand-subtle text-brand rounded-full flex items-center justify-center font-bold font-display shadow-sm">
+          <Rocket className="w-5 h-5" />
+        </div>
+        <span className="text-xl font-bold text-text-primary font-display tracking-tight">
+          How It Works
+        </span>
       </div>
-      <span className="text-xl font-bold text-text-primary font-display tracking-tight">
-        How It Works
-      </span>
     </div>
-    <div className="flex items-center w-full md:w-auto overflow-x-auto hide-scrollbar gap-2 p-1.5 bg-bg-subtle border border-border-subtle rounded-full mt-4 md:mt-0 shadow-sm">
-      {steps.map((step) => (
-        <button
-          key={step.id}
-          onClick={() => onStepClick(step.id)}
-          className={cn(
-            "px-5 py-2 rounded-full text-[13px] font-semibold transition-all whitespace-nowrap",
-            activeStep === step.id
-              ? "bg-bg-card border border-border-medium text-text-primary shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
-              : "text-text-secondary hover:text-text-primary hover:bg-bg-card-hover border border-transparent",
-          )}
-        >
-          {step.title}
-        </button>
-      ))}
-    </div>
-  </div>
-);
+  );
+};
 
 const TimelineContent = ({ step }: { step: ProcessStep }) => (
   <div className="flex flex-col justify-center">
@@ -217,21 +191,19 @@ const TimelinePhoneMockup = ({ image }: { image: string }) => (
   </div>
 );
 
-const BottomTimeline = ({
-  steps,
-  activeIndex,
-  onStepClick,
-}: {
+interface BottomTimelineProps {
   steps: ProcessStep[];
-  activeIndex: number;
-  onStepClick: (id: string) => void;
-}) => (
+  activeIdx: number;
+  onClick: (id: string) => void;
+}
+
+const BottomTimeline = ({ steps, activeIdx, onClick }: BottomTimelineProps) => (
   <div className="mt-16 sm:mt-24 px-4 sm:px-0">
     <div className="relative w-full h-1.5 bg-border-subtle rounded-full overflow-hidden">
       <motion.div
         className="absolute h-full bg-brand rounded-full"
         initial={{ width: 0 }}
-        animate={{ width: `${(activeIndex / (steps.length - 1)) * 100}%` }}
+        animate={{ width: `${(activeIdx / (steps.length - 1)) * 100}%` }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       />
     </div>
@@ -242,7 +214,7 @@ const BottomTimeline = ({
         className="absolute w-4 h-4 -top-2.5 rounded-full bg-brand shadow-[0_0_0_4px_rgba(91,106,240,0.2)] dark:shadow-[0_0_0_4px_rgba(107,122,245,0.25)] border-2 border-bg-base"
         initial={{ left: "0%" }}
         animate={{
-          left: `calc(${(activeIndex / (steps.length - 1)) * 100}% - 8px)`,
+          left: `calc(${(activeIdx / (steps.length - 1)) * 100}% - 8px)`,
         }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       />
@@ -252,13 +224,13 @@ const BottomTimeline = ({
       {steps.map((step, i) => (
         <button
           key={step.id}
-          onClick={() => onStepClick(step.id)}
+          onClick={() => onClick(step.id)}
           className="text-center w-1/4 group flex flex-col items-center"
         >
           <span
             className={cn(
               "text-[14px] font-bold transition-colors font-display tracking-wide",
-              i <= activeIndex
+              i <= activeIdx
                 ? "text-brand"
                 : "text-text-muted group-hover:text-text-secondary",
             )}
@@ -268,7 +240,7 @@ const BottomTimeline = ({
           <p
             className={cn(
               "text-[13px] mt-1.5 transition-colors font-medium hidden sm:block",
-              i <= activeIndex
+              i <= activeIdx
                 ? "text-text-primary"
                 : "text-text-muted group-hover:text-text-secondary",
             )}
