@@ -16,10 +16,10 @@ export function HowItWorksSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <div className="inline-flex items-center tracking-[0.1em] text-[12px] font-bold uppercase text-brand mb-4">
+          <div className="inline-flex items-center tracking-widest text-[12px] font-bold uppercase text-brand mb-4">
             THE ORBIT SYSTEM
           </div>
-          <h2 className="font-display text-[40px] md:text-[56px] font-bold text-text-primary leading-tight max-w-[800px] mb-6 tracking-tight">
+          <h2 className="font-display text-[40px] md:text-[56px] text-balance font-bold text-text-primary leading-tight max-w-[800px] mb-6 tracking-tight">
             Everything connects. Nothing slips.
           </h2>
           <p className="text-lg md:text-xl text-text-secondary leading-relaxed max-w-[640px] font-normal mx-auto mb-8">
