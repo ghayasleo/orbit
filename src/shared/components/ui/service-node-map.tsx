@@ -13,6 +13,7 @@ import {
   MarkerType,
   BackgroundVariant,
   NodeTypes,
+  Node,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import {
@@ -173,148 +174,67 @@ const MODULE_DATA: Record<string, ModuleData> = {
   },
 };
 
-const INITIAL_NODES = [
+const INITIAL_NODES: Node[] = [
   // Column 1: Sources (x: 50)
   {
     id: "notes",
     type: "custom",
-    position: { x: 50, y: 0 },
-    data: MODULE_DATA.notes,
+    position: { x: 50, y: 50 },
+    data: MODULE_DATA.notes as any as Record<string, unknown>,
   },
   {
     id: "habits",
     type: "custom",
-    position: { x: 50, y: 110 },
-    data: MODULE_DATA.habits,
+    position: { x: 50, y: 127 },
+    data: MODULE_DATA.habits as any as Record<string, unknown>,
   },
   {
     id: "tasks",
     type: "custom",
-    position: { x: 50, y: 220 },
-    data: MODULE_DATA.tasks,
+    position: { x: 50, y: 204 },
+    data: MODULE_DATA.tasks as any as Record<string, unknown>,
   },
   {
     id: "subscriptions",
     type: "custom",
-    position: { x: 50, y: 330 },
-    data: MODULE_DATA.subscriptions,
+    position: { x: 50, y: 281 },
+    data: MODULE_DATA.subscriptions as any as Record<string, unknown>,
   },
   {
     id: "loans",
     type: "custom",
-    position: { x: 50, y: 440 },
-    data: MODULE_DATA.loans,
+    position: { x: 50, y: 358 },
+    data: MODULE_DATA.loans as any as Record<string, unknown>,
   },
 
   // Column 2: Orchestration (x: 380)
   {
     id: "expenses",
     type: "custom",
-    position: { x: 380, y: 140 },
-    data: MODULE_DATA.expenses,
+    position: { x: 450, y: 50 },
+    data: MODULE_DATA.expenses as any as Record<string, unknown>,
   },
   {
     id: "reminders",
     type: "custom",
-    position: { x: 380, y: 300 },
-    data: MODULE_DATA.reminders,
+    position: { x: 500, y: 358 },
+    data: MODULE_DATA.reminders as any as Record<string, unknown>,
   },
 
   // Column 3: Insights (x: 700)
   {
     id: "budget",
     type: "custom",
-    position: { x: 700, y: 130 },
-    data: MODULE_DATA.budget,
+    position: { x: 700, y: 281 },
+    data: MODULE_DATA.budget as any as Record<string, unknown>,
   },
   {
     id: "goals",
     type: "custom",
-    position: { x: 700, y: 310 },
-    data: MODULE_DATA.goals,
+    position: { x: 400, y: 127 },
+    data: MODULE_DATA.goals as any as Record<string, unknown>,
   },
 ];
-
-const getInitialNodes = (width: number, height: number): NodeTypes => {
-  const paddingX = 20;
-  const paddingTop = 40;
-  const usableHeight = height - paddingTop - 40;
-
-  return [
-    // Column 1: Sources
-    {
-      id: "notes",
-      type: "custom",
-      position: {
-        x: width * 0.05 + paddingX,
-        y: paddingTop + usableHeight * 0.02,
-      },
-      data: MODULE_DATA.notes,
-    },
-    {
-      id: "habits",
-      type: "custom",
-      position: {
-        x: width * 0.05 + paddingX,
-        y: paddingTop + usableHeight * 0.2,
-      },
-      data: MODULE_DATA.habits,
-    },
-    {
-      id: "tasks",
-      type: "custom",
-      position: {
-        x: width * 0.05 + paddingX,
-        y: paddingTop + usableHeight * 0.38,
-      },
-      data: MODULE_DATA.tasks,
-    },
-    {
-      id: "subscriptions",
-      type: "custom",
-      position: {
-        x: width * 0.05 + paddingX,
-        y: paddingTop + usableHeight * 0.56,
-      },
-      data: MODULE_DATA.subscriptions,
-    },
-    {
-      id: "loans",
-      type: "custom",
-      position: {
-        x: width * 0.05 + paddingX,
-        y: paddingTop + usableHeight * 0.74,
-      },
-      data: MODULE_DATA.loans,
-    },
-    // Column 2: Orchestration
-    {
-      id: "expenses",
-      type: "custom",
-      position: { x: width * 0.4, y: paddingTop + usableHeight * 0.25 },
-      data: MODULE_DATA.expenses,
-    },
-    {
-      id: "reminders",
-      type: "custom",
-      position: { x: width * 0.4, y: paddingTop + usableHeight * 0.55 },
-      data: MODULE_DATA.reminders,
-    },
-    // Column 3: Insights
-    {
-      id: "budget",
-      type: "custom",
-      position: { x: width * 0.72, y: paddingTop + usableHeight * 0.2 },
-      data: MODULE_DATA.budget,
-    },
-    {
-      id: "goals",
-      type: "custom",
-      position: { x: width * 0.72, y: paddingTop + usableHeight * 0.55 },
-      data: MODULE_DATA.goals,
-    },
-  ];
-};
 
 const INITIAL_EDGES = [
   { id: "e-sub-exp", source: "subscriptions", target: "expenses" },
@@ -338,21 +258,19 @@ const INITIAL_EDGES = [
 }));
 
 // --- Custom Node ---
-
-const CustomNode = ({
-  data,
-  selected,
-}: {
+interface CustomNodeType {
   data: ModuleData;
   selected?: boolean;
-}) => {
+}
+
+const CustomNode = ({ data, selected }: CustomNodeType) => {
   const Icon = data.icon;
   const accent = data.color;
 
   return (
     <div
       className={cn(
-        "relative w-48 bg-[#1a1a1f] border border-white/10 rounded-xl px-4 py-3 shadow-xl transition-all duration-300",
+        "relative md:w-48 w-fit bg-[#1a1a1f] border border-white/10 rounded-xl md:px-4 md:py-3 px-2 py-2 shadow-xl transition-all duration-300",
         selected ? "brightness-110" : "hover:border-white/20",
       )}
       style={{
@@ -367,15 +285,15 @@ const CustomNode = ({
         className="bg-current! border-none! w-2! h-2!"
         style={{ color: accent }}
       />
-      <div className="flex items-center gap-3 select-none">
-        <div className="text-white/80 shrink-0">
-          <Icon className="size-5" />
+      <div className="flex md:items-center items-start md:gap-3 gap-1 select-none">
+        <div className="text-white/80 shrink-0 md:mt-0 mt-1">
+          <Icon className="md:size-5 size-4" />
         </div>
         <div className="flex flex-col min-w-0">
-          <span className="text-sm font-bold text-white truncate">
+          <span className="md:text-sm text-xs font-bold text-white truncate">
             {data.name}
           </span>
-          <span className="text-[9px] text-white/40 uppercase tracking-widest font-bold">
+          <span className="md:text-[9px] text-[7px] text-white/40 uppercase tracking-widest font-bold">
             {data.layer}
           </span>
         </div>
@@ -528,7 +446,7 @@ function FlowMap() {
     if (flowRef.current) {
       const { width, height } = flowRef.current.getBoundingClientRect();
       setContainerSize({ width, height });
-      setNodes(getInitialNodes(width, height)); // 👈 add this line
+      // setNodes(getInitialNodes(width, height)); // 👈 add this line
     }
   }, []);
 
