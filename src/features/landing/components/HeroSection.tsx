@@ -42,7 +42,6 @@ export function HeroSection() {
     offset: ["start 100%", "end 80%"],
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], [200, 0]);
   const rotateX = useTransform(scrollYProgress, [0, 1], [70, 0]);
 
   return (
@@ -149,7 +148,7 @@ export function HeroSection() {
                   style={
                     reduce
                       ? undefined
-                      : { y, rotateX, transformStyle: "preserve-3d" }
+                      : { rotateX, transformStyle: "preserve-3d" }
                   }
                 >
                   <AnimatedGroup
