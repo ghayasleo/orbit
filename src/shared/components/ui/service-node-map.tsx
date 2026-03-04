@@ -12,7 +12,6 @@ import {
   ReactFlowProvider,
   MarkerType,
   BackgroundVariant,
-  NodeTypes,
   Node,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
