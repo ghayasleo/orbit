@@ -55,7 +55,10 @@ export function FeaturesGridSection() {
         </div>
 
         {/* Bento Grid */}
-        <FeaturesSectionWithHoverEffects />
+        <div className="relative isolate bg-[url('/images/wave-background.webp')] bg-cover bg-fixed">
+          <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(0,0,0,0.8)_0%,rgba(0,0,0,0.7)_30%,rgba(0,0,0,0.8)_100%)]"></div>
+          <FeaturesSectionWithHoverEffects />
+        </div>
 
         {/* Sync Message */}
         <motion.div

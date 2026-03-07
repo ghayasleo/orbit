@@ -49,7 +49,7 @@ export function LandingPage() {
           <HowItWorksSection />
 
           {/* 07 — App Preview */}
-          <AppPreviewSection />
+          {/* <AppPreviewSection /> */}
 
           {/* 08 — Open Source & Community */}
           {/* <OpenSourceSection /> */}
