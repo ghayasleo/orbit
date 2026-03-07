@@ -379,7 +379,7 @@ const PopupAtNode = ({ nodeId, onClose, onNavigate }: PopupProps) => {
           e.stopPropagation();
           onClose();
         }}
-        className="absolute top-3 right-3 p-1 text-white/30 hover:text-white transition-colors z-10"
+        className="absolute cursor-pointer top-3 right-3 p-1 text-white/30 hover:text-white transition-colors z-10"
       >
         <X className="size-4" />
       </button>
@@ -414,7 +414,7 @@ const PopupAtNode = ({ nodeId, onClose, onNavigate }: PopupProps) => {
                     onNavigate(conn.id);
                   }}
                   title={`Jump to ${target.name}`}
-                  className="px-2 py-1 bg-white/5 border border-white/5 rounded-md text-[10px] font-semibold text-white/60 hover:brightness-125 transition-all flex items-center gap-1"
+                  className="px-2 py-1 cursor-pointer bg-white/5 border border-white/5 rounded-md text-[10px] font-semibold text-white/60 hover:brightness-125 transition-all flex items-center gap-1"
                 >
                   <span style={{ color: target.color }}>{conn.dir}</span>
                   {target.name}

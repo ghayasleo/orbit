@@ -1,6 +1,7 @@
 // import { LandingNavbar } from '../components/LandingNavbar';
 import { HeroSection } from "../components/HeroSection";
 import { SocialProofBar } from "../components/SocialProofBar";
+import { ProblemSection } from "../components/ProblemSection";
 import { ProblemStatementSection } from "../components/ProblemStatementSection";
 import { FeaturesGridSection } from "../components/FeaturesGridSection";
 import { HowItWorksSection } from "../components/HowItWorksSection";
@@ -34,6 +35,9 @@ export function LandingPage() {
 
           {/* 03 — Social Proof Bar */}
           <SocialProofBar />
+
+          {/* Process Section */}
+          <ProblemSection />
 
           {/* 04 — Problem Statement */}
           <ProblemStatementSection />
