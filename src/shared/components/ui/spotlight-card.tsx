@@ -5,8 +5,6 @@ interface GlowCardProps {
   className?: string;
   glowColor?: "blue" | "purple" | "green" | "red" | "orange";
   size?: "sm" | "md" | "lg";
-  width?: string | number;
-  height?: string | number;
   customSize?: boolean; // When true, ignores size prop and uses width/height or className
 }
 
@@ -29,8 +27,6 @@ const GlowCard: React.FC<GlowCardProps> = ({
   className = "",
   glowColor = "blue",
   size = "md",
-  width,
-  height,
   customSize = false,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);

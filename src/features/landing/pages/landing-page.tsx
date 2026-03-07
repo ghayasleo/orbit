@@ -1,11 +1,11 @@
 // import { LandingNavbar } from '../components/LandingNavbar';
 import { HeroSection } from "../components/HeroSection";
-import { SocialProofBar } from "../components/SocialProofBar";
+// import { SocialProofBar } from "../components/SocialProofBar";
 import { ProblemSection } from "../components/ProblemSection";
-import { ProblemStatementSection } from "../components/ProblemStatementSection";
+// import { ProblemStatementSection } from "../components/ProblemStatementSection";
 import { FeaturesGridSection } from "../components/FeaturesGridSection";
 import { HowItWorksSection } from "../components/HowItWorksSection";
-import { AppPreviewSection } from "../components/AppPreviewSection";
+// import { AppPreviewSection } from "../components/AppPreviewSection";
 // import { OpenSourceSection } from '../components/OpenSourceSection';
 import { TestimonialsSection } from "../components/TestimonialsSection";
 import { FAQSection } from "../components/FAQSection";
