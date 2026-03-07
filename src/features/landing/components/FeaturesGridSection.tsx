@@ -6,10 +6,16 @@ export function FeaturesGridSection() {
   return (
     <section
       id="features"
-      className="bg-black py-5 md:py-15 overflow-hidden relative"
+      className="bg-black py-5 md:py-15 overflow-hidden relative isolate"
     >
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute inset-0 bg-linear-to-b from-black via-zinc-950 to-black"></div>
+        <div className="absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-indigo-600/15 blur-[90px]"></div>
+        <div className="absolute -bottom-48 right-[-120px] h-[520px] w-[520px] rounded-full bg-sky-500/10 blur-[100px]"></div>
+        <div className="absolute inset-0 bg-linear-to-b from-transparent via-black/10 to-black"></div>
+      </div>
       {/* Abstract Background Decoration */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20">
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20 -z-1">
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-brand/10 rounded-full blur-[120px]" />
         <div className="absolute top-1/2 -right-24 w-72 h-72 bg-indigo-500/10 rounded-full blur-[100px]" />
       </div>

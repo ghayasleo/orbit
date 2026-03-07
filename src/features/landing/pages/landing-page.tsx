@@ -34,13 +34,13 @@ export function LandingPage() {
           <HeroSection />
 
           {/* 03 — Social Proof Bar */}
-          <SocialProofBar />
+          {/* <SocialProofBar /> */}
 
           {/* Process Section */}
           <ProblemSection />
 
           {/* 04 — Problem Statement */}
-          <ProblemStatementSection />
+          {/* <ProblemStatementSection /> */}
 
           {/* 05 — Features / Modules */}
           <FeaturesGridSection />
