@@ -1,23 +1,59 @@
 import { createBrowserRouter } from "react-router-dom";
-import { RootLayout } from "../layouts/RootLayout";
+import { DashboardLayout } from "../layouts/dashboard-layout";
 import { AuthLayout } from "@/features/auth/components/auth-layout";
 import { LandingPage } from "@/features/landing/pages/landing-page";
-import { HomePage } from "@/features/home/components/HomePage";
+import { DashboardPage } from "@/features/dashboard/pages/dashboard-page";
+import {
+  TasksPage,
+  RemindersPage,
+  ExpensesPage,
+  LoansPage,
+  HabitsPage,
+  BudgetPage,
+  NotesPage,
+  SubscriptionsPage,
+  GoalsPage,
+  SettingsPage,
+} from "@/features/dashboard/pages/module-pages";
 import { LoginPage } from "@/features/auth/components/login-page";
 import { SignupPage } from "@/features/auth/components/signup-page";
 import { ForgotPasswordPage } from "@/features/auth/components/forgot-password-page";
 import { ResetPasswordPage } from "@/features/auth/components/reset-password-page";
+import {
+  ProtectedRoute,
+  PublicRoute,
+} from "@/features/auth/components/auth-route";
 import { NotFoundPage } from "./NotFoundPage";
 
 export const routes = [
   { path: "/", element: <LandingPage /> },
   {
     path: "/app",
-    element: <RootLayout />,
-    children: [{ index: true, element: <HomePage /> }],
+    element: (
+      <ProtectedRoute>
+        <DashboardLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { index: true, element: <DashboardPage /> },
+      { path: "tasks", element: <TasksPage /> },
+      { path: "reminders", element: <RemindersPage /> },
+      { path: "expenses", element: <ExpensesPage /> },
+      { path: "loans", element: <LoansPage /> },
+      { path: "habits", element: <HabitsPage /> },
+      { path: "budget", element: <BudgetPage /> },
+      { path: "notes", element: <NotesPage /> },
+      { path: "subscriptions", element: <SubscriptionsPage /> },
+      { path: "goals", element: <GoalsPage /> },
+      { path: "settings", element: <SettingsPage /> },
+    ],
   },
   {
-    element: <AuthLayout />,
+    element: (
+      <PublicRoute>
+        <AuthLayout />
+      </PublicRoute>
+    ),
     children: [
       { path: "/login", element: <LoginPage /> },
       { path: "/signup", element: <SignupPage /> },

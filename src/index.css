@@ -187,27 +187,27 @@
   }
 
   .dark {
-    --bg-base: #0c0e14;
-    --bg-subtle: #13161f;
-    --bg-card: #1a1e2a;
-    --bg-card-hover: #1f2436;
-    --border-subtle: rgba(255, 255, 255, 0.07);
-    --border-medium: rgba(255, 255, 255, 0.12);
-    --text-primary: #eef0f7;
-    --text-secondary: #8890a8;
-    --text-muted: #4a5270;
+    --bg-base: #141519;
+    --bg-subtle: #1a1b21;
+    --bg-card: #1e1f26;
+    --bg-card-hover: #25262e;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-medium: rgba(255, 255, 255, 0.14);
+    --text-primary: #f0f1f5;
+    --text-secondary: #9298ad;
+    --text-muted: #5a6078;
     --brand: #6b7af5;
     --brand-hover: #7a88f7;
     --brand-subtle: rgba(91, 106, 240, 0.12);
-    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+    --shadow-card: 0 2px 16px rgba(0, 0, 0, 0.3);
     --glass-bg: rgba(255, 255, 255, 0.04);
     --glass-border: rgba(255, 255, 255, 0.08);
-    --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.35);
 
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
+    --background: 230 10% 8%;
+    --foreground: 0 0% 96%;
+    --card: 230 8% 12%;
+    --card-foreground: 0 0% 96%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
     --primary: 0 0% 98%;
@@ -236,7 +236,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-inter;
   }
 
   h1,
@@ -270,29 +270,30 @@
 }
 
 @theme inline {
-  --animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite alternate;
+  --animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite
+    alternate;
   --animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear;
   @keyframes shimmer-slide {
-  to {
-    transform: translate(calc(100cqw - 100%), 0);
+    to {
+      transform: translate(calc(100cqw - 100%), 0);
     }
   }
   @keyframes spin-around {
-  0% {
-    transform: translateZ(0) rotate(0);
+    0% {
+      transform: translateZ(0) rotate(0);
     }
-  15%, 35% {
-    transform: translateZ(0) rotate(90deg);
+    15%,
+    35% {
+      transform: translateZ(0) rotate(90deg);
     }
-  65%, 85% {
-    transform: translateZ(0) rotate(270deg);
+    65%,
+    85% {
+      transform: translateZ(0) rotate(270deg);
     }
-  100% {
-    transform: translateZ(0) rotate(360deg);
+    100% {
+      transform: translateZ(0) rotate(360deg);
     }
   }
-
-
 
   --animate-border-beam: border-beam var(--duration) infinite linear;
   @keyframes border-beam {
