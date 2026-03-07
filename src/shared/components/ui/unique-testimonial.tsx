@@ -94,7 +94,7 @@ export function Testimonials() {
         transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
         className="relative w-full md:px-8 max-w-80.25 mx-auto sm:max-w-full"
       >
-        <span className="absolute h-6.75 -left-3 top-0 text-7xl font-serif text-foreground/6 select-none pointer-events-none">
+        <span className="absolute h-6.75 -left-3 top-0 text-7xl font-serif text-foreground/15 select-none pointer-events-none">
           "
         </span>
 
@@ -113,7 +113,7 @@ export function Testimonials() {
           </motion.div>
         </AnimatePresence>
 
-        <span className="absolute h-6.75 -right-3 bottom-0 text-7xl font-serif text-foreground/6 select-none pointer-events-none">
+        <span className="absolute h-6.75 -right-3 bottom-0 text-7xl font-serif text-foreground/15 select-none pointer-events-none">
           "
         </span>
       </motion.div>

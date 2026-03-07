@@ -31,16 +31,16 @@ export function ProblemSection() {
   return (
     <section
       id="process"
-      className="relative py-20 px-6 bg-bg-base bg-[url('/images/wave-background.webp')] bg-cover bg-fixed"
+      className="relative py-10 px-6 bg-bg-base bg-[url('/images/wave-background.webp')] bg-cover bg-fixed"
     >
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.9)_0%,rgba(0,0,0,0.5)_30%,rgba(0,0,0,0.9)_100%)]"></div>
-      <div className="relative isolate mx-auto pt-20">
+      <div className="relative isolate mx-auto pt-10">
         {/* Background gradient effects similar to SCSS pseudos */}
         {/* <div className="absolute inset-0 top-0 h-1/2 -z-10 bg-[linear-gradient(180deg,#121212_0%,rgba(18,18,18,0.9)_50%,#121212_100%)] rounded-t-[36px]" />
         <div className="absolute inset-x-0 bottom-0 h-1/2 -z-10 bg-[linear-gradient(180deg,#121212_0%,rgba(18,18,18,0.9)_50%,#121212_100%)] rounded-b-[36px]" /> */}
 
         {/* Section Header */}
-        <div className="mb-16 md:mb-24 max-w-2xl text-center mx-auto">
+        <div className="mb-10 md:mb-15 max-w-2xl text-center mx-auto">
           <div className="inline-flex items-center tracking-widest text-[12px] font-bold uppercase text-brand mb-4">
             The Problem
           </div>

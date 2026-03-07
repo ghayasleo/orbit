@@ -1,9 +1,11 @@
+import { Particles } from "@/shared/components/ui/particles";
 import { Testimonials } from "@/shared/components/ui/unique-testimonial";
 import { motion } from "framer-motion";
 
 export function TestimonialsSection() {
   return (
-    <section className="bg-bg-subtle py-16 md:py-28 overflow-hidden">
+    <section className="relative bg-linear-to-b from-black to-bg-subtle py-16 md:py-28 overflow-hidden">
+      <Particles className="absolute inset-0 pointer-events-none" />
       <div className="mx-auto max-w-[1160px] px-6">
         {/* Header Block */}
         <motion.div
