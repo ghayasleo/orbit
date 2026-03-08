@@ -2,6 +2,8 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 import "./index.css";
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
 import { AppProviders } from "./app/providers/AppProviders";
 import { createRouter } from "./app/routes";
 import { Analytics } from "@vercel/analytics/react";

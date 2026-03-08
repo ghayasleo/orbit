@@ -289,6 +289,22 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-medium) transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--border-medium);
+    border-radius: 10px;
+  }
 }
 
 @theme inline {
