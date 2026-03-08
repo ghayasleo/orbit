@@ -2,6 +2,7 @@ import { PanelLeft, Search, Bell, LogOut, Moon, Sun } from "lucide-react";
 import { useSidebarStore } from "@/shared/stores/use-sidebar-store";
 import { useAuthStore } from "@/shared/stores/use-auth-store";
 import { useThemeStore } from "@/shared/stores/useThemeStore";
+import { AnimatedThemeToggler } from "@/shared/components/ui/animated-theme-toggler";
 
 export function DashboardHeader() {
   const { toggleCollapsed } = useSidebarStore();
@@ -48,17 +49,7 @@ export function DashboardHeader() {
       <div className="flex items-center gap-3 sm:gap-4">
         {/* Actions */}
         <div className="flex items-center gap-1 sm:gap-2">
-          <button
-            onClick={handleToggleTheme}
-            className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-bg-subtle text-text-muted hover:text-text-primary transition-colors cursor-pointer"
-            aria-label="Toggle Theme"
-          >
-            {isDark ? (
-              <Sun className="h-4.5 w-4.5" />
-            ) : (
-              <Moon className="h-4.5 w-4.5" />
-            )}
-          </button>
+          <AnimatedThemeToggler />
 
           <button className="relative flex h-9 w-9 items-center justify-center rounded-full hover:bg-bg-subtle text-text-muted hover:text-text-primary transition-colors cursor-pointer">
             <Bell className="h-4.5 w-4.5" />

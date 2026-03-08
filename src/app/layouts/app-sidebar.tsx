@@ -91,8 +91,8 @@ export function AppSidebar() {
                 end={item.end}
                 title={collapsed ? item.label : ""}
                 className={cn(
-                  "group relative flex items-center rounded-xl transition-all duration-200 min-w-10 h-10",
-                  collapsed ? "px-3" : "w-full px-3 gap-3",
+                  "group relative flex items-center rounded-xl transition-all duration-200 min-w-10 h-10 gap-3",
+                  collapsed ? "px-3" : "w-full px-3",
                   isActive
                     ? "bg-[#5B6AF0]/10 text-[#5B6AF0]"
                     : "text-text-muted hover:bg-bg-card-hover hover:text-text-primary",
@@ -127,8 +127,8 @@ export function AppSidebar() {
           title={collapsed ? "Settings" : ""}
           className={({ isActive }) =>
             cn(
-              "mt-auto flex items-center rounded-xl transition-all duration-200 h-10",
-              collapsed ? "w-10 justify-center" : "w-full px-3 gap-3 mx-auto",
+              "mt-auto flex items-center rounded-xl transition-all duration-200 h-10 gap-3",
+              collapsed ? "w-10 justify-center" : "w-full px-3 mx-auto",
               isActive
                 ? "bg-[#5B6AF0]/10 text-[#5B6AF0]"
                 : "text-text-muted hover:bg-bg-card-hover hover:text-text-primary",
