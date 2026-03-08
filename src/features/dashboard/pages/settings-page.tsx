@@ -83,6 +83,9 @@ function Toast({
 export function SettingsPage() {
   const { user, profile, fetchProfile } = useAuthStore();
 
+  // console.log("A", profile);
+  // console.log("B", profile?.profile_image);
+
   // Profile form
   const [firstName, setFirstName] = useState(profile?.first_name || "");
   const [lastName, setLastName] = useState(profile?.last_name || "");

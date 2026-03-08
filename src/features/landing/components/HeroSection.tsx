@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
-import { Link } from "react-router-dom";
-import { ArrowRight, Menu, X } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowRight, Menu, X, User, LogOut } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { AnimatedGroup } from "@/shared/components/ui/animated-group";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,18 @@ import {
   useTransform,
   useReducedMotion,
 } from "framer-motion";
+import { useAuthStore } from "@/shared/stores/use-auth-store";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/shared/components/ui/dropdown-menu";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/shared/components/ui/avatar";
 
 const transitionVariants = {
   item: {
@@ -35,14 +47,20 @@ export function HeroSection() {
   const ref = useRef(null);
   const reduce = useReducedMotion();
 
-  // progress 0..1 across the viewport intersection window
   const { scrollYProgress } = useScroll({
     target: ref,
-    // start when element enters viewport, end when it leaves
     offset: ["start 100%", "end 80%"],
   });
 
   const rotateX = useTransform(scrollYProgress, [0, 1], [70, 0]);
+
+  const handleViewFeatures = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const section = document.getElementById("features");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <>
@@ -119,7 +137,7 @@ export function HeroSection() {
                       size="lg"
                       className="rounded-xl px-6 text-base bg-brand hover:bg-brand-hover text-white shadow-md cursor-pointer relative z-20"
                     >
-                      <Link to="/auth/login">
+                      <Link to="/signup">
                         <span className="text-nowrap">Start Building</span>
                       </Link>
                     </Button>
@@ -131,9 +149,9 @@ export function HeroSection() {
                       variant="outline"
                       className="rounded-xl px-6 border-border-medium bg-bg-card hover:bg-bg-card-hover text-text-primary shadow-sm hover:shadow-md transition-all cursor-pointer"
                     >
-                      <Link to="#features">
+                      <a href="#features" onClick={handleViewFeatures}>
                         <span className="text-nowrap">View features</span>
-                      </Link>
+                      </a>
                     </Button>
                   </div>
                 </AnimatedGroup>
@@ -198,15 +216,30 @@ export function HeroSection() {
 }
 
 const menuItems = [
-  { name: "Features", href: "#link" },
-  { name: "Solution", href: "#link" },
-  { name: "Pricing", href: "#link" },
-  { name: "About", href: "#link" },
+  { name: "Features", href: "#features" },
+  { name: "How it Works", href: "#how-it-works" },
+  { name: "FAQ", href: "#faq" },
 ];
+
+const Logo = ({ className }: { className?: string }) => {
+  return (
+    <div
+      className={cn(
+        "relative flex h-8 w-8 items-center justify-center",
+        className,
+      )}
+    >
+      <div className="absolute h-6 w-6 rounded-full border-[2.5px] border-brand group-hover:border-brand-hover transition-colors opacity-80" />
+      <div className="absolute h-3 w-3 rounded-full bg-brand group-hover:bg-brand-hover transition-colors ml-3 mt-3" />
+    </div>
+  );
+};
 
 const HeroHeader = () => {
   const [menuState, setMenuState] = React.useState(false);
   const [isScrolled, setIsScrolled] = React.useState(false);
+  const { user, profile, signOut, initialized } = useAuthStore();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -215,6 +248,37 @@ const HeroHeader = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleSmoothScroll = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+  ) => {
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      const id = href.slice(1);
+      const section = document.getElementById(id);
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth" });
+      }
+      setMenuState(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
+
+  const userInitials = profile
+    ? ((`${profile.first_name?.[0] ?? ""}${profile.last_name?.[0] ?? ""}`.toUpperCase() ||
+        user?.email?.[0]?.toUpperCase()) ??
+      "U")
+    : (user?.email?.[0]?.toUpperCase() ?? "U");
+
+  const displayName = profile
+    ? [profile.first_name, profile.last_name].filter(Boolean).join(" ")
+    : (user?.email ?? "Account");
+
   return (
     <header>
       <nav
@@ -233,9 +297,12 @@ const HeroHeader = () => {
               <Link
                 to="/"
                 aria-label="home"
-                className="flex items-center space-x-2"
+                className="flex items-center gap-2.5 group"
               >
                 <Logo />
+                <span className="font-display text-lg font-bold text-text-primary tracking-tight">
+                  Orbit
+                </span>
               </Link>
 
               <button
@@ -252,12 +319,13 @@ const HeroHeader = () => {
               <ul className="flex gap-8 text-sm">
                 {menuItems.map((item, index) => (
                   <li key={index}>
-                    <Link
-                      to={item.href}
-                      className="text-muted-foreground hover:text-accent-foreground block duration-150"
+                    <a
+                      href={item.href}
+                      onClick={(e) => handleSmoothScroll(e, item.href)}
+                      className="text-muted-foreground hover:text-accent-foreground block duration-150 cursor-pointer"
                     >
                       <span>{item.name}</span>
-                    </Link>
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -268,64 +336,96 @@ const HeroHeader = () => {
                 <ul className="space-y-6 text-base">
                   {menuItems.map((item, index) => (
                     <li key={index}>
-                      <Link
-                        to={item.href}
-                        className="text-muted-foreground hover:text-accent-foreground block duration-150"
+                      <a
+                        href={item.href}
+                        onClick={(e) => handleSmoothScroll(e, item.href)}
+                        className="text-muted-foreground hover:text-accent-foreground block duration-150 cursor-pointer"
                       >
                         <span>{item.name}</span>
-                      </Link>
+                      </a>
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                <Button
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className={cn(isScrolled && "lg:hidden")}
-                >
-                  <Link to="#">
-                    <span>Login</span>
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  size="sm"
-                  className={cn(isScrolled && "lg:hidden")}
-                >
-                  <Link to="#">
-                    <span>Sign Up</span>
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  size="sm"
-                  className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
-                >
-                  <Link to="#">
-                    <span>Get Started</span>
-                  </Link>
-                </Button>
+              <div
+                className={cn(
+                  "flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit transition-opacity duration-300",
+                  initialized ? "opacity-100" : "opacity-0",
+                )}
+              >
+                {user ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="flex items-center gap-2 rounded-full border border-border-medium pl-1 pr-3 py-1 text-sm text-text-secondary hover:text-text-primary hover:border-text-secondary transition-colors cursor-pointer">
+                        <Avatar className="h-6 w-6">
+                          <AvatarImage
+                            src={profile?.profile_image ?? undefined}
+                          />
+                          <AvatarFallback className="text-[10px] bg-brand text-white">
+                            {userInitials}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="max-w-[120px] truncate">
+                          {displayName}
+                        </span>
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem asChild>
+                        <Link
+                          to="/app"
+                          className="flex items-center gap-2 cursor-pointer"
+                        >
+                          <User className="h-4 w-4" />
+                          <span>Dashboard</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={handleSignOut}
+                        className="flex items-center gap-2 cursor-pointer text-red-500 focus:text-red-500"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        <span>Sign Out</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
+                  <>
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      className={cn(isScrolled && "lg:hidden")}
+                    >
+                      <Link to="/login">
+                        <span>Login</span>
+                      </Link>
+                    </Button>
+                    <Button
+                      asChild
+                      size="sm"
+                      className={cn(isScrolled && "lg:hidden")}
+                    >
+                      <Link to="/signup">
+                        <span>Sign Up</span>
+                      </Link>
+                    </Button>
+                    <Button
+                      asChild
+                      size="sm"
+                      className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
+                    >
+                      <Link to="/signup">
+                        <span>Get Started</span>
+                      </Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>
         </div>
       </nav>
     </header>
-  );
-};
-
-const Logo = ({ className }: { className?: string }) => {
-  return (
-    <div
-      className={cn(
-        "relative flex h-8 w-8 items-center justify-center",
-        className,
-      )}
-    >
-      <div className="absolute h-6 w-6 rounded-full border-[2.5px] border-brand group-hover:border-brand-hover transition-colors opacity-80" />
-      <div className="absolute h-3 w-3 rounded-full bg-brand group-hover:bg-brand-hover transition-colors ml-3 mt-3" />
-    </div>
   );
 };

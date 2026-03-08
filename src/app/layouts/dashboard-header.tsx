@@ -5,13 +5,15 @@ import { AnimatedThemeToggler } from "@/shared/components/ui/animated-theme-togg
 
 export function DashboardHeader() {
   const { toggleCollapsed } = useSidebarStore();
-  const { user, signOut } = useAuthStore();
+  const { user, profile, signOut } = useAuthStore();
 
   const userInitial = user?.email?.charAt(0).toUpperCase() || "U";
   const userName =
-    user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User";
+    `${profile?.first_name} ${profile?.last_name}` ||
+    user?.email?.split("@")[0] ||
+    "User";
   const userEmail = user?.email || "user@example.com";
-  const avatarUrl = user?.user_metadata?.avatar_url;
+  const avatarUrl = profile?.profile_image;
 
   return (
     <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-between border-b border-border-subtle bg-bg-base/80 px-4 sm:px-6 backdrop-blur-md shadow-[0_2px_10px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.3)] transition-colors">

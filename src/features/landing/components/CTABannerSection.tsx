@@ -56,19 +56,6 @@ export function CTABannerSection() {
                 >
                   <Link to="/login">Get Started — It's Free</Link>
                 </Button>
-                <Button
-                  variant="link"
-                  className="text-white hover:text-gray-300 font-semibold"
-                  asChild
-                >
-                  <a
-                    href="https://github.com/ghayasleo/orbit"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    View on GitHub <span aria-hidden="true">→</span>
-                  </a>
-                </Button>
               </div>
 
               <div className="mt-8 flex items-center justify-center gap-x-4 text-xs text-gray-400">

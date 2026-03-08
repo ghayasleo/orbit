@@ -6,7 +6,7 @@ export function FeaturesGridSection() {
   return (
     <section
       id="features"
-      className="dark:bg-black bg-white py-5 md:py-15 overflow-hidden relative isolate"
+      className="dark:bg-black bg-white scroll-mt-15 py-5 md:py-15 overflow-hidden relative isolate"
     >
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-linear-to-b from-white via-zinc-100 to-white dark:from-black dark:via-zinc-950 dark:to-black"></div>

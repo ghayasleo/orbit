@@ -53,33 +53,39 @@ export const useAuthStore = create<AuthState>((set) => ({
       } = await supabase.auth.getSession();
       if (error) throw error;
       const user = session?.user ?? null;
-      set({ user, session, initialized: true });
 
-      if (user) {
-        const { data: profileData } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", user.id)
-          .maybeSingle();
-        set({ profile: profileData ?? null });
-      }
+      // Fetch profile in parallel with setting user so we can batch into one set()
+      const profileData = user
+        ? await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", user.id)
+            .maybeSingle()
+            .then(({ data }) => data ?? null)
+        : null;
+
+      // Single set() → single re-render instead of two
+      set({ user, session, profile: profileData, initialized: true });
     } catch (error) {
       console.error("Error getting session:", error);
       set({ user: null, session: null, initialized: true });
     }
 
-    supabase.auth.onAuthStateChange(async (_event, session) => {
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      // INITIAL_SESSION fires immediately on subscription — getSession() already
+      // handled this above, so skip it to avoid a duplicate render + API call.
+      if (event === "INITIAL_SESSION") return;
+
       const user = session?.user ?? null;
-      set({ user, session });
       if (user) {
         const { data: profileData } = await supabase
           .from("profiles")
           .select("*")
           .eq("id", user.id)
           .maybeSingle();
-        set({ profile: profileData ?? null });
+        set({ user, session, profile: profileData ?? null });
       } else {
-        set({ profile: null });
+        set({ user: null, session: null, profile: null });
       }
     });
   },

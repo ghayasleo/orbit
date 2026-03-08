@@ -67,6 +67,8 @@ export function ProfileImageUploader({
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // console.log("C", previewUrl);
+
   const processFile = async (file: File) => {
     if (!file.type.startsWith("image/")) return;
     try {

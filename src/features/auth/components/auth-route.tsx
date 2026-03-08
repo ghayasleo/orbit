@@ -1,16 +1,9 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/shared/stores/use-auth-store";
-import { useEffect } from "react";
 
 export function ProtectedRoute({ children }: { children?: React.ReactNode }) {
-  const { user, initialized, initialize } = useAuthStore();
+  const { user, initialized } = useAuthStore();
   const location = useLocation();
-
-  useEffect(() => {
-    if (!initialized) {
-      initialize();
-    }
-  }, [initialized, initialize]);
 
   if (!initialized) {
     return (
@@ -28,13 +21,7 @@ export function ProtectedRoute({ children }: { children?: React.ReactNode }) {
 }
 
 export function PublicRoute({ children }: { children?: React.ReactNode }) {
-  const { user, initialized, initialize } = useAuthStore();
-
-  useEffect(() => {
-    if (!initialized) {
-      initialize();
-    }
-  }, [initialized, initialize]);
+  const { user, initialized } = useAuthStore();
 
   if (!initialized) {
     return (
