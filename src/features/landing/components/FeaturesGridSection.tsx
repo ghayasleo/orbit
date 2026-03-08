@@ -6,13 +6,11 @@ export function FeaturesGridSection() {
   return (
     <section
       id="features"
-      className="bg-black py-5 md:py-15 overflow-hidden relative isolate"
+      className="dark:bg-black bg-white py-5 md:py-15 overflow-hidden relative isolate"
     >
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-linear-to-b from-black via-zinc-950 to-black"></div>
-        <div className="absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-indigo-600/15 blur-[90px]"></div>
-        <div className="absolute -bottom-48 right-[-120px] h-[520px] w-[520px] rounded-full bg-sky-500/10 blur-[100px]"></div>
-        <div className="absolute inset-0 bg-linear-to-b from-transparent via-black/10 to-black"></div>
+        <div className="absolute inset-0 bg-linear-to-b from-white via-zinc-100 to-white dark:from-black dark:via-zinc-950 dark:to-black"></div>
+        <div className="absolute hidden dar:block inset-0 bg-linear-to-b from-transparent via-black/10 dark:to-black"></div>
       </div>
       {/* Abstract Background Decoration */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20 -z-1">
@@ -55,8 +53,8 @@ export function FeaturesGridSection() {
         </div>
 
         {/* Bento Grid */}
-        <div className="relative isolate bg-[url('/images/wave-background.webp')] bg-cover bg-fixed">
-          <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(0,0,0,0.8)_0%,rgba(0,0,0,0.7)_30%,rgba(0,0,0,0.8)_100%)]"></div>
+        <div className="relative isolate dark:bg-[url('/images/wave-background.webp')] bg-cover bg-fixed">
+          <div className="absolute hidden dark:block inset-0 -z-10 bg-[linear-gradient(180deg,rgba(255,255,255,0.9)_0%,rgba(255,255,255,0.5)_30%,rgba(255,255,255,0.9)_100%)] dark:bg-[linear-gradient(180deg,rgba(0,0,0,0.8)_0%,rgba(0,0,0,0.7)_30%,rgba(0,0,0,0.8)_100%)]"></div>
           <FeaturesSectionWithHoverEffects />
         </div>
 

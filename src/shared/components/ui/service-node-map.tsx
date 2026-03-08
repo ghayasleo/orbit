@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { useThemeStore } from "@/shared/stores/useThemeStore";
 
 // --- Types ---
 
@@ -253,7 +254,7 @@ const INITIAL_EDGES = [
     type: MarkerType.ArrowClosed,
     color: MODULE_DATA[e.source]!.color,
   },
-  style: { stroke: "#ffffff25", strokeWidth: 1.5 },
+  style: { strokeWidth: 1.5 },
 }));
 
 // --- Custom Node ---
@@ -269,13 +270,14 @@ const CustomNode = ({ data, selected }: CustomNodeType) => {
   return (
     <div
       className={cn(
-        "relative md:w-48 w-fit bg-[#1a1a1f] border border-white/10 rounded-xl md:px-4 md:py-3 px-2 py-2 shadow-xl transition-all duration-300",
-        selected ? "brightness-110" : "hover:border-white/20",
+        "relative md:w-48 w-fit border rounded-xl md:px-4 md:py-3 px-2 py-2 shadow-xl transition-all duration-300",
+        selected
+          ? "bg-gray-50 dark:bg-[#22222a] border-transparent dark:border-transparent"
+          : "bg-white dark:bg-[#1a1a1f] border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20",
       )}
       style={{
         borderLeft: `4px solid ${accent}`,
         boxShadow: selected ? `0 0 0 2px ${accent}` : undefined,
-        backgroundColor: selected ? "#22222a" : undefined,
       }}
     >
       <Handle
@@ -285,14 +287,14 @@ const CustomNode = ({ data, selected }: CustomNodeType) => {
         style={{ color: accent }}
       />
       <div className="flex md:items-center items-start md:gap-3 gap-1 select-none">
-        <div className="text-white/80 shrink-0 md:mt-0 mt-1">
+        <div className="text-gray-600 dark:text-white/80 shrink-0 md:mt-0 mt-1">
           <Icon className="md:size-5 size-4" />
         </div>
         <div className="flex flex-col min-w-0">
-          <span className="md:text-sm text-xs font-bold text-white truncate">
+          <span className="md:text-sm text-xs font-bold text-gray-900 dark:text-white truncate">
             {data.name}
           </span>
-          <span className="md:text-[9px] text-[7px] text-white/40 uppercase tracking-widest font-bold">
+          <span className="md:text-[9px] text-[7px] text-gray-400 dark:text-white/40 uppercase tracking-widest font-bold">
             {data.layer}
           </span>
         </div>
@@ -367,11 +369,11 @@ const PopupAtNode = ({ nodeId, onClose, onNavigate }: PopupProps) => {
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="fixed z-100 w-72 bg-[#1a1a1f] border border-white/10 rounded-2xl p-5 shadow-2xl backdrop-blur-xl pointer-events-auto overflow-hidden"
+      className="fixed z-100 w-72 bg-white dark:bg-[#1a1a1f] border border-gray-200 dark:border-white/10 rounded-2xl p-5 shadow-2xl backdrop-blur-xl pointer-events-auto overflow-hidden"
       style={{
         top: pos.top,
         left: pos.left,
-        boxShadow: `0 0 0 1px ${data.color}80, 0 10px 40px rgba(0,0,0,0.5)`,
+        boxShadow: `0 0 0 1px ${data.color}80, 0 10px 40px rgba(0,0,0,0.2)`,
       }}
     >
       <button
@@ -379,7 +381,7 @@ const PopupAtNode = ({ nodeId, onClose, onNavigate }: PopupProps) => {
           e.stopPropagation();
           onClose();
         }}
-        className="absolute cursor-pointer top-3 right-3 p-1 text-white/30 hover:text-white transition-colors z-10"
+        className="absolute cursor-pointer top-3 right-3 p-1 text-gray-400 dark:text-white/30 hover:text-gray-900 dark:hover:text-white transition-colors z-10"
       >
         <X className="size-4" />
       </button>
@@ -388,17 +390,19 @@ const PopupAtNode = ({ nodeId, onClose, onNavigate }: PopupProps) => {
         <div style={{ color: data.color }}>
           <data.icon className="size-5" />
         </div>
-        <h3 className="text-base font-bold text-white">{data.name}</h3>
+        <h3 className="text-base font-bold text-gray-900 dark:text-white">
+          {data.name}
+        </h3>
       </div>
 
-      <p className="text-xs text-white/70 leading-relaxed mb-4 relative">
+      <p className="text-xs text-gray-600 dark:text-white/70 leading-relaxed mb-4 relative">
         {data.description}
       </p>
 
-      <div className="h-px bg-white/10 mb-4" />
+      <div className="h-px bg-gray-100 dark:bg-white/10 mb-4" />
 
       <div className="relative">
-        <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest block mb-2">
+        <span className="text-[10px] font-bold text-gray-400 dark:text-white/30 uppercase tracking-widest block mb-2">
           Connects with:
         </span>
         <div className="flex flex-wrap gap-1.5">
@@ -414,7 +418,7 @@ const PopupAtNode = ({ nodeId, onClose, onNavigate }: PopupProps) => {
                     onNavigate(conn.id);
                   }}
                   title={`Jump to ${target.name}`}
-                  className="px-2 py-1 cursor-pointer bg-white/5 border border-white/5 rounded-md text-[10px] font-semibold text-white/60 hover:brightness-125 transition-all flex items-center gap-1"
+                  className="px-2 py-1 cursor-pointer bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 rounded-md text-[10px] font-semibold text-gray-600 dark:text-white/60 hover:bg-gray-100 dark:hover:brightness-125 transition-all flex items-center gap-1"
                 >
                   <span style={{ color: target.color }}>{conn.dir}</span>
                   {target.name}
@@ -422,7 +426,7 @@ const PopupAtNode = ({ nodeId, onClose, onNavigate }: PopupProps) => {
               );
             })
           ) : (
-            <span className="text-[10px] text-white/40 italic font-medium">
+            <span className="text-[10px] text-gray-500 dark:text-white/40 italic font-medium">
               No direct connections.
             </span>
           )}
@@ -435,6 +439,7 @@ const PopupAtNode = ({ nodeId, onClose, onNavigate }: PopupProps) => {
 // --- Main Component ---
 
 function FlowMap() {
+  const { theme } = useThemeStore();
   const [nodes, setNodes, onNodesChange] = useNodesState(INITIAL_NODES);
   const [edges, setEdges, onEdgesChange] = useEdgesState(INITIAL_EDGES);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -496,12 +501,13 @@ function FlowMap() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleClosePopup]);
 
-  // Update edges when activeId changes
+  // Update edges when activeId or theme changes
   useEffect(() => {
     setEdges((eds) =>
       eds.map((edge) => {
         const isConnected =
           edge.source === activeId || edge.target === activeId;
+        const defaultStroke = theme === "dark" ? "#ffffff" : "#000000";
         if (activeId) {
           if (isConnected) {
             const sourceNode = MODULE_DATA[edge.source];
@@ -519,7 +525,7 @@ function FlowMap() {
               ...edge,
               style: {
                 ...edge.style,
-                stroke: "#ffffff",
+                stroke: defaultStroke,
                 strokeWidth: 1.5,
                 opacity: 0.05,
               },
@@ -528,11 +534,11 @@ function FlowMap() {
         }
         return {
           ...edge,
-          style: { stroke: "#ffffff", strokeWidth: 1.5, opacity: 0.15 },
+          style: { stroke: defaultStroke, strokeWidth: 1.5, opacity: 0.15 },
         };
       }),
     );
-  }, [activeId, setEdges]);
+  }, [activeId, theme, setEdges]);
 
   const flowRef = useRef<HTMLDivElement>(null);
 
@@ -583,7 +589,10 @@ function FlowMap() {
   }, []);
 
   return (
-    <div ref={flowRef} className="w-full h-full relative bg-[#0d0d0f]">
+    <div
+      ref={flowRef}
+      className="w-full h-full relative bg-gray-50 dark:bg-[#0d0d0f]"
+    >
       <ReactFlow
         viewport={viewport}
         onViewportChange={setViewport}
@@ -597,7 +606,7 @@ function FlowMap() {
         onPaneClick={handleClosePopup}
         fitView
         onNodeDrag={onNodeDrag}
-        colorMode="dark"
+        colorMode={theme}
         zoomOnScroll={false}
         zoomOnPinch={false}
         zoomOnDoubleClick={false}
@@ -620,7 +629,7 @@ function FlowMap() {
           variant={BackgroundVariant.Dots}
           gap={32}
           size={1}
-          color="#ffffff10"
+          color={theme === "dark" ? "#ffffff10" : "#00000010"}
         />
       </ReactFlow>
 
@@ -640,14 +649,14 @@ function FlowMap() {
 export function ServiceNodeMap() {
   return (
     <div className="flex flex-col gap-12">
-      <div className="w-full h-[400px] md:h-[600px] rounded-3xl overflow-hidden border border-white/5 shadow-2xl bg-[#0d0d0f]">
+      <div className="w-full h-[400px] md:h-[600px] rounded-3xl overflow-hidden border border-gray-200 dark:border-white/5 shadow-2xl bg-gray-50 dark:bg-[#0d0d0f]">
         <ReactFlowProvider>
           <FlowMap />
         </ReactFlowProvider>
       </div>
 
       <div className="text-center md:hidden">
-        <p className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-bold">
+        <p className="text-[10px] text-gray-500 dark:text-white/30 uppercase tracking-[0.2em] font-bold">
           Tip: Tap a node to explore. Tap a connection pill to jump to that
           module.
         </p>

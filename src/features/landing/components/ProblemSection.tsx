@@ -31,10 +31,11 @@ export function ProblemSection() {
   return (
     <section
       id="process"
-      className="relative py-10 px-6 bg-bg-base bg-[url('/images/wave-background.webp')] bg-cover bg-fixed"
+      className="relative py-10 px-6 bg-[url('/images/wave-background.webp')] bg-cover bg-fixed"
     >
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.9)_0%,rgba(0,0,0,0.5)_30%,rgba(0,0,0,0.9)_100%)]"></div>
-      <div className="relative isolate mx-auto pt-10">
+      <div className="absolute inset-0 z-1 backdrop-filter-[invert(1)] dark:backdrop-filter-[invert(0)]"></div>
+      <div className="absolute inset-0 z-2 bg-[linear-gradient(180deg,rgba(255,255,255,0.9)_0%,rgba(255,255,255,0.5)_30%,rgba(255,255,255,0.9)_100%)] dark:bg-[linear-gradient(180deg,rgba(0,0,0,0.9)_0%,rgba(0,0,0,0.5)_30%,rgba(0,0,0,0.9)_100%)]"></div>
+      <div className="relative isolate mx-auto pt-10 z-3">
         {/* Background gradient effects similar to SCSS pseudos */}
         {/* <div className="absolute inset-0 top-0 h-1/2 -z-10 bg-[linear-gradient(180deg,#121212_0%,rgba(18,18,18,0.9)_50%,#121212_100%)] rounded-t-[36px]" />
         <div className="absolute inset-x-0 bottom-0 h-1/2 -z-10 bg-[linear-gradient(180deg,#121212_0%,rgba(18,18,18,0.9)_50%,#121212_100%)] rounded-b-[36px]" /> */}
@@ -109,7 +110,7 @@ export function ProblemSection() {
           <div className="flex-1 lg:sticky lg:top-0 lg:h-screen flex flex-col justify-center mt-12 lg:mt-0">
             <div className="relative w-full aspect-560/481 max-w-2xl mx-auto">
               <motion.div
-                className="absolute inset-0 w-full bg-[#003E5E] shadow-2xl grid place-content-center rounded-3xl"
+                className="absolute inset-0 w-full bg-[#9dd4fc] dark:bg-[#003E5E] dark:shadow-2xl grid place-content-center rounded-3xl"
                 initial={{ opacity: 0 }}
                 animate={{
                   opacity: isDiscoverInView ? 1 : 0,
@@ -120,7 +121,7 @@ export function ProblemSection() {
                 <img src="/images/problem-1.png" alt="Research" />
               </motion.div>
               <motion.div
-                className="absolute inset-0 w-full bg-[#341A63] shadow-2xl grid place-content-center rounded-3xl"
+                className="absolute inset-0 w-full bg-[#c2aeff] dark:bg-[#341A63] dark:shadow-2xl grid place-content-center rounded-3xl"
                 initial={{ opacity: 0 }}
                 animate={{
                   opacity: isDefineInView ? 1 : 0,
@@ -131,7 +132,7 @@ export function ProblemSection() {
                 <img src="/images/problem-2.png" alt="Research" />
               </motion.div>
               <motion.div
-                className="absolute inset-0 w-full bg-[#00472C] shadow-2xl grid place-content-center rounded-3xl"
+                className="absolute inset-0 w-full bg-[#a0dfbd] dark:bg-[#00472C] dark:shadow-2xl grid place-content-center rounded-3xl"
                 initial={{ opacity: 0 }}
                 animate={{
                   opacity: isDevelopInView ? 1 : 0,

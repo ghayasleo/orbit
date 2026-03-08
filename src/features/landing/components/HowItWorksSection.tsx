@@ -30,19 +30,19 @@ export function HowItWorksSection() {
           <div className="flex flex-wrap items-center justify-center gap-4">
             <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-full">
               <span className="text-sm">🔵</span>
-              <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">
+              <span className="text-[10px] font-bold dark:text-white/60 uppercase tracking-widest">
                 Sources
               </span>
             </div>
             <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-full">
               <span className="text-sm">🟡</span>
-              <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">
+              <span className="text-[10px] font-bold dark:text-white/60 uppercase tracking-widest">
                 Orchestration
               </span>
             </div>
             <div className="flex items-center gap-2 px-3 py-1.5 bg-purple-500/10 border border-purple-500/20 rounded-full">
               <span className="text-sm">🟣</span>
-              <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">
+              <span className="text-[10px] font-bold dark:text-white/60 uppercase tracking-widest">
                 Insights
               </span>
             </div>

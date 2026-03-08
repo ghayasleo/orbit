@@ -1,8 +1,7 @@
-import { Menu, Search, Bell, Settings, LogOut, Moon, Sun } from "lucide-react";
+import { PanelLeft, Search, Bell, LogOut, Moon, Sun } from "lucide-react";
 import { useSidebarStore } from "@/shared/stores/use-sidebar-store";
 import { useAuthStore } from "@/shared/stores/use-auth-store";
 import { useThemeStore } from "@/shared/stores/useThemeStore";
-import { cn } from "@/lib/utils";
 
 export function DashboardHeader() {
   const { toggleCollapsed } = useSidebarStore();
@@ -25,14 +24,14 @@ export function DashboardHeader() {
   const avatarUrl = user?.user_metadata?.avatar_url;
 
   return (
-    <header className="sticky top-0 z-20 flex h-16 w-full items-center justify-between border-b border-border-subtle bg-bg-base/80 px-4 sm:px-6 backdrop-blur-md shadow-[0_2px_10px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.3)] transition-colors">
+    <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-between border-b border-border-subtle bg-bg-base/80 px-4 sm:px-6 backdrop-blur-md shadow-[0_2px_10px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.3)] transition-colors">
       <div className="flex items-center gap-4">
         <button
           onClick={toggleCollapsed}
           className="hidden lg:flex h-9 w-9 items-center justify-center rounded-lg hover:bg-bg-subtle text-text-muted hover:text-text-primary transition-colors cursor-pointer"
           aria-label="Toggle Sidebar"
         >
-          <Menu className="h-5 w-5" />
+          <PanelLeft className="h-5 w-5" />
         </button>
 
         {/* Optional Search Bar Placeholder */}
