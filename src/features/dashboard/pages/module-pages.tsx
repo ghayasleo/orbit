@@ -9,7 +9,6 @@ import {
   StickyNote,
   RefreshCw,
   Target,
-  Settings,
 } from "lucide-react";
 
 interface PlaceholderPageProps {
@@ -148,18 +147,6 @@ export function GoalsPage() {
       icon={Target}
       accent="text-indigo-500"
       accentBg="bg-indigo-500/10"
-    />
-  );
-}
-
-export function SettingsPage() {
-  return (
-    <PlaceholderPage
-      title="Settings"
-      description="Account, notifications, currency, themes, backup & sync, and privacy preferences."
-      icon={Settings}
-      accent="text-text-secondary"
-      accentBg="bg-bg-subtle"
     />
   );
 }

@@ -1,22 +1,11 @@
-import { PanelLeft, Search, Bell, LogOut, Moon, Sun } from "lucide-react";
+import { PanelLeft, Search, Bell, LogOut } from "lucide-react";
 import { useSidebarStore } from "@/shared/stores/use-sidebar-store";
 import { useAuthStore } from "@/shared/stores/use-auth-store";
-import { useThemeStore } from "@/shared/stores/useThemeStore";
 import { AnimatedThemeToggler } from "@/shared/components/ui/animated-theme-toggler";
 
 export function DashboardHeader() {
   const { toggleCollapsed } = useSidebarStore();
   const { user, signOut } = useAuthStore();
-  const { theme, setTheme } = useThemeStore();
-
-  const isDark =
-    theme === "dark" ||
-    (theme === "system" &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches);
-
-  const handleToggleTheme = () => {
-    setTheme(isDark ? "light" : "dark");
-  };
 
   const userInitial = user?.email?.charAt(0).toUpperCase() || "U";
   const userName =

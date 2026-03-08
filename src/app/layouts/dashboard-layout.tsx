@@ -21,7 +21,7 @@ export function DashboardLayout() {
         )}
       >
         <DashboardHeader />
-        <div className="mx-auto w-full px-4 sm:px-6 lg:px-8 py-5 sm:py-6 lg:py-8">
+        <div className="mx-auto w-full px-4 sm:px-6 lg:px-8 py-5 sm:py-6 lg:py-8 flex-1 bg-zinc-100 dark:bg-zinc-950">
           <Outlet />
         </div>
       </main>

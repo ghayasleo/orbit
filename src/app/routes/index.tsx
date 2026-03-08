@@ -13,8 +13,8 @@ import {
   NotesPage,
   SubscriptionsPage,
   GoalsPage,
-  SettingsPage,
 } from "@/features/dashboard/pages/module-pages";
+import { SettingsPage } from "@/features/dashboard/pages/settings-page";
 import { LoginPage } from "@/features/auth/components/login-page";
 import { SignupPage } from "@/features/auth/components/signup-page";
 import { ForgotPasswordPage } from "@/features/auth/components/forgot-password-page";
