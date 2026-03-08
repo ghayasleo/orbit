@@ -39,7 +39,7 @@ function PasswordInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="pr-10 h-auto rounded-xl py-3 shadow-none border-slate-200 dark:border-slate-800 bg-white darj:bg-slate-900 focus:border-brand focus:ring-1 focus:ring-brand/20 dark:text-slate-800 transition-colors"
+        className="pr-10 h-auto rounded-xl py-3 shadow-none border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:border-brand focus:ring-1 focus:ring-brand/20 dark:text-slate-200 transition-colors"
       />
       <button
         type="button"
@@ -330,7 +330,7 @@ export function SettingsPage() {
                   placeholder="John"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  className=" h-auto rounded-xl py-3 shadow-none border-slate-200 dark:border-slate-800 bg-white darj:bg-slate-900 focus:border-brand focus:ring-1 focus:ring-brand/20 dark:text-slate-800 transition-colors"
+                  className="h-auto rounded-xl py-3 shadow-none border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:border-brand focus:ring-1 focus:ring-brand/20 dark:text-slate-200 transition-colors"
                 />
               </div>
               <div className="space-y-1.5">
@@ -345,7 +345,7 @@ export function SettingsPage() {
                   placeholder="Doe"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  className="h-auto rounded-xl py-3 shadow-none border-slate-200 dark:border-slate-800 bg-white darj:bg-slate-900 focus:border-brand focus:ring-1 focus:ring-brand/20 dark:text-slate-800 transition-colors"
+                  className="h-auto rounded-xl py-3 shadow-none border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:border-brand focus:ring-1 focus:ring-brand/20 dark:text-slate-200 transition-colors"
                 />
               </div>
             </div>
@@ -363,7 +363,7 @@ export function SettingsPage() {
                 type="email"
                 value={user?.email || ""}
                 disabled
-                className="h-auto rounded-xl py-3 shadow-none border-slate-200 dark:border-slate-800 bg-white darj:bg-slate-900 focus:border-brand focus:ring-1 focus:ring-brand/20 dark:text-slate-800 transition-colors opacity-60"
+                className="h-auto rounded-xl py-3 shadow-none border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:border-brand focus:ring-1 focus:ring-brand/20 dark:text-slate-200 transition-colors opacity-60"
               />
               <p className="text-[11px] text-text-muted">
                 Email address cannot be changed
