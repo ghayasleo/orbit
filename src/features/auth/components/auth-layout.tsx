@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom'
-import { ThemeToggle } from '@/shared/components/ThemeToggle'
+import { AnimatedThemeToggler } from '@/shared/components/ui/animated-theme-toggler'
 
 export function AuthLayout() {
   return (
@@ -25,7 +25,7 @@ export function AuthLayout() {
 
         <div className="relative z-10">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shadow-lg">
+            <div className="w-9 h-9 rounded-xl bg-linear-to-br from-violet-500 to-indigo-600 flex items-center justify-center shadow-lg">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="3" />
                 <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
@@ -43,7 +43,7 @@ export function AuthLayout() {
             </div>
             <h2 className="text-4xl font-bold text-white leading-tight tracking-tight">
               Everything you need,<br />
-              <span className="bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
                 all in one place.
               </span>
             </h2>
@@ -83,7 +83,7 @@ export function AuthLayout() {
         <div className="flex items-center justify-between px-6 py-4 lg:px-10">
           {/* Mobile logo */}
           <div className="flex items-center gap-2 lg:hidden">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-linear-to-br from-violet-500 to-indigo-600 flex items-center justify-center">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="3" />
                 <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
@@ -92,10 +92,10 @@ export function AuthLayout() {
             <span className="font-bold text-lg">Orbit</span>
           </div>
           <div className="hidden lg:block" />
-          <ThemeToggle />
+          <AnimatedThemeToggler />
         </div>
 
-        <main className="flex-1 flex items-center justify-center px-6 py-12 lg:px-16">
+        <main className="flex-1 flex items-center justify-center px-6 lg:px-16">
           <Outlet />
         </main>
 

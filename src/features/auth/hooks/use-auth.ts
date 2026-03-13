@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
+import { useAuthStore } from '@/shared/stores/use-auth-store'
 
 export type AuthError = string | null
 
@@ -41,7 +42,7 @@ export function useAuth(): UseAuthReturn {
         return { needsOtp: false }
       }
 
-      navigate('/')
+      navigate('/app')
       return { needsOtp: false }
     } catch {
       setError('An unexpected error occurred. Please try again.')
@@ -121,13 +122,14 @@ export function useAuth(): UseAuthReturn {
             .eq('id', user.id)
 
           if (updateError) throw updateError
+
+          await useAuthStore.getState().fetchProfile(user.id)
         } catch (uploadErr) {
           console.error('Error uploading profile image:', uploadErr)
-          // We don't block the login flow if avatar fails
         }
       }
 
-      navigate('/')
+      navigate('/app')
       return true
     } catch {
       setError('An unexpected error occurred. Please try again.')

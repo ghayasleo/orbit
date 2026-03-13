@@ -75,7 +75,7 @@ export function DashboardHeader() {
           </div>
 
           <button
-            onClick={signOut}
+            onClick={async () => await signOut()}
             className="ml-1 sm:ml-2 flex h-8 w-8 items-center justify-center rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-500 transition-colors cursor-pointer"
             title="Log out"
           >

@@ -4,12 +4,10 @@ import {
   Lock,
   AlertCircle,
   CheckCircle2,
-  Eye,
-  EyeOff,
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
-import { Label } from "@/shared/components/ui/label";
+import { LabeledInput } from "@/shared/components/ui/labeled-input";
+import { PasswordInput } from "@/shared/components/ui/password-input";
 import { PageHeader } from "@/shared/components/page-header";
 import { SettingsCard } from "@/shared/components/settings-card";
 import { ProfileImageUploader } from "@/features/dashboard/components/profile-image-uploader";
@@ -18,40 +16,6 @@ import { useAuthStore } from "@/shared/stores/use-auth-store";
 import { supabase } from "@/lib/supabase";
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
-
-function PasswordInput({
-  id,
-  value,
-  onChange,
-  placeholder = "••••••••",
-}: {
-  id: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-}) {
-  const [show, setShow] = useState(false);
-  return (
-    <div className="relative">
-      <Input
-        id={id}
-        type={show ? "text" : "password"}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="pr-10 h-auto rounded-xl py-3 shadow-none border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:border-brand focus:ring-1 focus:ring-brand/20 dark:text-slate-200 transition-colors"
-      />
-      <button
-        type="button"
-        onClick={() => setShow((s) => !s)}
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary transition-colors"
-        tabIndex={-1}
-      >
-        {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-      </button>
-    </div>
-  );
-}
 
 function Toast({
   type,
@@ -83,12 +47,11 @@ function Toast({
 export function SettingsPage() {
   const { user, profile, fetchProfile } = useAuthStore();
 
-  // console.log("A", profile);
-  // console.log("B", profile?.profile_image);
-
   // Profile form
-  const [firstName, setFirstName] = useState(profile?.first_name || "");
-  const [lastName, setLastName] = useState(profile?.last_name || "");
+  const [profileForm, setProfileForm] = useState({
+    firstName: profile?.first_name || "",
+    lastName: profile?.last_name || "",
+  });
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [clearAvatar, setClearAvatar] = useState(false);
   const [profileLoading, setProfileLoading] = useState(false);
@@ -98,9 +61,11 @@ export function SettingsPage() {
   } | null>(null);
 
   // Password form
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [passwordToast, setPasswordToast] = useState<{
     type: "success" | "error";
@@ -110,8 +75,10 @@ export function SettingsPage() {
   // Sync profile from store
   useEffect(() => {
     if (profile) {
-      setFirstName(profile.first_name || "");
-      setLastName(profile.last_name || "");
+      setProfileForm({
+        firstName: profile.first_name || "",
+        lastName: profile.last_name || "",
+      });
     }
   }, [profile]);
 
@@ -133,13 +100,13 @@ export function SettingsPage() {
 
   // Unsaved changes detection across both forms
   const hasProfileChanges =
-    firstName !== (profile?.first_name || "") ||
-    lastName !== (profile?.last_name || "") ||
+    profileForm.firstName !== (profile?.first_name || "") ||
+    profileForm.lastName !== (profile?.last_name || "") ||
     avatarFile !== null ||
     clearAvatar;
 
   const hasPasswordChanges =
-    currentPassword !== "" || newPassword !== "" || confirmPassword !== "";
+    passwordForm.currentPassword !== "" || passwordForm.newPassword !== "" || passwordForm.confirmPassword !== "";
 
   const { blocker } = useUnsavedChanges(
     hasProfileChanges || hasPasswordChanges,
@@ -148,7 +115,10 @@ export function SettingsPage() {
   // ── Profile submit ──────────────────────────────────────────────────────────
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    if (!user) {
+      showProfileToast("error", "You must be logged in to save your profile.");
+      return;
+    }
 
     setProfileLoading(true);
     try {
@@ -171,8 +141,8 @@ export function SettingsPage() {
 
       const { error: profileErr } = await supabase.from("profiles").upsert({
         id: user.id,
-        first_name: firstName,
-        last_name: lastName,
+        first_name: profileForm.firstName,
+        last_name: profileForm.lastName,
         email: user.email,
         profile_image: avatarUrl,
       });
@@ -182,10 +152,11 @@ export function SettingsPage() {
       setClearAvatar(false);
       await fetchProfile(user.id);
       showProfileToast("success", "Profile updated successfully");
-    } catch (err: unknown) {
+    } catch (err: any) {
+      console.error("Profile update error:", err);
       showProfileToast(
         "error",
-        err instanceof Error ? err.message : "Failed to update profile",
+        err?.message || "Failed to update profile"
       );
     } finally {
       setProfileLoading(false);
@@ -195,17 +166,20 @@ export function SettingsPage() {
   // ── Password submit ─────────────────────────────────────────────────────────
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    if (!user) {
+      showPasswordToast("error", "You must be logged in to change your password.");
+      return;
+    }
 
-    if (!currentPassword) {
+    if (!passwordForm.currentPassword) {
       showPasswordToast("error", "Please enter your current password");
       return;
     }
-    if (newPassword.length < 6) {
+    if (passwordForm.newPassword.length < 6) {
       showPasswordToast("error", "New password must be at least 6 characters");
       return;
     }
-    if (newPassword !== confirmPassword) {
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       showPasswordToast("error", "Passwords do not match");
       return;
     }
@@ -215,23 +189,26 @@ export function SettingsPage() {
       // Re-authenticate with current password
       const { error: signInErr } = await supabase.auth.signInWithPassword({
         email: user.email!,
-        password: currentPassword,
+        password: passwordForm.currentPassword,
       });
       if (signInErr) throw new Error("Current password is incorrect");
 
       const { error: passErr } = await supabase.auth.updateUser({
-        password: newPassword,
+        password: passwordForm.newPassword,
       });
       if (passErr) throw passErr;
 
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
+      setPasswordForm({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
       showPasswordToast("success", "Password updated successfully");
-    } catch (err: unknown) {
+    } catch (err: any) {
+      console.error("Password update error:", err);
       showPasswordToast(
         "error",
-        err instanceof Error ? err.message : "Failed to update password",
+        err?.message || "Failed to update password"
       );
     } finally {
       setPasswordLoading(false);
@@ -318,57 +295,36 @@ export function SettingsPage() {
 
             {/* Name row */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <Label
-                  htmlFor="firstName"
-                  className="text-sm font-semibold text-brand pb-0.5 block"
-                >
-                  First Name
-                </Label>
-                <Input
-                  id="firstName"
-                  placeholder="John"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  className="h-auto rounded-xl py-3 shadow-none border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:border-brand focus:ring-1 focus:ring-brand/20 dark:text-slate-200 transition-colors"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label
-                  htmlFor="lastName"
-                  className="text-sm font-semibold text-brand pb-0.5 block"
-                >
-                  Last Name
-                </Label>
-                <Input
-                  id="lastName"
-                  placeholder="Doe"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  className="h-auto rounded-xl py-3 shadow-none border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:border-brand focus:ring-1 focus:ring-brand/20 dark:text-slate-200 transition-colors"
-                />
-              </div>
+              <LabeledInput
+                id="firstName"
+                label="First Name"
+                placeholder="John"
+                value={profileForm.firstName}
+                onChange={(e) =>
+                  setProfileForm({ ...profileForm, firstName: e.target.value })
+                }
+              />
+              <LabeledInput
+                id="lastName"
+                label="Last Name"
+                placeholder="Doe"
+                value={profileForm.lastName}
+                onChange={(e) =>
+                  setProfileForm({ ...profileForm, lastName: e.target.value })
+                }
+              />
             </div>
 
             {/* Email — display only */}
-            <div className="space-y-1.5">
-              <Label
-                htmlFor="emailDisplay"
-                className="text-sm font-semibold text-brand pb-0.5 block"
-              >
-                Email Address
-              </Label>
-              <Input
-                id="emailDisplay"
-                type="email"
-                value={user?.email || ""}
-                disabled
-                className="h-auto rounded-xl py-3 shadow-none border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:border-brand focus:ring-1 focus:ring-brand/20 dark:text-slate-200 transition-colors opacity-60"
-              />
-              <p className="text-[11px] text-text-muted">
-                Email address cannot be changed
-              </p>
-            </div>
+            <LabeledInput
+              id="emailDisplay"
+              label="Email Address"
+              type="email"
+              value={user?.email || ""}
+              disabled
+              className="opacity-60"
+              description="Email address cannot be changed"
+            />
           </SettingsCard>
         </form>
 
@@ -395,47 +351,38 @@ export function SettingsPage() {
               />
             )}
 
-            <div className="space-y-1.5">
-              <Label
-                htmlFor="currentPassword"
-                className="text-sm font-semibold text-brand pb-0.5 block"
-              >
-                Current Password
-              </Label>
-              <PasswordInput
-                id="currentPassword"
-                value={currentPassword}
-                onChange={setCurrentPassword}
-              />
-            </div>
+            <PasswordInput
+              id="currentPassword"
+              label="Current Password"
+              value={passwordForm.currentPassword}
+              onChange={(e) =>
+                setPasswordForm({
+                  ...passwordForm,
+                  currentPassword: e.target.value,
+                })
+              }
+            />
 
-            <div className="space-y-1.5">
-              <Label
-                htmlFor="newPassword"
-                className="text-sm font-semibold text-brand pb-0.5 block"
-              >
-                New Password
-              </Label>
-              <PasswordInput
-                id="newPassword"
-                value={newPassword}
-                onChange={setNewPassword}
-              />
-            </div>
+            <PasswordInput
+              id="newPassword"
+              label="New Password"
+              value={passwordForm.newPassword}
+              onChange={(e) =>
+                setPasswordForm({ ...passwordForm, newPassword: e.target.value })
+              }
+            />
 
-            <div className="space-y-1.5">
-              <Label
-                htmlFor="confirmPassword"
-                className="text-sm font-semibold text-brand pb-0.5 block"
-              >
-                Confirm New Password
-              </Label>
-              <PasswordInput
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={setConfirmPassword}
-              />
-            </div>
+            <PasswordInput
+              id="confirmPassword"
+              label="Confirm New Password"
+              value={passwordForm.confirmPassword}
+              onChange={(e) =>
+                setPasswordForm({
+                  ...passwordForm,
+                  confirmPassword: e.target.value,
+                })
+              }
+            />
           </SettingsCard>
         </form>
       </div>
