@@ -1,4 +1,4 @@
-import { LayoutDashboard, Check, Plus } from "lucide-react";
+import { LayoutDashboard, Check, Plus, X } from "lucide-react";
 import { useDashboard } from "../context/DashboardContext";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,12 +17,35 @@ export function EditModeBar() {
     setIsEditMode(!isEditMode);
   };
 
+  const cancelEditMode = () => {
+    if (isEditMode) {
+      setIsPanelOpen(false);
+    }
+    setIsEditMode(!isEditMode);
+  };
+
   return (
     <>
       <button
+        onClick={cancelEditMode}
+        className={cn(
+          "flex items-center gap-2 ml-auto mr-4 h-9 px-3 rounded-lg text-sm font-medium transition-all duration-300 ease-in-out origin-right cursor-pointer shrink-0 border",
+          isEditMode
+            ? "bg-destructive text-destructive-foreground border-transparent hover:opacity-90 shadow-sm scale-100"
+            : "scale-0",
+        )}
+      >
+        {isEditMode ? (
+          <X className="h-4 w-4 shrink-0" strokeWidth={2.5} />
+        ) : (
+          <LayoutDashboard className="h-4 w-4 shrink-0" />
+        )}
+        <span className="hidden sm:inline">Cancel</span>
+      </button>
+      <button
         onClick={toggleEditMode}
         className={cn(
-          "flex items-center gap-2 h-9 px-3 rounded-lg text-sm font-medium transition-colors cursor-pointer shrink-0 border",
+          "grid grid-cols-[16px_1fr] items-center whitespace-pre-wrap gap-2 h-9 px-3 rounded-lg text-sm font-medium transition-colors cursor-pointer shrink-0 border",
           isEditMode
             ? "bg-linear-to-r from-[#5B6AF0] to-[#9B6BF2] text-white border-transparent hover:opacity-90 shadow-sm"
             : "bg-bg-subtle border-border-subtle text-text-primary hover:bg-bg-base hover:border-border-medium shadow-none",
@@ -33,8 +56,21 @@ export function EditModeBar() {
         ) : (
           <LayoutDashboard className="h-4 w-4 shrink-0" />
         )}
-        <span className="hidden sm:inline">
-          {isEditMode ? "Done Editing" : "Edit Dashboard"}
+        <span
+          className={cn(
+            "hidden sm:block transition-all duration-300 ease-in-out [grid-area:1/2]",
+            isEditMode ? "opacity-0" : "opacity-100",
+          )}
+        >
+          Edit Dashboard
+        </span>
+        <span
+          className={cn(
+            "hidden sm:block transition-all duration-300 ease-in-out [grid-area:1/2]",
+            isEditMode ? "opacity-100" : "opacity-0",
+          )}
+        >
+          Done Editing
         </span>
       </button>
 

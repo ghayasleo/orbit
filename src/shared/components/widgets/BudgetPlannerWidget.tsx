@@ -1,74 +1,75 @@
-import { Wallet, ChevronRight, AlertTriangle } from "lucide-react";
+import { Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { WidgetWrapper } from "./WidgetWrapper";
+import { WidgetHeader } from "./WidgetHeader";
+import { WidgetBody } from "./WidgetBody";
 
 export function BudgetPlannerWidget() {
   const budgetSpent = 72000;
   const budgetTotal = 100000;
   const budgetPercent = Math.round((budgetSpent / budgetTotal) * 100);
-  const budgetBarColor =
-    budgetPercent >= 90
-      ? "bg-red-500"
-      : budgetPercent >= 70
-        ? "bg-amber-500"
-        : "bg-emerald-500";
 
-  const warningText =
-    budgetPercent >= 90
-      ? "Budget exceeded! Over 90% of your limit has been spent."
-      : "Approaching limit - " +
-        budgetPercent +
-        "% of your monthly budget used.";
+  const budgetItems = [
+    { label: "Groceries", spent: 12000, total: 15000, color: "bg-emerald-500" },
+    { label: "Utilities", spent: 8000, total: 10000, color: "bg-emerald-500" },
+    { label: "Rent", spent: 30000, total: 30000, color: "bg-red-500" },
+    {
+      label: "Entertainment",
+      spent: 7000,
+      total: 10000,
+      color: "bg-amber-500",
+    },
+    { label: "Transport", spent: 5000, total: 8000, color: "bg-emerald-500" },
+  ];
 
   return (
     <WidgetWrapper id="budget">
-      <div className="h-full rounded-2xl flex flex-col bg-bg-card dark:bg-zinc-900 border border-border-subtle p-4 sm:p-5 shadow-[0_2px_12px_rgba(0,0,0,0.07)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.25)]">
-        <div className="flex items-center justify-between mb-2 sm:mb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
-              <Wallet className="h-4 w-4 text-emerald-500" strokeWidth={2} />
-            </div>
-            <h3 className="text-[15px] font-semibold text-text-primary font-jakarta">
-              Budget Planner
-            </h3>
-          </div>
-          <button className="flex items-center gap-0.5 text-xs font-medium text-[#5B6AF0] hover:text-[#4a58e8] transition-colors cursor-pointer shrink-0">
-            View All
-            <ChevronRight className="h-3.5 w-3.5" />
-          </button>
-        </div>
+      <WidgetHeader
+        title="Budget Planner"
+        icon={Wallet}
+        iconColorClass="text-emerald-500"
+        iconBgClass="bg-emerald-500/10"
+      />
 
-        <div className="space-y-3 flex-1 flex flex-col justify-center">
-          <div className="h-3 w-full rounded-full bg-bg-subtle overflow-hidden">
-            <div
-              className={cn(
-                "h-full rounded-full transition-all duration-500",
-                budgetBarColor,
-              )}
-              style={{ width: budgetPercent + "%" }}
-            />
+      <WidgetBody id="budget">
+        <div className="flex-1 flex flex-col justify-between">
+          <div className="space-y-4">
+            {budgetItems.map((item, i) => (
+              <div key={i} className="space-y-1.5">
+                <div className="flex items-center justify-between text-xs sm:text-[13px]">
+                  <span className="font-medium text-text-primary">
+                    {item.label}
+                  </span>
+                  <span className="text-text-muted">
+                    <span className="text-text-primary font-bold">
+                      {"\u20A8"} {item.spent.toLocaleString()}
+                    </span>{" "}
+                    / {"\u20A8"} {item.total.toLocaleString()}
+                  </span>
+                </div>
+                <div className="h-2 w-full rounded-full bg-bg-subtle overflow-hidden">
+                  <div
+                    className={cn(
+                      "h-full rounded-full transition-all duration-500",
+                      item.color,
+                    )}
+                    style={{ width: `${(item.spent / item.total) * 100}%` }}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="flex items-center justify-between text-xs sm:text-sm">
-            <span className="font-semibold text-text-primary">
-              {"\u20A8"} {(budgetSpent / 1000).toFixed(0)}k spent
+
+          <div className="pt-4 mt-auto border-t border-border-subtle/50 flex items-center justify-between">
+            <span className="text-xs text-text-muted font-medium">
+              Total Budget Left
             </span>
-            <span className="text-text-muted">
-              of {"\u20A8"} {(budgetTotal / 1000).toFixed(0)}k
+            <span className="text-sm font-bold text-emerald-500">
+              {"\u20A8"} 12,300
             </span>
           </div>
-          {budgetPercent >= 70 && (
-            <div className="hidden @[height>180px]:flex items-center gap-2 rounded-lg bg-amber-500/10 px-3 py-1.5 mt-auto">
-              <AlertTriangle
-                className="h-4 w-4 text-amber-500 shrink-0"
-                strokeWidth={2}
-              />
-              <span className="text-xs font-medium text-amber-600 dark:text-amber-400 line-clamp-2">
-                {warningText}
-              </span>
-            </div>
-          )}
         </div>
-      </div>
+      </WidgetBody>
     </WidgetWrapper>
   );
 }

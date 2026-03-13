@@ -1,5 +1,7 @@
-import { Sparkles, ArrowRight, CornerDownLeft } from "lucide-react";
+import { Sparkles, CornerDownLeft } from "lucide-react";
 import { WidgetWrapper } from "./WidgetWrapper";
+import { WidgetHeader } from "./WidgetHeader";
+import { WidgetBody } from "./WidgetBody";
 import { useState } from "react";
 
 const mockHistory = [
@@ -37,23 +39,17 @@ export function AIAssistantWidget() {
   };
 
   return (
-    <WidgetWrapper id="ai-chat">
-      <div className="h-full rounded-2xl flex flex-col bg-bg-card border border-border-subtle p-3 sm:p-5 shadow-[0_2px_12px_rgba(0,0,0,0.07)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.25)] bg-linear-to-b from-white to-indigo-50/30 dark:from-zinc-950 dark:to-indigo-950/10">
-        <div className="flex items-center justify-between mb-2 sm:mb-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded bg-linear-to-br from-[#5B6AF0] to-[#9B6BF2]">
-              <Sparkles className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
-            </div>
-            <h3 className="text-[14px] font-bold text-transparent bg-clip-text bg-linear-to-r from-[#5B6AF0] to-[#9B6BF2] font-jakarta">
-              Orbit AI
-            </h3>
-          </div>
-          <button className="flex items-center gap-1 text-[11px] font-medium text-text-muted hover:text-[#5B6AF0] transition-colors cursor-pointer">
-            Open Full Chat
-            <ArrowRight className="h-3 w-3" />
-          </button>
-        </div>
+    <WidgetWrapper id="ai-assistant">
+      <WidgetHeader
+        title="Orbit AI"
+        icon={Sparkles}
+        iconColorClass="text-blue-500"
+        iconBgClass="bg-blue-600/10"
+        linkText="Ask anything"
+        onLinkClick={() => {}}
+      />
 
+      <WidgetBody id="ai-assistant">
         <div className="flex-1 flex flex-col overflow-y-auto custom-scrollbar pr-1 pb-2 min-h-0 space-y-3">
           {messages.map((msg, i) => (
             <div
@@ -107,7 +103,7 @@ export function AIAssistantWidget() {
             <CornerDownLeft className="h-3.5 w-3.5" strokeWidth={2.5} />
           </button>
         </form>
-      </div>
+      </WidgetBody>
     </WidgetWrapper>
   );
 }

@@ -79,6 +79,8 @@ export function DashboardGrid() {
   const [isMobile, setIsMobile] = useState(false);
   const [resizing, setResizing] = useState<string | null>(null);
 
+  console.log(layouts);
+
   useEffect(() => {
     setMounted(true);
     const mql = window.matchMedia("(max-width: 767px)");
@@ -137,14 +139,14 @@ export function DashboardGrid() {
   });
 
   return (
-    <div className="-mx-4 sm:mx-0 min-h-[500px]">
+    <div className="relative -mx-4 sm:mx-0 min-h-[500px]">
       <AnimatePresence>
         {isEditMode && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="text-center pb-2 overflow-hidden mx-auto w-full max-w-xl"
+            className="text-center overflow-hidden ml-auto w-fit absolute bottom-full right-0 -translate-0.75"
           >
             <p className="text-xs text-text-muted font-medium bg-bg-subtle/50 rounded-full py-1.5 px-4 backdrop-blur-sm shadow-sm inline-block">
               {isMobile
@@ -169,7 +171,7 @@ export function DashboardGrid() {
           draggableHandle=".drag-handle"
           useCSSTransforms={true}
           preventCollision={false}
-          resizeHandles={["se"]}
+          resizeHandles={isEditMode ? ["s", "e", "w", "se", "sw"] : []}
           onLayoutChange={handleLayoutChange as any}
           onResizeStart={(_: any, _old: any, newItem: any) =>
             setResizing(newItem.i)

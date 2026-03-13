@@ -1,5 +1,7 @@
-import { Activity, ArrowUpRight, ChevronRight } from "lucide-react";
+import { Activity, ArrowUpRight } from "lucide-react";
 import { WidgetWrapper } from "./WidgetWrapper";
+import { WidgetHeader } from "./WidgetHeader";
+import { WidgetBody } from "./WidgetBody";
 import { useEffect, useRef, useState } from "react";
 
 const recentExpenses = [
@@ -47,62 +49,45 @@ export function RecentExpensesWidget() {
   }, []);
 
   return (
-    <WidgetWrapper id="recent-expenses">
-      <div
-        ref={containerRef}
-        className="h-full rounded-2xl flex flex-col bg-bg-card dark:bg-zinc-900 border border-border-subtle p-4 sm:p-5 shadow-[0_2px_12px_rgba(0,0,0,0.07)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
-      >
-        <div className="flex items-center justify-between mb-2 sm:mb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/10">
-              <Activity className="h-4 w-4 text-purple-500" strokeWidth={2} />
-            </div>
-            <h3 className="text-[15px] font-semibold text-text-primary font-jakarta">
-              Recent Expenses
-            </h3>
-          </div>
-          <button className="flex items-center gap-0.5 text-xs font-medium text-[#5B6AF0] hover:text-[#4a58e8] transition-colors cursor-pointer shrink-0">
-            View All
-            <ChevronRight className="h-3.5 w-3.5" />
-          </button>
-        </div>
+    <WidgetWrapper id="expenses">
+      <WidgetHeader
+        title="Recent Expenses"
+        icon={ArrowUpRight}
+        iconColorClass="text-red-500"
+        iconBgClass="bg-red-500/10"
+      />
 
-        <ul
-          className={`grid gap-1 sm:gap-2 flex-1 items-start overflow-y-auto custom-scrollbar pr-1 pb-2 min-h-0 content-start ${isLarge ? "grid-cols-2" : "grid-cols-1"}`}
-        >
+      <WidgetBody id="expenses" ref={containerRef}>
+        <ul className="space-y-1 flex-1 overflow-y-auto custom-scrollbar pr-1 pb-2 min-h-0">
           {recentExpenses.map((expense, i) => (
             <li
               key={i}
-              className="flex items-center justify-between rounded-xl px-3 py-3 hover:bg-bg-subtle transition-colors cursor-pointer border border-transparent hover:border-border-subtle"
+              className="flex items-center justify-between p-2 rounded-xl hover:bg-bg-subtle transition-all cursor-pointer group"
             >
               <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-bg-subtle shrink-0">
-                  <ArrowUpRight
-                    className="h-4 w-4 text-red-400"
-                    strokeWidth={2}
-                  />
+                <div className="h-9 w-9 rounded-xl bg-bg-base border border-border-subtle flex items-center justify-center shrink-0 group-hover:border-[#5B6AF0]/30 transition-colors">
+                  <span className="text-[13px] font-medium text-text-muted">
+                    {expense.name.charAt(0)}
+                  </span>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-text-primary truncate">
+                <div className="min-w-0">
+                  <p className="text-[13px] font-semibold text-text-primary truncate">
                     {expense.name}
                   </p>
-                  <p className="text-xs text-text-muted truncate">
-                    {expense.category}
+                  <p className="text-[10px] text-text-muted truncate">
+                    {expense.category} • {expense.date}
                   </p>
                 </div>
               </div>
-              <div className="text-right shrink-0 ml-2">
-                <span className="block text-sm font-semibold text-text-primary">
+              <div className="text-right shrink-0">
+                <p className="text-[13px] font-bold text-text-primary">
                   {expense.amount}
-                </span>
-                <span className="block text-xs text-text-muted">
-                  {expense.date}
-                </span>
+                </p>
               </div>
             </li>
           ))}
         </ul>
-      </div>
+      </WidgetBody>
     </WidgetWrapper>
   );
 }

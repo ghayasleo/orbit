@@ -65,55 +65,109 @@ export function HeroSection() {
   return (
     <>
       <HeroHeader />
-      <main>
-        <div
-          aria-hidden
-          className="z-2 absolute inset-0 pointer-events-none isolate opacity-50 contain-strict hidden lg:block"
-        >
-          <div className="w-140 h-320 -translate-y-[350px] absolute left-0 top-0 -rotate-45 rounded-full bg-[radial-gradient(68.54%_68.72%_at_55.02%_31.46%,hsla(0,0%,85%,.08)_0,hsla(0,0%,55%,.02)_50%,hsla(0,0%,45%,0)_80%)]" />
-          <div className="h-320 absolute left-0 top-0 w-56 -rotate-45 rounded-full bg-[radial-gradient(50%_50%_at_50%_50%,hsla(0,0%,85%,.06)_0,hsla(0,0%,45%,.02)_80%,transparent_100%)] [translate:5%_-50%]" />
-          <div className="h-320 -translate-y-[350px] absolute left-0 top-0 w-56 -rotate-45 bg-[radial-gradient(50%_50%_at_50%_50%,hsla(0,0%,85%,.04)_0,hsla(0,0%,45%,.02)_80%,transparent_100%)]" />
-        </div>
-        <section>
-          <div className="relative pt-24 md:pt-36">
-            <div
-              aria-hidden
-              className="absolute inset-0 -z-10 size-full [background:radial-gradient(125%_125%_at_50%_100%,transparent_0%,var(--background)_75%)]"
-            />
-            <div className="mx-auto max-w-7xl px-6 relative z-10">
-              <div className="text-center sm:mx-auto lg:mr-auto lg:mt-0">
-                <AnimatedGroup variants={transitionVariants}>
-                  <Link
-                    to="#link"
-                    className="hover:bg-bg-subtle dark:hover:border-t-border bg-bg-card group mx-auto flex w-fit items-center gap-4 rounded-full border border-border-subtle p-1 pl-4 shadow-sm shadow-black/5 transition-all duration-300 dark:border-t-white/5 dark:shadow-zinc-950"
-                  >
-                    <span className="text-foreground text-sm">
-                      Introducing Orbit Modules v2
-                    </span>
-                    <span className="dark:border-background block h-4 w-0.5 border-l bg-white dark:bg-zinc-700"></span>
+      <div
+        aria-hidden
+        className="z-2 absolute inset-0 pointer-events-none isolate opacity-50 contain-strict hidden lg:block"
+      >
+        <div className="w-140 h-320 -translate-y-[350px] absolute left-0 top-0 -rotate-45 rounded-full bg-[radial-gradient(68.54%_68.72%_at_55.02%_31.46%,hsla(0,0%,85%,.08)_0,hsla(0,0%,55%,.02)_50%,hsla(0,0%,45%,0)_80%)]" />
+        <div className="h-320 absolute left-0 top-0 w-56 -rotate-45 rounded-full bg-[radial-gradient(50%_50%_at_50%_50%,hsla(0,0%,85%,.06)_0,hsla(0,0%,45%,.02)_80%,transparent_100%)] [translate:5%_-50%]" />
+        <div className="h-320 -translate-y-[350px] absolute left-0 top-0 w-56 -rotate-45 bg-[radial-gradient(50%_50%_at_50%_50%,hsla(0,0%,85%,.04)_0,hsla(0,0%,45%,.02)_80%,transparent_100%)]" />
+      </div>
+      <section>
+        <div className="relative pt-24 md:pt-36">
+          <div
+            aria-hidden
+            className="absolute inset-0 -z-10 size-full [background:radial-gradient(125%_125%_at_50%_100%,transparent_0%,var(--background)_75%)]"
+          />
+          <div className="mx-auto max-w-7xl px-6 relative z-10">
+            <div className="text-center sm:mx-auto lg:mr-auto lg:mt-0">
+              <AnimatedGroup variants={transitionVariants}>
+                <Link
+                  to="#link"
+                  className="hover:bg-bg-subtle dark:hover:border-t-border bg-bg-card group mx-auto flex w-fit items-center gap-4 rounded-full border border-border-subtle p-1 pl-4 shadow-sm shadow-black/5 transition-all duration-300 dark:border-t-white/5 dark:shadow-zinc-950"
+                >
+                  <span className="text-foreground text-sm">
+                    Introducing Orbit Modules v2
+                  </span>
+                  <span className="dark:border-background block h-4 w-0.5 border-l bg-white dark:bg-zinc-700"></span>
 
-                    <div className="bg-background group-hover:bg-muted size-6 overflow-hidden rounded-full duration-500">
-                      <div className="flex w-12 -translate-x-1/2 duration-500 ease-in-out group-hover:translate-x-0">
-                        <span className="flex size-6">
-                          <ArrowRight className="m-auto size-3" />
-                        </span>
-                        <span className="flex size-6">
-                          <ArrowRight className="m-auto size-3" />
-                        </span>
-                      </div>
+                  <div className="bg-background group-hover:bg-muted size-6 overflow-hidden rounded-full duration-500">
+                    <div className="flex w-12 -translate-x-1/2 duration-500 ease-in-out group-hover:translate-x-0">
+                      <span className="flex size-6">
+                        <ArrowRight className="m-auto size-3" />
+                      </span>
+                      <span className="flex size-6">
+                        <ArrowRight className="m-auto size-3" />
+                      </span>
                     </div>
-                  </Link>
+                  </div>
+                </Link>
 
-                  <h1 className="mt-8 max-w-4xl mx-auto text-balance text-4xl md:text-7xl lg:mt-16 xl:text-[5.25rem] font-bdogrotesk font-medium tracking-tight bg-clip-text text-transparent bg-linear-to-t from-neutral-500 to-text-primary pb-1.5">
-                    Modern Solutions for Finding Clarity
-                  </h1>
-                  <p className="mx-auto mt-6 max-w-2xl md:text-lg text-text-secondary leading-relaxed">
-                    Highly customizable modules for organizing your complete
-                    personal ecosystem. Build systems that look and feel exactly
-                    the way you need.
-                  </p>
-                </AnimatedGroup>
+                <h1 className="mt-8 max-w-4xl mx-auto text-balance text-4xl md:text-7xl lg:mt-16 xl:text-[5.25rem] font-bdogrotesk font-medium tracking-tight bg-clip-text text-transparent bg-linear-to-t from-neutral-500 to-text-primary pb-1.5">
+                  Modern Solutions for Finding Clarity
+                </h1>
+                <p className="mx-auto mt-6 max-w-2xl md:text-lg text-text-secondary leading-relaxed">
+                  Highly customizable modules for organizing your complete
+                  personal ecosystem. Build systems that look and feel exactly
+                  the way you need.
+                </p>
+              </AnimatedGroup>
 
+              <AnimatedGroup
+                variants={{
+                  container: {
+                    visible: {
+                      transition: {
+                        staggerChildren: 0.05,
+                        delayChildren: 0.75,
+                      },
+                    },
+                  },
+                  ...transitionVariants,
+                }}
+                className="mt-10 flex items-center justify-center gap-3 md:flex-row shadow-none relative z-20 pointer-events-auto"
+              >
+                <div
+                  key={1}
+                  className="bg-brand/10 rounded-[14px] border border-brand/20 p-0.5 shadow-sm"
+                >
+                  <Button
+                    asChild
+                    size="lg"
+                    className="rounded-xl px-6 text-base bg-brand hover:bg-brand-hover text-white shadow-md cursor-pointer relative z-20"
+                  >
+                    <Link to="/signup">
+                      <span className="text-nowrap">Start Building</span>
+                    </Link>
+                  </Button>
+                </div>
+                <div key={2} className="relative z-20 cursor-pointer">
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="outline"
+                    className="rounded-xl px-6 border-border-medium bg-bg-card hover:bg-bg-card-hover text-text-primary shadow-sm hover:shadow-md transition-all cursor-pointer"
+                  >
+                    <a href="#features" onClick={handleViewFeatures}>
+                      <span className="text-nowrap">View features</span>
+                    </a>
+                  </Button>
+                </div>
+              </AnimatedGroup>
+            </div>
+          </div>
+
+          <div className="overflow-hidden">
+            <div className="perspective-distant">
+              <motion.div
+                ref={ref}
+                className="hero-img will-change-transform"
+                style={
+                  reduce
+                    ? undefined
+                    : { rotateX, transformStyle: "preserve-3d" }
+                }
+              >
                 <AnimatedGroup
                   variants={{
                     container: {
@@ -126,91 +180,35 @@ export function HeroSection() {
                     },
                     ...transitionVariants,
                   }}
-                  className="mt-10 flex items-center justify-center gap-3 md:flex-row shadow-none relative z-20 pointer-events-auto"
                 >
-                  <div
-                    key={1}
-                    className="bg-brand/10 rounded-[14px] border border-brand/20 p-0.5 shadow-sm"
-                  >
-                    <Button
-                      asChild
-                      size="lg"
-                      className="rounded-xl px-6 text-base bg-brand hover:bg-brand-hover text-white shadow-md cursor-pointer relative z-20"
-                    >
-                      <Link to="/signup">
-                        <span className="text-nowrap">Start Building</span>
-                      </Link>
-                    </Button>
-                  </div>
-                  <div key={2} className="relative z-20 cursor-pointer">
-                    <Button
-                      asChild
-                      size="lg"
-                      variant="outline"
-                      className="rounded-xl px-6 border-border-medium bg-bg-card hover:bg-bg-card-hover text-text-primary shadow-sm hover:shadow-md transition-all cursor-pointer"
-                    >
-                      <a href="#features" onClick={handleViewFeatures}>
-                        <span className="text-nowrap">View features</span>
-                      </a>
-                    </Button>
+                  <div className="relative -mr-56 mt-8 overflow-hidden px-2 sm:mr-0 sm:mt-12 md:mt-20 pb-20">
+                    <div
+                      aria-hidden
+                      className="bg-linear-to-b from-transparent to-white dark:to-black absolute inset-0 z-10 from-35%"
+                    />
+                    <div className="inset-shadow-2xs ring-background dark:inset-shadow-white/20 bg-background relative mx-auto max-w-6xl overflow-hidden rounded-2xl border p-4 shadow-lg shadow-zinc-950/15 ring-1">
+                      <img
+                        className="bg-background aspect-15/8 max-w-full relative hidden rounded-2xl dark:block"
+                        src="https://tailark.com//_next/image?url=%2Fmail2.png&w=3840&q=75"
+                        alt="app screen"
+                        width="2700"
+                        height="1440"
+                      />
+                      <img
+                        className="z-2 border-border/25 aspect-15/8 max-w-full relative rounded-2xl border dark:hidden"
+                        src="https://tailark.com/_next/image?url=%2Fmail2-light.png&w=3840&q=75"
+                        alt="app screen"
+                        width="2700"
+                        height="1440"
+                      />
+                    </div>
                   </div>
                 </AnimatedGroup>
-              </div>
-            </div>
-
-            <div className="overflow-hidden">
-              <div className="perspective-distant">
-                <motion.div
-                  ref={ref}
-                  className="hero-img will-change-transform"
-                  style={
-                    reduce
-                      ? undefined
-                      : { rotateX, transformStyle: "preserve-3d" }
-                  }
-                >
-                  <AnimatedGroup
-                    variants={{
-                      container: {
-                        visible: {
-                          transition: {
-                            staggerChildren: 0.05,
-                            delayChildren: 0.75,
-                          },
-                        },
-                      },
-                      ...transitionVariants,
-                    }}
-                  >
-                    <div className="relative -mr-56 mt-8 overflow-hidden px-2 sm:mr-0 sm:mt-12 md:mt-20 pb-20">
-                      <div
-                        aria-hidden
-                        className="bg-linear-to-b from-transparent to-white dark:to-black absolute inset-0 z-10 from-35%"
-                      />
-                      <div className="inset-shadow-2xs ring-background dark:inset-shadow-white/20 bg-background relative mx-auto max-w-6xl overflow-hidden rounded-2xl border p-4 shadow-lg shadow-zinc-950/15 ring-1">
-                        <img
-                          className="bg-background aspect-15/8 max-w-full relative hidden rounded-2xl dark:block"
-                          src="https://tailark.com//_next/image?url=%2Fmail2.png&w=3840&q=75"
-                          alt="app screen"
-                          width="2700"
-                          height="1440"
-                        />
-                        <img
-                          className="z-2 border-border/25 aspect-15/8 max-w-full relative rounded-2xl border dark:hidden"
-                          src="https://tailark.com/_next/image?url=%2Fmail2-light.png&w=3840&q=75"
-                          alt="app screen"
-                          width="2700"
-                          height="1440"
-                        />
-                      </div>
-                    </div>
-                  </AnimatedGroup>
-                </motion.div>
-              </div>
+              </motion.div>
             </div>
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
     </>
   );
 }

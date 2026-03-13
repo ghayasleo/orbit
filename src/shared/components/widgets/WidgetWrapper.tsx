@@ -13,9 +13,9 @@ export const WidgetWrapper = forwardRef<HTMLDivElement, WidgetWrapperProps>(
   ({ id, children, className, isHero = false, ...props }, ref) => {
     const { isEditMode, removeWidget, toggleCollapse, collapsedWidgets } =
       useDashboard();
-    const [showConfirm, setShowConfirm] = useState(false);
-
     const isCollapsed = collapsedWidgets.includes(id);
+
+    const [showConfirm, setShowConfirm] = useState(false);
 
     // Cancel confirm if edit mode is toggled off
     if (!isEditMode && showConfirm) {
@@ -36,7 +36,13 @@ export const WidgetWrapper = forwardRef<HTMLDivElement, WidgetWrapperProps>(
         <div
           className={cn("h-full w-full", isCollapsed && "pointer-events-none")}
         >
-          {children}
+          {isHero ? (
+            children
+          ) : (
+            <div className="h-full rounded-2xl flex flex-col bg-bg-card border border-border-subtle p-4 sm:p-5 shadow-[0_2px_12px_rgba(0,0,0,0.07)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.25)]">
+              {children}
+            </div>
+          )}
         </div>
 
         {/* Edit Mode Overlays */}

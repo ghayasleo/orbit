@@ -1,14 +1,8 @@
-import {
-  Droplets,
-  Dumbbell,
-  BookOpen,
-  Moon,
-  Apple,
-  Flame,
-  ChevronRight,
-} from "lucide-react";
+import { Droplets, Dumbbell, BookOpen, Moon, Apple, Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { WidgetWrapper } from "./WidgetWrapper";
+import { WidgetHeader } from "./WidgetHeader";
+import { WidgetBody } from "./WidgetBody";
 import { useEffect, useRef, useState } from "react";
 
 const habits = [
@@ -41,25 +35,14 @@ export function HabitStreaksWidget() {
 
   return (
     <WidgetWrapper id="habits">
-      <div
-        ref={containerRef}
-        className="h-full rounded-2xl flex flex-col bg-bg-card dark:bg-zinc-900 border border-border-subtle p-4 sm:p-5 shadow-[0_2px_12px_rgba(0,0,0,0.07)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
-      >
-        <div className="flex items-center justify-between mb-2 sm:mb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/10">
-              <Flame className="h-4 w-4 text-orange-500" strokeWidth={2} />
-            </div>
-            <h3 className="text-[15px] font-semibold text-text-primary font-jakarta">
-              Habits
-            </h3>
-          </div>
-          <button className="flex items-center gap-0.5 text-xs font-medium text-[#5B6AF0] hover:text-[#4a58e8] transition-colors cursor-pointer shrink-0">
-            View All
-            <ChevronRight className="h-3.5 w-3.5" />
-          </button>
-        </div>
+      <WidgetHeader
+        title="Habits"
+        icon={Flame}
+        iconColorClass="text-orange-500"
+        iconBgClass="bg-orange-500/10"
+      />
 
+      <WidgetBody id="habits" ref={containerRef}>
         <div className="flex-1 flex items-center justify-around px-2 min-w-0">
           {displayHabits.map((h, i) => (
             <div
@@ -97,7 +80,7 @@ export function HabitStreaksWidget() {
             </div>
           ))}
         </div>
-      </div>
+      </WidgetBody>
     </WidgetWrapper>
   );
 }

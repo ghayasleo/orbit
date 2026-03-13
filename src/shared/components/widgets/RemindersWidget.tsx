@@ -1,67 +1,75 @@
-import { Bell, ChevronRight } from "lucide-react";
+import { Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { WidgetWrapper } from "./WidgetWrapper";
+import { WidgetHeader } from "./WidgetHeader";
+import { WidgetBody } from "./WidgetBody";
 
 const reminders = [
-  { title: "Doctor Appointment", time: "In 2 hours", isOverdue: false },
-  { title: "Submit Tax Form", time: "Overdue", isOverdue: true },
-  { title: "Call Mom", time: "Tomorrow", isOverdue: false },
+  {
+    text: "Doctor Appointment",
+    time: "In 2 hours",
+    color: "bg-blue-500",
+    isOverdue: false,
+  },
+  {
+    text: "Submit Tax Form",
+    time: "Overdue",
+    color: "bg-red-500",
+    isOverdue: true,
+  },
+  {
+    text: "Call Mom",
+    time: "Tomorrow",
+    color: "bg-green-500",
+    isOverdue: false,
+  },
 ];
 
 export function RemindersWidget() {
   return (
-    <WidgetWrapper id="reminders">
-      <div className="h-full rounded-2xl flex flex-col bg-bg-card dark:bg-zinc-900 border border-border-subtle p-4 sm:p-5 shadow-[0_2px_12px_rgba(0,0,0,0.07)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.25)]">
-        <div className="flex items-center justify-between mb-2 sm:mb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10">
-              <Bell className="h-4 w-4 text-amber-500" strokeWidth={2} />
-            </div>
-            <h3 className="text-[15px] font-semibold text-text-primary font-jakarta">
-              Reminders
-            </h3>
-          </div>
-          <button className="flex items-center gap-0.5 text-xs font-medium text-[#5B6AF0] hover:text-[#4a58e8] transition-colors cursor-pointer shrink-0">
-            View All
-            <ChevronRight className="h-3.5 w-3.5" />
-          </button>
-        </div>
+    <WidgetWrapper id="recent-reminders">
+      <WidgetHeader
+        title="Recent Reminders"
+        icon={Bell}
+        iconColorClass="text-amber-500"
+        iconBgClass="bg-amber-500/10"
+      />
 
-        <ul className="space-y-4 flex-1 overflow-y-auto custom-scrollbar pr-1 pb-1">
+      <WidgetBody id="recent-reminders">
+        <ul className="space-y-1 flex-1 overflow-y-auto custom-scrollbar pr-1 pb-2 min-h-0">
           {reminders.map((reminder, i) => (
             <li
               key={i}
-              className="flex items-center justify-between cursor-pointer group"
+              className="flex items-start gap-3 rounded-xl px-3 py-3 hover:bg-bg-subtle transition-colors cursor-pointer"
             >
+              <div
+                className={cn(
+                  "h-2 w-2 rounded-full mt-1.5 shrink-0",
+                  reminder.color,
+                )}
+              />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-text-primary group-hover:text-[#5B6AF0] transition-colors truncate">
-                  {reminder.title}
+                <p className="text-sm font-medium text-text-primary truncate">
+                  {reminder.text}
                 </p>
-              </div>
-              <div className="flex items-center gap-2 shrink-0 ml-3">
-                <span
+                <p
                   className={cn(
-                    "text-xs font-medium",
-                    reminder.isOverdue ? "text-red-500" : "text-text-muted",
+                    "text-xs truncate",
+                    reminder.isOverdue
+                      ? "text-red-500 font-medium"
+                      : "text-text-muted",
                   )}
                 >
                   {reminder.time}
-                </span>
-                <div
-                  className={cn(
-                    "flex h-6 w-6 items-center justify-center rounded-full shrink-0",
-                    reminder.isOverdue
-                      ? "bg-red-50 text-red-500 dark:bg-red-500/10"
-                      : "bg-bg-subtle text-text-muted",
-                  )}
-                >
-                  <Bell className="h-3 w-3" />
-                </div>
+                </p>
+              </div>
+              <div className="flex h-6 w-6 items-center justify-center rounded-full shrink-0 bg-bg-subtle text-text-muted">
+                <Bell className="h-3 w-3" />
               </div>
             </li>
           ))}
         </ul>
-      </div>
+      </WidgetBody>
     </WidgetWrapper>
   );
 }

@@ -1,60 +1,82 @@
-import { Target, ChevronRight } from "lucide-react";
+import { Target } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { WidgetWrapper } from "./WidgetWrapper";
+import { WidgetHeader } from "./WidgetHeader";
+import { WidgetBody } from "./WidgetBody";
 
 const activeGoals = [
   {
-    name: "Emergency Fund",
+    title: "Emergency Fund",
     current: 15000,
     target: 50000,
-    color: "bg-emerald-500",
+    progress: Math.round((15000 / 50000) * 100),
+    isMonetary: true,
   },
-  { name: "New Laptop", current: 30000, target: 80000, color: "bg-blue-500" },
+  {
+    title: "New Laptop",
+    current: 30000,
+    target: 80000,
+    progress: Math.round((30000 / 80000) * 100),
+    isMonetary: true,
+  },
+  {
+    title: "Read 12 Books",
+    current: 9,
+    target: 12,
+    progress: Math.round((9 / 12) * 100),
+    isMonetary: false,
+  },
 ];
 
 export function ActiveGoalsWidget() {
   return (
     <WidgetWrapper id="active-goals">
-      <div className="h-full rounded-2xl flex flex-col bg-bg-card dark:bg-zinc-900 border border-border-subtle p-4 sm:p-5 shadow-[0_2px_12px_rgba(0,0,0,0.07)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.25)]">
-        <div className="flex items-center justify-between mb-2 sm:mb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/10">
-              <Target className="h-4 w-4 text-indigo-500" strokeWidth={2} />
-            </div>
-            <h3 className="text-[15px] font-semibold text-text-primary font-jakarta">
-              Active Goals
-            </h3>
-          </div>
-          <button className="flex items-center gap-0.5 text-xs font-medium text-[#5B6AF0] hover:text-[#4a58e8] transition-colors cursor-pointer shrink-0">
-            View All
-            <ChevronRight className="h-3.5 w-3.5" />
-          </button>
-        </div>
+      <WidgetHeader
+        title="Active Goals"
+        icon={Target}
+        iconColorClass="text-[#5B6AF0]"
+        iconBgClass="bg-[#5B6AF0]/10"
+      />
 
-        <ul className="space-y-4 flex-1 overflow-y-auto custom-scrollbar pr-1 pb-2 min-h-0">
+      <WidgetBody id="active-goals">
+        <div className="space-y-4 flex-1 overflow-y-auto custom-scrollbar pr-1 pb-2 min-h-0">
           {activeGoals.map((goal, i) => (
-            <li key={i} className="flex flex-col gap-1.5 cursor-pointer group">
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-semibold text-text-primary group-hover:text-[#5B6AF0] transition-colors line-clamp-1">
-                  {goal.name}
+            <div key={i} className="flex flex-col gap-2 group cursor-pointer">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold text-text-primary group-hover:text-[#5B6AF0] transition-colors truncate">
+                  {goal.title}
                 </span>
-                <span className="text-xs font-medium text-text-muted shrink-0 ml-2">
-                  {Math.round((goal.current / goal.target) * 100)}%
+                <span className="text-xs font-bold text-[#5B6AF0]">
+                  {goal.progress}%
                 </span>
               </div>
-              <div className="h-2 w-full rounded-full bg-bg-subtle overflow-hidden">
+              <div className="relative h-2 w-full rounded-full bg-bg-subtle overflow-hidden">
                 <div
-                  className={cn(
-                    "h-full rounded-full transition-all duration-500",
-                    goal.color,
-                  )}
-                  style={{ width: `${(goal.current / goal.target) * 100}%` }}
+                  className="absolute inset-y-0 left-0 bg-[#5B6AF0] rounded-full transition-all duration-700"
+                  style={{ width: `${goal.progress}%` }}
                 />
               </div>
-            </li>
+              <div className="flex items-center justify-between text-[10px] text-text-muted font-medium">
+                {goal.isMonetary ? (
+                  <>
+                    <span>
+                      {"\u20A8"} {goal.current?.toLocaleString()}
+                    </span>
+                    <span>
+                      Target: {"\u20A8"} {goal.target.toLocaleString()}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span>{goal.current} books read</span>
+                    <span>Target: {goal.target}</span>
+                  </>
+                )}
+              </div>
+            </div>
           ))}
-        </ul>
-      </div>
+        </div>
+      </WidgetBody>
     </WidgetWrapper>
   );
 }
