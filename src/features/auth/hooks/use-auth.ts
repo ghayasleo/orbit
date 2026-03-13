@@ -8,7 +8,7 @@ interface UseAuthReturn {
   loading: boolean
   error: AuthError
   login: (email: string, password: string) => Promise<{ needsOtp: boolean }>
-  signup: (email: string, password: string) => Promise<{ needsOtp: boolean }>
+  signup: (email: string, password: string, firstName: string, lastName: string, avatarFile?: File | null) => Promise<{ needsOtp: boolean }>
   verifyOtp: (email: string, token: string) => Promise<boolean>
   resendOtp: (email: string) => Promise<void>
   forgotPassword: (email: string) => Promise<boolean>
@@ -19,6 +19,7 @@ interface UseAuthReturn {
 export function useAuth(): UseAuthReturn {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<AuthError>(null)
+  const [pendingAvatar, setPendingAvatar] = useState<File | null>(null)
   const navigate = useNavigate()
 
   function clearError() {
@@ -50,11 +51,27 @@ export function useAuth(): UseAuthReturn {
     }
   }
 
-  async function signup(email: string, password: string): Promise<{ needsOtp: boolean }> {
+  async function signup(
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+    avatarFile?: File | null
+  ): Promise<{ needsOtp: boolean }> {
     setLoading(true)
     setError(null)
+    setPendingAvatar(avatarFile || null)
     try {
-      const { error: signUpError } = await supabase.auth.signUp({ email, password })
+      const { error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            first_name: firstName,
+            last_name: lastName,
+          },
+        },
+      })
 
       if (signUpError) {
         setError(signUpError.message)
@@ -74,7 +91,7 @@ export function useAuth(): UseAuthReturn {
     setLoading(true)
     setError(null)
     try {
-      const { error: otpError } = await supabase.auth.verifyOtp({
+      const { data, error: otpError } = await supabase.auth.verifyOtp({
         email,
         token,
         type: 'email',
@@ -83,6 +100,31 @@ export function useAuth(): UseAuthReturn {
       if (otpError) {
         setError(otpError.message)
         return false
+      }
+
+      const user = data.user
+      if (user && pendingAvatar) {
+        try {
+          const ext = pendingAvatar.name.split('.').pop()
+          const filePath = `${user.id}/${user.id}-${Date.now()}.${ext}`
+          const { error: uploadError } = await supabase.storage
+            .from('avatars')
+            .upload(filePath, pendingAvatar)
+
+          if (uploadError) throw uploadError
+
+          const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(filePath)
+
+          const { error: updateError } = await supabase
+            .from('profiles')
+            .update({ profile_image: urlData.publicUrl })
+            .eq('id', user.id)
+
+          if (updateError) throw updateError
+        } catch (uploadErr) {
+          console.error('Error uploading profile image:', uploadErr)
+          // We don't block the login flow if avatar fails
+        }
       }
 
       navigate('/')
