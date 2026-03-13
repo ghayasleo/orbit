@@ -28,7 +28,6 @@ export const WidgetWrapper = forwardRef<HTMLDivElement, WidgetWrapperProps>(
         className={cn(
           "relative h-full w-full rounded-2xl group transition-shadow @container overflow-hidden",
           isEditMode && "shadow-sm",
-          isCollapsed && "max-h-[80px]",
           className,
         )}
         {...props}
@@ -53,7 +52,7 @@ export const WidgetWrapper = forwardRef<HTMLDivElement, WidgetWrapperProps>(
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className={cn(
-                "absolute inset-0 pointer-events-none rounded-2xl border-2 border-dashed border-[#5B6AF0]/60 transition-colors z-10",
+                "absolute inset-0 pointer-events-none rounded-2xl border-2 border-dashed border-[#5B6AF0]/60 bg-black/10 transition-colors z-10",
                 "opacity-100", // Will be shown by Framer Motion
               )}
             >

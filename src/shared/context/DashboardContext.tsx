@@ -3,6 +3,8 @@ import {
   useContext,
   useState,
   useEffect,
+  useMemo,
+  useCallback,
   ReactNode,
 } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -46,6 +48,7 @@ interface DashboardContextType {
   toggleCollapse: (id: string) => void;
   saveLayout: () => void;
   resetToDefault: () => void;
+  cancelChanges: () => void;
   isLoading: boolean;
 }
 
@@ -123,34 +126,39 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     staleTime: Infinity,
   });
 
+  const savedLayouts: DashboardLayouts = {
+    lg: (savedData.layout_lg as Layout[]) || defaultLayouts.lg,
+    md: (savedData.layout_md as Layout[]) || defaultLayouts.md,
+    sm: (savedData.layout_sm as Layout[]) || defaultLayouts.sm,
+    xs: (savedData.layout_xs as Layout[]) || defaultLayouts.xs,
+  };
+  const savedCollapsedIds = savedData.collapsed_widgets || [];
+  const savedHiddenWidgets = savedData.hidden_widgets || [];
+
   // Apply fetched data
   useEffect(() => {
+    // If we have saved data, apply it.
+    // If savedData is null and isLoading is false, we keep the defaultLayouts already in state.
     if (savedData) {
-      const collapsedIds = savedData.collapsed_widgets || [];
-      const updatedLayouts = {
-        lg: (savedData.layout_lg as Layout[]) || defaultLayouts.lg,
-        md: (savedData.layout_md as Layout[]) || defaultLayouts.md,
-        sm: (savedData.layout_sm as Layout[]) || defaultLayouts.sm,
-        xs: (savedData.layout_xs as Layout[]) || defaultLayouts.xs,
-      };
-
       // Ensure isResizable matches collapsed state
-      (Object.keys(updatedLayouts) as Array<keyof DashboardLayouts>).forEach(
+      (Object.keys(savedLayouts) as Array<keyof DashboardLayouts>).forEach(
         (bp) => {
-          updatedLayouts[bp] = updatedLayouts[bp].map((l) => ({
+          savedLayouts[bp] = savedLayouts[bp].map((l) => ({
             ...l,
-            isResizable: !collapsedIds.includes(l.i),
+            isResizable: !savedCollapsedIds.includes(l.i),
           }));
         },
       );
 
-      setLayouts(updatedLayouts);
+      // Only set if changed to avoid unnecessary re-renders
+      setLayouts(savedLayouts);
       setHiddenWidgets(savedData.hidden_widgets || []);
-      setCollapsedWidgets(collapsedIds);
+      setCollapsedWidgets(savedCollapsedIds);
     } else if (savedData === null && !isLoading) {
-      // User has no layout, fallback to default implicitly initialized
-      setLayouts(defaultLayouts);
-      setHiddenWidgets([]);
+      // If we already have defaultLayouts, this might be redundant,
+      // but ensures consistency if defaultLayouts changed elsewhere.
+      // However, we can skip if layouts is already defaultLayouts.
+      // For now, just ensuring it's not updating if not needed.
     }
   }, [savedData, isLoading]);
 
@@ -227,7 +235,13 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     },
   });
 
-  const saveLayout = () => {
+  const cancelChanges = useCallback(() => {
+    setLayouts(savedLayouts);
+    setHiddenWidgets(savedHiddenWidgets);
+    setCollapsedWidgets(savedCollapsedIds);
+  }, [savedLayouts, savedHiddenWidgets, savedCollapsedIds]);
+
+  const saveLayout = useCallback(() => {
     console.log("saveLayout triggered", {
       layouts,
       hiddenWidgets,
@@ -238,9 +252,9 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
       ph: hiddenWidgets,
       pcl: collapsedWidgets,
     });
-  };
+  }, [layouts, hiddenWidgets, collapsedWidgets, saveMutation]);
 
-  const removeWidget = (id: string) => {
+  const removeWidget = useCallback((id: string) => {
     if (id === "hero") return; // cannot remove hero
     setHiddenWidgets((prev) => [...new Set([...prev, id])]);
     // Note: react-grid-layout handles reflowing automatically when an item is removed from children,
@@ -252,74 +266,84 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
       sm: prev.sm.filter((w) => w.i !== id),
       xs: prev.xs.filter((w) => w.i !== id),
     }));
-  };
+  }, []);
 
-  const addWidget = (id: string) => {
+  const addWidget = useCallback((id: string) => {
     setHiddenWidgets((prev) => prev.filter((wId) => wId !== id));
-    // Add to layouts at the bottom
-    const newY = Math.max(...layouts.lg.map((l) => l.y + l.h), 0);
-    const newLg = { i: id, x: 0, y: newY, w: 4, h: 4, minW: 3, minH: 2 }; // Default generic size
-    const newMd = { i: id, x: 0, y: newY, w: 4, h: 4, minW: 3, minH: 2 };
-    const newSm = { i: id, x: 0, y: newY, w: 3, h: 4, minW: 3, minH: 2 };
-    const newXs = { i: id, x: 0, y: newY, w: 4, h: 4, minW: 3, minH: 2 };
 
-    // Apply specific default sizes based on component type
-    if (id === "habits" || id === "subscriptions") {
-      newLg.w = id === "habits" ? 8 : 4;
-      newLg.h = id === "habits" ? 2 : 4;
-    } else if (id === "budget" || id === "loans") {
-      newLg.w = 4;
-      newLg.h = 4;
-    } else if (
-      id === "active-goals" ||
-      id === "reminders" ||
-      id === "priority-tasks" ||
-      id === "recent-expenses" ||
-      id === "upcoming-due" ||
-      id === "events" ||
-      id === "notes"
-    ) {
-      newLg.w = id === "recent-expenses" || id === "priority-tasks" ? 8 : 4;
-      newLg.h = 4;
-    } else if (id === "ai-chat") {
-      newLg.w = 6;
-      newLg.h = 5;
-    }
-
-    setLayouts((prev) => ({
-      lg: [...prev.lg, newLg],
-      md: [...prev.md, newMd],
-      sm: [...prev.sm, newSm],
-      xs: [...prev.xs, newXs],
-    }));
-  };
-
-  const toggleCollapse = (id: string) => {
-    const isCollapsing = !collapsedWidgets.includes(id);
-
-    setCollapsedWidgets((prev) =>
-      isCollapsing ? [...prev, id] : prev.filter((wId) => wId !== id),
-    );
-
+    // We use functional updates or refer to the current state.
+    // To keep the callback stable, we can use a functional update for layouts too.
     setLayouts((prev) => {
-      const newLayouts = { ...prev };
-      (Object.keys(newLayouts) as Array<keyof DashboardLayouts>).forEach(
-        (bp) => {
-          newLayouts[bp] = newLayouts[bp].map((l) => {
-            if (l.i === id) {
-              if (isCollapsing) {
-                return { ...l, h: 1, minH: 1, isResizable: false };
-              } else {
-                return { ...l, h: 4, minH: 2, isResizable: true }; // Default restore height
-              }
-            }
-            return l;
-          });
-        },
-      );
-      return newLayouts;
+      // Add to layouts at the bottom
+      const newY = Math.max(...prev.lg.map((l) => l.y + l.h), 0);
+      const newLg = { i: id, x: 0, y: newY, w: 4, h: 4, minW: 3, minH: 2 };
+      const newMd = { i: id, x: 0, y: newY, w: 4, h: 4, minW: 3, minH: 2 };
+      const newSm = { i: id, x: 0, y: newY, w: 3, h: 4, minW: 3, minH: 2 };
+      const newXs = { i: id, x: 0, y: newY, w: 4, h: 4, minW: 3, minH: 2 };
+
+      // Apply specific default sizes based on component type
+      if (id === "habits" || id === "subscriptions") {
+        newLg.w = id === "habits" ? 8 : 4;
+        newLg.h = id === "habits" ? 2 : 4;
+      } else if (id === "budget" || id === "loans") {
+        newLg.w = 4;
+        newLg.h = 4;
+      } else if (
+        id === "active-goals" ||
+        id === "reminders" ||
+        id === "priority-tasks" ||
+        id === "recent-expenses" ||
+        id === "upcoming-due" ||
+        id === "events" ||
+        id === "notes"
+      ) {
+        newLg.w = id === "recent-expenses" || id === "priority-tasks" ? 8 : 4;
+        newLg.h = 4;
+      } else if (id === "ai-chat") {
+        newLg.w = 6;
+        newLg.h = 5;
+      }
+
+      return {
+        lg: [...prev.lg, newLg],
+        md: [...prev.md, newMd],
+        sm: [...prev.sm, newSm],
+        xs: [...prev.xs, newXs],
+      };
     });
-  };
+  }, []);
+
+  const toggleCollapse = useCallback(
+    (id: string) => {
+      const isCollapsing = !collapsedWidgets.includes(id);
+
+      setCollapsedWidgets((prev) =>
+        isCollapsing ? [...prev, id] : prev.filter((wId) => wId !== id),
+      );
+
+      setTimeout(() => {
+        setLayouts((prev) => {
+          const newLayouts = { ...prev };
+          (Object.keys(newLayouts) as Array<keyof DashboardLayouts>).forEach(
+            (bp) => {
+              newLayouts[bp] = newLayouts[bp].map((l) => {
+                if (l.i === id) {
+                  if (isCollapsing) {
+                    return { ...l, h: 1, minH: 1, isResizable: false };
+                  } else {
+                    return { ...l, h: 4, minH: 2, isResizable: true }; // Default restore height
+                  }
+                }
+                return l;
+              });
+            },
+          );
+          return newLayouts;
+        });
+      }, 300);
+    },
+    [collapsedWidgets],
+  ); // collapsedWidgets is a dependency because isCollapsing depends on it
 
   const resetMutation = useMutation({
     mutationFn: async () => {
@@ -335,27 +359,43 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     },
   });
 
-  const resetToDefault = () => {
+  const resetToDefault = useCallback(() => {
     resetMutation.mutate();
-  };
+  }, [resetMutation]);
+
+  const value = useMemo(
+    () => ({
+      isEditMode,
+      setIsEditMode,
+      layouts,
+      setLayouts,
+      hiddenWidgets,
+      collapsedWidgets,
+      addWidget,
+      removeWidget,
+      toggleCollapse,
+      saveLayout,
+      resetToDefault,
+      cancelChanges,
+      isLoading,
+    }),
+    [
+      isEditMode,
+      layouts,
+      hiddenWidgets,
+      collapsedWidgets,
+      addWidget,
+      removeWidget,
+      toggleCollapse,
+      saveLayout,
+      resetToDefault,
+      cancelChanges,
+      isLoading,
+    ],
+  );
 
   return (
-    <DashboardContext.Provider
-      value={{
-        isEditMode,
-        setIsEditMode,
-        layouts,
-        setLayouts,
-        hiddenWidgets,
-        collapsedWidgets,
-        addWidget,
-        removeWidget,
-        toggleCollapse,
-        saveLayout,
-        resetToDefault,
-        isLoading,
-      }}
-    >
+    <DashboardContext.Provider value={value}>
       {children}
     </DashboardContext.Provider>
   );

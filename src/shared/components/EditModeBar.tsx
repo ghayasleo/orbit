@@ -6,7 +6,8 @@ import { useState } from "react";
 import { AddWidgetPanel } from "./AddWidgetPanel";
 
 export function EditModeBar() {
-  const { isEditMode, setIsEditMode, saveLayout } = useDashboard();
+  const { isEditMode, setIsEditMode, saveLayout, cancelChanges } =
+    useDashboard();
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   const toggleEditMode = () => {
@@ -19,6 +20,7 @@ export function EditModeBar() {
 
   const cancelEditMode = () => {
     if (isEditMode) {
+      cancelChanges();
       setIsPanelOpen(false);
     }
     setIsEditMode(!isEditMode);
