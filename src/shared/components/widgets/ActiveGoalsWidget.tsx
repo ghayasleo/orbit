@@ -1,5 +1,4 @@
 import { Target } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { WidgetWrapper } from "./WidgetWrapper";
 import { WidgetHeader } from "./WidgetHeader";
 import { WidgetBody } from "./WidgetBody";
@@ -32,6 +31,7 @@ export function ActiveGoalsWidget() {
   return (
     <WidgetWrapper id="active-goals">
       <WidgetHeader
+        id="active-goals"
         title="Active Goals"
         icon={Target}
         iconColorClass="text-[#5B6AF0]"

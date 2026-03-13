@@ -1,8 +1,10 @@
 import { LucideIcon, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
+import { useDashboard } from "../../context/DashboardContext";
 
 interface WidgetHeaderProps {
+  id?: string;
   title: string;
   icon: LucideIcon;
   iconColorClass?: string;
@@ -13,6 +15,7 @@ interface WidgetHeaderProps {
 }
 
 export function WidgetHeader({
+  id,
   title,
   icon: Icon,
   iconColorClass = "text-[#5B6AF0]",
@@ -21,9 +24,15 @@ export function WidgetHeader({
   linkText = "View all",
   onLinkClick,
 }: WidgetHeaderProps) {
+  const { toggleTempCollapse } = useDashboard();
+
   return (
     <div className="flex items-center justify-between mb-2 sm:mb-4">
-      <div className="flex items-center gap-2.5">
+      <button
+        onClick={() => id && toggleTempCollapse(id)}
+        className="flex items-center gap-2.5 cursor-pointer"
+        aria-label={`Toggle ${title} widget`}
+      >
         <div
           className={cn(
             "flex h-8 w-8 items-center justify-center rounded-lg",
@@ -35,7 +44,7 @@ export function WidgetHeader({
         <h3 className="text-[15px] font-semibold text-text-primary font-jakarta">
           {title}
         </h3>
-      </div>
+      </button>
       <Link
         to={link}
         onClick={(e) => {

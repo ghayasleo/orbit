@@ -22,6 +22,7 @@ export function PriorityTasksWidget() {
   return (
     <WidgetWrapper id="priority-tasks">
       <WidgetHeader
+        id="priority-tasks"
         title="Priority Tasks"
         icon={CheckSquare}
         iconColorClass="text-indigo-500"

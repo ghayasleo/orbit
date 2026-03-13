@@ -30,6 +30,7 @@ export function SubscriptionsWidget() {
   return (
     <WidgetWrapper id="subscriptions">
       <WidgetHeader
+        id="subscriptions"
         title="Subscriptions"
         icon={RefreshCw}
         iconColorClass="text-emerald-500"

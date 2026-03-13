@@ -1,9 +1,8 @@
-import { Activity, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { WidgetWrapper } from "./WidgetWrapper";
 import { WidgetHeader } from "./WidgetHeader";
 import { WidgetBody } from "./WidgetBody";
-import { useEffect, useRef, useState } from "react";
-
+import { useRef } from "react";
 const recentExpenses = [
   {
     name: "Starbucks",
@@ -33,31 +32,18 @@ const recentExpenses = [
 
 export function RecentExpensesWidget() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isLarge, setIsLarge] = useState(false);
-
-  useEffect(() => {
-    const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        setIsLarge(entry.contentRect.width > 500);
-      }
-    });
-
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-    return () => observer.disconnect();
-  }, []);
 
   return (
-    <WidgetWrapper id="expenses">
+    <WidgetWrapper id="recent-expenses">
       <WidgetHeader
+        id="recent-expenses"
         title="Recent Expenses"
         icon={ArrowUpRight}
         iconColorClass="text-red-500"
         iconBgClass="bg-red-500/10"
       />
 
-      <WidgetBody id="expenses" ref={containerRef}>
+      <WidgetBody id="recent-expenses" ref={containerRef}>
         <ul className="space-y-1 flex-1 overflow-y-auto custom-scrollbar pr-1 pb-2 min-h-0">
           {recentExpenses.map((expense, i) => (
             <li

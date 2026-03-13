@@ -36,6 +36,7 @@ export function HabitStreaksWidget() {
   return (
     <WidgetWrapper id="habits">
       <WidgetHeader
+        id="habits"
         title="Habits"
         icon={Flame}
         iconColorClass="text-orange-500"

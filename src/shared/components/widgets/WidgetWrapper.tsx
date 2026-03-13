@@ -32,9 +32,7 @@ export const WidgetWrapper = forwardRef<HTMLDivElement, WidgetWrapperProps>(
         )}
         {...props}
       >
-        <div
-          className={cn("h-full w-full", isCollapsed && "pointer-events-none")}
-        >
+        <div className="h-full w-full">
           {isHero ? (
             children
           ) : (

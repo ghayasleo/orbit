@@ -29,15 +29,16 @@ const events = [
 
 export function EventsWidget() {
   return (
-    <WidgetWrapper id="upcoming-events">
+    <WidgetWrapper id="events">
       <WidgetHeader
+        id="events"
         title="Upcoming Events"
         icon={CalendarDays}
-        iconColorClass="text-rose-500"
-        iconBgClass="bg-rose-500/10"
+        iconColorClass="text-emerald-500"
+        iconBgClass="bg-emerald-500/10"
       />
 
-      <WidgetBody id="upcoming-events">
+      <WidgetBody id="events">
         <div className="space-y-4 flex-1 overflow-y-auto custom-scrollbar pr-1 pb-2 min-h-0">
           {events.length > 0 ? (
             events.map((event, i) => (

@@ -5,10 +5,6 @@ import { WidgetHeader } from "./WidgetHeader";
 import { WidgetBody } from "./WidgetBody";
 
 export function BudgetPlannerWidget() {
-  const budgetSpent = 72000;
-  const budgetTotal = 100000;
-  const budgetPercent = Math.round((budgetSpent / budgetTotal) * 100);
-
   const budgetItems = [
     { label: "Groceries", spent: 12000, total: 15000, color: "bg-emerald-500" },
     { label: "Utilities", spent: 8000, total: 10000, color: "bg-emerald-500" },
@@ -25,6 +21,7 @@ export function BudgetPlannerWidget() {
   return (
     <WidgetWrapper id="budget">
       <WidgetHeader
+        id="budget"
         title="Budget Planner"
         icon={Wallet}
         iconColorClass="text-emerald-500"

@@ -12,6 +12,7 @@ export function UpcomingDueWidget() {
   return (
     <WidgetWrapper id="upcoming-due">
       <WidgetHeader
+        id="upcoming-due"
         title="Upcoming Due"
         icon={Calendar}
         iconColorClass="text-amber-500"

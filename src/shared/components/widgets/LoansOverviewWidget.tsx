@@ -17,15 +17,16 @@ export function LoansOverviewWidget() {
   ];
 
   return (
-    <WidgetWrapper id="loans-overview">
+    <WidgetWrapper id="loans">
       <WidgetHeader
+        id="loans"
         title="Loans Overview"
         icon={HandCoins}
         iconColorClass="text-rose-500"
         iconBgClass="bg-rose-500/10"
       />
 
-      <WidgetBody id="loans-overview">
+      <WidgetBody id="loans">
         <div className="flex-1 flex flex-col justify-center gap-4">
           <div className="grid grid-cols-2 gap-3">
             {loanStats.map((stat, i) => (

@@ -39,8 +39,9 @@ export function AIAssistantWidget() {
   };
 
   return (
-    <WidgetWrapper id="ai-assistant">
+    <WidgetWrapper id="ai-chat">
       <WidgetHeader
+        id="ai-chat"
         title="Orbit AI"
         icon={Sparkles}
         iconColorClass="text-blue-500"
@@ -49,7 +50,7 @@ export function AIAssistantWidget() {
         onLinkClick={() => {}}
       />
 
-      <WidgetBody id="ai-assistant">
+      <WidgetBody id="ai-chat">
         <div className="flex-1 flex flex-col overflow-y-auto custom-scrollbar pr-1 pb-2 min-h-0 space-y-3">
           {messages.map((msg, i) => (
             <div

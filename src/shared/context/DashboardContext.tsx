@@ -27,6 +27,8 @@ export interface Layout {
   static?: boolean;
   isDraggable?: boolean;
   isResizable?: boolean;
+  restoreH?: number;
+  isOpen?: boolean;
 }
 
 export interface DashboardLayouts {
@@ -40,12 +42,13 @@ interface DashboardContextType {
   isEditMode: boolean;
   setIsEditMode: (value: boolean) => void;
   layouts: DashboardLayouts;
-  setLayouts: (layouts: DashboardLayouts) => void;
+  setLayouts: React.Dispatch<React.SetStateAction<DashboardLayouts>>;
   hiddenWidgets: string[];
   collapsedWidgets: string[];
   addWidget: (id: string) => void;
   removeWidget: (id: string) => void;
   toggleCollapse: (id: string) => void;
+  toggleTempCollapse: (id: string) => void;
   saveLayout: () => void;
   resetToDefault: () => void;
   cancelChanges: () => void;
@@ -127,13 +130,13 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   });
 
   const savedLayouts: DashboardLayouts = {
-    lg: (savedData.layout_lg as Layout[]) || defaultLayouts.lg,
-    md: (savedData.layout_md as Layout[]) || defaultLayouts.md,
-    sm: (savedData.layout_sm as Layout[]) || defaultLayouts.sm,
-    xs: (savedData.layout_xs as Layout[]) || defaultLayouts.xs,
+    lg: (savedData?.layout_lg as Layout[]) || defaultLayouts.lg,
+    md: (savedData?.layout_md as Layout[]) || defaultLayouts.md,
+    sm: (savedData?.layout_sm as Layout[]) || defaultLayouts.sm,
+    xs: (savedData?.layout_xs as Layout[]) || defaultLayouts.xs,
   };
-  const savedCollapsedIds = savedData.collapsed_widgets || [];
-  const savedHiddenWidgets = savedData.hidden_widgets || [];
+  const savedCollapsedIds = savedData?.collapsed_widgets || [];
+  const savedHiddenWidgets = savedData?.hidden_widgets || [];
 
   // Apply fetched data
   useEffect(() => {
@@ -247,8 +250,20 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
       hiddenWidgets,
       collapsedWidgets,
     });
+
+    // Remove temp collapsed visually before saving so it doesn't persist
+    const cleanLayouts = { ...layouts };
+    (Object.keys(cleanLayouts) as Array<keyof DashboardLayouts>).forEach((bp) => {
+      cleanLayouts[bp] = cleanLayouts[bp].map((l) => {
+        if (l.isOpen === false) {
+          return { ...l, h: l.restoreH || 4, minH: 2, isResizable: true, isOpen: true }; // restore for DB save
+        }
+        return l;
+      });
+    });
+
     saveMutation.mutate({
-      pl: layouts,
+      pl: cleanLayouts,
       ph: hiddenWidgets,
       pcl: collapsedWidgets,
     });
@@ -321,29 +336,61 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         isCollapsing ? [...prev, id] : prev.filter((wId) => wId !== id),
       );
 
-      setTimeout(() => {
-        setLayouts((prev) => {
-          const newLayouts = { ...prev };
-          (Object.keys(newLayouts) as Array<keyof DashboardLayouts>).forEach(
-            (bp) => {
-              newLayouts[bp] = newLayouts[bp].map((l) => {
-                if (l.i === id) {
-                  if (isCollapsing) {
-                    return { ...l, h: 1, minH: 1, isResizable: false };
-                  } else {
-                    return { ...l, h: 4, minH: 2, isResizable: true }; // Default restore height
-                  }
+      setLayouts((prev) => {
+        const newLayouts = { ...prev };
+        (Object.keys(newLayouts) as Array<keyof DashboardLayouts>).forEach(
+          (bp) => {
+            newLayouts[bp] = newLayouts[bp].map((l) => {
+              if (l.i === id) {
+                const { isOpen, ...cleanLayout } = l; // Strip temp state
+                if (isCollapsing) {
+                  return {
+                    ...cleanLayout,
+                    h: 1,
+                    minH: 1,
+                    isResizable: false,
+                    restoreH: l.h !== 1 ? l.h : l.restoreH,
+                  };
+                } else {
+                  return {
+                    ...cleanLayout,
+                    h: l.restoreH || 4,
+                    minH: 2,
+                    isResizable: true,
+                  }; // Default restore height
                 }
-                return l;
-              });
-            },
-          );
-          return newLayouts;
-        });
-      }, 300);
+              }
+              return l;
+            });
+          },
+        );
+        return newLayouts;
+      });
     },
     [collapsedWidgets],
-  ); // collapsedWidgets is a dependency because isCollapsing depends on it
+  );
+
+  const toggleTempCollapse = useCallback((id: string) => {
+    setLayouts((prev) => {
+      const newLayouts = { ...prev };
+      (Object.keys(newLayouts) as Array<keyof DashboardLayouts>).forEach((bp) => {
+        newLayouts[bp] = newLayouts[bp].map((l) => {
+          if (l.i === id) {
+            const isVisuallyCollapsed = l.isOpen === false || (l.isOpen === undefined && collapsedWidgets.includes(id));
+            const isCollapsing = !isVisuallyCollapsed;
+
+            if (isCollapsing) {
+              return { ...l, h: 1, minH: 1, isResizable: false, restoreH: l.h !== 1 ? l.h : l.restoreH, isOpen: false };
+            } else {
+              return { ...l, h: l.restoreH || 4, minH: 2, isResizable: true, isOpen: true };
+            }
+          }
+          return l;
+        });
+      });
+      return newLayouts;
+    });
+  }, [collapsedWidgets]);
 
   const resetMutation = useMutation({
     mutationFn: async () => {
@@ -374,6 +421,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
       addWidget,
       removeWidget,
       toggleCollapse,
+      toggleTempCollapse,
       saveLayout,
       resetToDefault,
       cancelChanges,
@@ -387,6 +435,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
       addWidget,
       removeWidget,
       toggleCollapse,
+      toggleTempCollapse,
       saveLayout,
       resetToDefault,
       cancelChanges,

@@ -5,15 +5,16 @@ import { WidgetBody } from "./WidgetBody";
 
 export function NotesWidget() {
   return (
-    <WidgetWrapper id="quick-notes">
+    <WidgetWrapper id="notes">
       <WidgetHeader
+        id="notes"
         title="Quick Notes"
         icon={FileText}
         iconColorClass="text-amber-500"
         iconBgClass="bg-amber-500/10"
       />
 
-      <WidgetBody id="quick-notes">
+      <WidgetBody id="notes">
         <div className="flex-1 flex flex-col gap-3 min-h-0">
           <div className="flex-1 rounded-xl bg-bg-subtle/50 border border-border-subtle/30 p-3 sm:p-4 overflow-y-auto custom-scrollbar">
             <p className="text-sm text-text-primary leading-relaxed">

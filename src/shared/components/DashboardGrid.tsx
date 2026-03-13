@@ -1,6 +1,6 @@
 import { Responsive, WidthProvider } from "react-grid-layout/legacy";
 import { useDashboard } from "../context/DashboardContext";
-import type { Layout } from "../context/DashboardContext";
+import type { Layout, DashboardLayouts } from "../context/DashboardContext";
 import { HeroBanner } from "./widgets/HeroBanner";
 import { HabitStreaksWidget } from "./widgets/HabitStreaksWidget";
 import { PriorityTasksWidget } from "./widgets/PriorityTasksWidget";
@@ -93,7 +93,21 @@ export function DashboardGrid() {
       // Prevent state updates if unmounted or not really editing layout structure
       // Also only update if we are in edit mode to avoid loop-back updates during initialization/hydration
       if (mounted && isEditMode) {
-        setLayouts(allLayouts);
+        setLayouts((prev: DashboardLayouts) => {
+          const mergedLayouts = { ...allLayouts } as DashboardLayouts;
+          (Object.keys(mergedLayouts) as Array<keyof DashboardLayouts>).forEach(
+            (bp) => {
+              mergedLayouts[bp] = mergedLayouts[bp].map((newItem: any) => {
+                // Maintain custom properties like restoreH that react-grid-layout might strip
+                const oldItem = prev[bp]?.find(
+                  (old: Layout) => old.i === newItem.i,
+                );
+                return { ...oldItem, ...newItem };
+              });
+            },
+          );
+          return mergedLayouts;
+        });
       }
     },
     [mounted, isEditMode, setLayouts],

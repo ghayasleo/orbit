@@ -27,15 +27,16 @@ const reminders = [
 
 export function RemindersWidget() {
   return (
-    <WidgetWrapper id="recent-reminders">
+    <WidgetWrapper id="reminders">
       <WidgetHeader
+        id="reminders"
         title="Recent Reminders"
         icon={Bell}
         iconColorClass="text-amber-500"
         iconBgClass="bg-amber-500/10"
       />
 
-      <WidgetBody id="recent-reminders">
+      <WidgetBody id="reminders">
         <ul className="space-y-1 flex-1 overflow-y-auto custom-scrollbar pr-1 pb-2 min-h-0">
           {reminders.map((reminder, i) => (
             <li
