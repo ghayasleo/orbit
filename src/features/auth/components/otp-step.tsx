@@ -12,7 +12,7 @@ interface OtpStepProps {
   onBack: () => void
 }
 
-const OTP_LENGTH = 6
+const OTP_LENGTH = import.meta.env.MODE === "development" ? 6 : 8
 const RESEND_COOLDOWN_S = 60
 
 export function OtpStep({ email, loading, error, note, onVerify, onResend, onBack }: OtpStepProps) {
@@ -85,7 +85,7 @@ export function OtpStep({ email, loading, error, note, onVerify, onResend, onBac
   }
 
   return (
-    <div className="w-full max-w-sm space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
+    <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
       {/* Header */}
       <div className="space-y-2">
         <div className="w-14 h-14 rounded-2xl bg-violet-100 dark:bg-violet-950/50 flex items-center justify-center mb-4">
@@ -96,7 +96,7 @@ export function OtpStep({ email, loading, error, note, onVerify, onResend, onBac
         </div>
         <h1 className="text-2xl font-bold tracking-tight">Check your email</h1>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          We sent a 6-digit code to{' '}
+          We sent a {OTP_LENGTH}-digit code to{' '}
           <span className="font-medium text-foreground">{email}</span>.
           {note && (
             <span className="block mt-1 text-violet-600 dark:text-violet-400">{note}</span>

@@ -45,8 +45,10 @@ create policy "Users can delete own profile." on public.profiles
 -- Trigger for updated_at
 create extension if not exists moddatetime schema extensions;
 
-create trigger handle_updated_at before update on public.profiles 
-  for each row execute procedure moddatetime (updated_at);
+create trigger handle_updated_at
+  before update on public.profiles
+  for each row
+  execute function extensions.moddatetime(updated_at);
 
 -- Trigger to sync auth.users to public.profiles on signup/update
 create or replace function public.handle_new_user() 
