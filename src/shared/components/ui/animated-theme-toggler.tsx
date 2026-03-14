@@ -5,7 +5,7 @@ import { Moon, Sun } from "lucide-react";
 import { flushSync } from "react-dom";
 
 import { cn } from "@/lib/utils";
-import { useThemeStore } from "@/shared/stores/useThemeStore";
+import { useThemeStore } from "@/shared/stores/use-theme-store";
 
 interface AnimatedThemeTogglerProps extends React.ComponentPropsWithoutRef<"button"> {
   duration?: number;

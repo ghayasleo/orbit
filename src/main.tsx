@@ -4,7 +4,7 @@ import { RouterProvider } from "react-router-dom";
 import "./index.css";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
-import { AppProviders } from "./app/providers/AppProviders";
+import { AppProviders } from "./app/providers/app-providers";
 import { createRouter } from "./app/routes";
 import { Analytics } from "@vercel/analytics/react";
 import { useAuthStore } from "./shared/stores/use-auth-store";

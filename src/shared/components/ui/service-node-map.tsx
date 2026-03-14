@@ -29,7 +29,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { useThemeStore } from "@/shared/stores/useThemeStore";
+import { useThemeStore } from "@/shared/stores/use-theme-store";
 
 // --- Types ---
 

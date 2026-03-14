@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import { DashboardLayout } from "../layouts/dashboard-layout";
-import { AuthLayout } from "@/features/auth/components/auth-layout";
-import { LandingPage } from "@/features/landing/pages/landing-page";
-import { DashboardPage } from "@/features/dashboard/pages/dashboard-page";
+import { AuthLayout } from "@/app/layouts/auth-layout";
+import { LandingPage } from "@/features/landing/pages/landing";
+import { DashboardPage } from "@/features/dashboard/pages/dashboard";
 import {
   TasksPage,
   RemindersPage,
@@ -13,17 +13,17 @@ import {
   NotesPage,
   SubscriptionsPage,
   GoalsPage,
-} from "@/features/dashboard/pages/module-pages";
-import { SettingsPage } from "@/features/dashboard/pages/settings-page";
-import { LoginPage } from "@/features/auth/components/login-page";
-import { SignupPage } from "@/features/auth/components/signup-page";
-import { ForgotPasswordPage } from "@/features/auth/components/forgot-password-page";
-import { ResetPasswordPage } from "@/features/auth/components/reset-password-page";
+} from "@/features/dashboard/pages/module";
+import { SettingsPage } from "@/features/dashboard/pages/settings";
+import { LoginPage } from "@/features/auth/pages/login";
+import { SignupPage } from "@/features/auth/pages/signup";
+import { ForgotPasswordPage } from "@/features/auth/pages/forgot-password";
+import { ResetPasswordPage } from "@/features/auth/pages/reset-password";
 import {
   ProtectedRoute,
   PublicRoute,
-} from "@/features/auth/components/auth-route";
-import { NotFoundPage } from "./NotFoundPage";
+} from "@/app/routes/auth-route";
+import { NotFoundPage } from "@/app/pages/not-found";
 
 export const routes = [
   { path: "/", element: <LandingPage /> },
