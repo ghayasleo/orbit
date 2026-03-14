@@ -1,23 +1,22 @@
-import { Outlet } from "react-router-dom";
-import { AppSidebar } from "./app-sidebar";
-import { DashboardHeader } from "./dashboard-header";
-import { useSidebarStore } from "@/shared/stores/use-sidebar-store";
-import { cn } from "@/lib/utils";
+import { Outlet } from 'react-router-dom';
+import { AppSidebar } from '@/widgets/sidebar';
+import { DashboardHeader } from '@/widgets/header';
+import { useUIStore } from '@/shared/store';
+import { cn } from '@/shared/lib';
 
 export function DashboardLayout() {
-  const { collapsed } = useSidebarStore();
+  const { sidebarCollapsed: collapsed } = useUIStore();
 
   return (
     <div className="min-h-dvh bg-bg-base font-inter flex flex-col relative w-full overflow-x-hidden">
       <AppSidebar />
 
-      {/* Main content — offset for slim/expanded sidebar on desktop, bottom nav on mobile */}
       <main
         className={cn(
-          "flex-1 flex flex-col min-h-dvh pb-[80px] lg:pb-0 transition-all duration-300 ease-in-out w-full",
+          'flex-1 flex flex-col min-h-dvh pb-[80px] lg:pb-0 transition-all duration-300 ease-in-out w-full',
           collapsed
-            ? "lg:ml-[68px] lg:w-[calc(100%-68px)]"
-            : "lg:ml-[240px] lg:w-[calc(100%-240px)]",
+            ? 'lg:ml-[68px] lg:w-[calc(100%-68px)]'
+            : 'lg:ml-[240px] lg:w-[calc(100%-240px)]',
         )}
       >
         <DashboardHeader />

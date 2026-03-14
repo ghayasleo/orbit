@@ -1,0 +1,20 @@
+// [APP/ROUTER] - Centralized route paths
+export const PATHS = {
+  home: '/',
+  pricing: '/pricing',
+  login: '/login',
+  signup: '/signup',
+  forgotPassword: '/forgot-password',
+  resetPassword: '/reset-password',
+  app: '/app',
+  settings: '/app/settings',
+  tasks: '/app/tasks',
+  reminders: '/app/reminders',
+  expenses: '/app/expenses',
+  loans: '/app/loans',
+  habits: '/app/habits',
+  budget: '/app/budget',
+  notes: '/app/notes',
+  subscriptions: '/app/subscriptions',
+  goals: '/app/goals',
+} as const;

@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
-import { useThemeStore } from '@/shared/stores/use-theme-store'
+import { useUIStore } from '@/shared/store'
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const theme = useThemeStore((state) => state.theme)
+  const theme = useUIStore((state) => state.theme)
 
   useEffect(() => {
     const root = window.document.documentElement

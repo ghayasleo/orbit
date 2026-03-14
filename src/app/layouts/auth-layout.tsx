@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom'
-import { AnimatedThemeToggler } from '@/shared/components/ui/animated-theme-toggler'
+import { AnimatedThemeToggler } from '@/features/toggle-theme'
 
 export function AuthLayout() {
   return (
