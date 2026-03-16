@@ -1,5 +1,5 @@
 // [WIDGETS/LANDING-SECTIONS] - Public API
-export { SocialProofBar } from './ui/social-proof-bar';
+export { HeroSection } from './ui/hero-section';
 export { ProblemSection } from './ui/problem-section';
 export { FeaturesGridSection } from './ui/features-grid-section';
 export { HowItWorksSection } from './ui/how-it-works-section';

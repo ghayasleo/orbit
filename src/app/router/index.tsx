@@ -4,16 +4,16 @@ import { AuthLayout } from '@/app/layouts/auth-layout';
 import { LandingPage } from '@/pages/landing';
 import {
   DashboardPage,
-  TasksPage,
-  RemindersPage,
-  ExpensesPage,
-  LoansPage,
-  HabitsPage,
-  BudgetPage,
-  NotesPage,
-  SubscriptionsPage,
-  GoalsPage,
 } from '@/pages/dashboard';
+import { TasksPage } from '@/pages/tasks';
+import { RemindersPage } from '@/pages/reminders';
+import { ExpensesPage } from '@/pages/expenses';
+import { LoansPage } from '@/pages/loans';
+import { HabitsPage } from '@/pages/habits';
+import { BudgetPage } from '@/pages/budget';
+import { NotesPage } from '@/pages/notes';
+import { SubscriptionsPage } from '@/pages/subscriptions';
+import { GoalsPage } from '@/pages/goals';
 import { SettingsPage } from '@/pages/settings';
 import {
   LoginPage,

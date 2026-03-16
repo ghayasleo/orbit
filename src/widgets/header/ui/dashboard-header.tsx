@@ -2,10 +2,12 @@ import { PanelLeft, Search, Bell, LogOut } from "lucide-react";
 import { useUIStore } from "@/shared/store/use-ui-store";
 import { useUserStore } from "@/entities/user";
 import { AnimatedThemeToggler } from "@/features/toggle-theme";
+import { useSignOut } from "@/features/sign-out";
 
 export function DashboardHeader() {
   const { toggleCollapsed } = useUIStore();
-  const { user, profile, signOut } = useUserStore();
+  const { user, profile } = useUserStore();
+  const { mutateAsync: signOut } = useSignOut();
 
   const userInitial = user?.email?.charAt(0).toUpperCase() || "U";
   const userName =

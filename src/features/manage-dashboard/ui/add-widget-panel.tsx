@@ -13,7 +13,7 @@ import {
   CalendarDays,
   Sparkles,
 } from "lucide-react";
-import { useDashboard } from "@/entities/dashboard";
+import { useDashboardStore } from "@/entities/dashboard";
 import { cn } from "@/shared/lib";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
@@ -123,7 +123,7 @@ const AVAILABLE_WIDGETS = [
 ];
 
 export function AddWidgetPanel({ isOpen, onClose }: AddWidgetPanelProps) {
-  const { layouts, addWidget, hiddenWidgets, resetToDefault } = useDashboard();
+  const { layouts, addWidget, hiddenWidgets, resetToDefaults } = useDashboardStore();
   const panelRef = useRef<HTMLDivElement>(null);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
@@ -155,7 +155,7 @@ export function AddWidgetPanel({ isOpen, onClose }: AddWidgetPanelProps) {
 
   const handleReset = () => {
     if (showResetConfirm) {
-      resetToDefault();
+      resetToDefaults();
       setShowResetConfirm(false);
       onClose();
     } else {

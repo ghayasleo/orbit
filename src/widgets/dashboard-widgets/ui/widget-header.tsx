@@ -1,7 +1,7 @@
 import { LucideIcon, ChevronRight } from "lucide-react";
 import { cn } from "@/shared/lib";
 import { Link } from "react-router-dom";
-import { useDashboard } from "@/entities/dashboard";
+import { useDashboardStore } from "@/entities/dashboard";
 
 interface WidgetHeaderProps {
   id?: string;
@@ -24,7 +24,7 @@ export function WidgetHeader({
   linkText = "View all",
   onLinkClick,
 }: WidgetHeaderProps) {
-  const { toggleTempCollapse } = useDashboard();
+  const { toggleTempCollapse } = useDashboardStore();
 
   return (
     <div className="flex items-center justify-between mb-2 sm:mb-4">

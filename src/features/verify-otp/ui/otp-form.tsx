@@ -1,14 +1,15 @@
+// [FEATURES/VERIFY-OTP/UI] - otp-form
 import { useEffect, useRef, useState } from "react";
+import { useVerifyOtp } from "../api/use-verify-otp";
+import { resendSignupOtp } from "@/shared/api";
 import { Button } from "@/shared/ui/button";
 import { cn } from "@/shared/lib";
 
-interface OtpStepProps {
+interface OtpFormProps {
   email: string;
-  loading: boolean;
-  error: string | null;
+  avatarFile?: File | null;
   note?: string;
-  onVerify: (token: string) => void;
-  onResend: () => void;
+  onVerifySuccess: () => void;
   onBack: () => void;
 }
 
@@ -16,17 +17,17 @@ const isDev = import.meta.env.MODE === "development";
 const OTP_LENGTH = isDev ? 6 : 8;
 const RESEND_COOLDOWN_S = 60;
 
-export function OtpStep({
+export function OtpForm({
   email,
-  loading,
-  error,
+  avatarFile,
   note,
-  onVerify,
-  onResend,
+  onVerifySuccess,
   onBack,
-}: OtpStepProps) {
+}: OtpFormProps) {
+  const { mutateAsync: verifyOtp, isPending: loading, error } = useVerifyOtp();
   const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [cooldown, setCooldown] = useState(0);
+  const [resendError, setResendError] = useState<string | null>(null);
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
 
   useEffect(() => {
@@ -39,6 +40,15 @@ export function OtpStep({
     return () => clearTimeout(timer);
   }, [cooldown]);
 
+  const handleVerify = async (token: string) => {
+    try {
+      await verifyOtp({ email, token, avatarFile });
+      onVerifySuccess();
+    } catch (err) {
+      // Handled by React Query / local error state
+    }
+  };
+
   function handleChange(index: number, value: string) {
     const char = value.replace(/\D/g, "").slice(-1);
     const next = [...digits];
@@ -50,7 +60,7 @@ export function OtpStep({
     }
 
     if (next.every((d) => d !== "")) {
-      onVerify(next.join(""));
+      handleVerify(next.join(""));
     }
   }
 
@@ -88,16 +98,24 @@ export function OtpStep({
     const focusIndex = Math.min(pasted.length, OTP_LENGTH - 1);
     inputRefs.current[focusIndex]?.focus();
     if (pasted.length === OTP_LENGTH) {
-      onVerify(pasted);
+      handleVerify(pasted);
     }
   }
 
-  function handleResend() {
-    onResend();
-    setCooldown(RESEND_COOLDOWN_S);
-    setDigits(Array(OTP_LENGTH).fill(""));
-    setTimeout(() => inputRefs.current[0]?.focus(), 50);
+  async function handleResend() {
+    try {
+      setResendError(null);
+      const { error } = await resendSignupOtp(email);
+      if (error) throw error;
+      setCooldown(RESEND_COOLDOWN_S);
+      setDigits(Array(OTP_LENGTH).fill(""));
+      setTimeout(() => inputRefs.current[0]?.focus(), 50);
+    } catch (err: any) {
+      setResendError(err.message || 'Failed to resend code');
+    }
   }
+
+  const displayError = error?.message || resendError;
 
   return (
     <div
@@ -166,7 +184,7 @@ export function OtpStep({
           ))}
         </div>
 
-        {error && (
+        {displayError && (
           <p className="text-sm text-destructive flex items-center gap-1.5 mt-2">
             <svg
               width="14"
@@ -182,7 +200,7 @@ export function OtpStep({
               <line x1="12" x2="12" y1="8" y2="12" />
               <line x1="12" x2="12.01" y1="16" y2="16" />
             </svg>
-            {error}
+            {displayError}
           </p>
         )}
       </div>
@@ -190,7 +208,7 @@ export function OtpStep({
       {/* Submit */}
       <Button
         className="w-full bg-violet-600 hover:bg-violet-700 text-white h-11 rounded-xl font-medium transition-all"
-        onClick={() => onVerify(digits.join(""))}
+        onClick={() => handleVerify(digits.join(""))}
         disabled={loading || digits.some((d) => !d)}
       >
         {loading ? (

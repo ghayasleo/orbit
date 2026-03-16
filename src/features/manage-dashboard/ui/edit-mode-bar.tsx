@@ -1,14 +1,21 @@
 import { LayoutDashboard, Check, Plus, X } from "lucide-react";
-import { useDashboard } from "@/entities/dashboard";
 import { cn } from "@/shared/lib";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { AddWidgetPanel } from "./add-widget-panel";
+import { useSaveDashboard } from "@/features/save-dashboard";
+import { useDashboardStore, useDashboardLayout, defaultLayouts } from "@/entities/dashboard";
+import type { DashboardLayouts, Layout } from "@/entities/dashboard/model/types";
+import { useUserStore } from "@/entities/user";
 
 export function EditModeBar() {
-  const { isEditMode, setIsEditMode, saveLayout, cancelChanges } =
-    useDashboard();
+  const { isEditMode, setIsEditMode, setLayouts, setHiddenWidgets, setCollapsedWidgets } = useDashboardStore();
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const { mutate: saveLayout } = useSaveDashboard();
+  
+  const user = useUserStore(s => s.user);
+  // We use this to restore original layout on cancel
+  const { data: savedData } = useDashboardLayout(user?.id);
 
   const toggleEditMode = () => {
     if (isEditMode) {
@@ -20,7 +27,32 @@ export function EditModeBar() {
 
   const cancelEditMode = () => {
     if (isEditMode) {
-      cancelChanges();
+      if (savedData) {
+        const savedLayouts: DashboardLayouts = {
+          lg: (savedData.layout_lg as Layout[]) || defaultLayouts.lg,
+          md: (savedData.layout_md as Layout[]) || defaultLayouts.md,
+          sm: (savedData.layout_sm as Layout[]) || defaultLayouts.sm,
+          xs: (savedData.layout_xs as Layout[]) || defaultLayouts.xs,
+        };
+        const savedCollapsedIds = savedData.collapsed_widgets || [];
+        const hiddenWidgetsList = savedData.hidden_widgets || [];
+
+        (Object.keys(savedLayouts) as Array<keyof DashboardLayouts>).forEach((bp) => {
+          savedLayouts[bp] = savedLayouts[bp].map((l) => ({
+            ...l,
+            isResizable: !savedCollapsedIds.includes(l.i),
+          }));
+        });
+
+        setLayouts(savedLayouts);
+        setHiddenWidgets(hiddenWidgetsList);
+        setCollapsedWidgets(savedCollapsedIds);
+      } else {
+        // Fallback if no layout was saved
+        setLayouts(defaultLayouts);
+        setHiddenWidgets([]);
+        setCollapsedWidgets([]);
+      }
       setIsPanelOpen(false);
     }
     setIsEditMode(!isEditMode);
@@ -37,11 +69,7 @@ export function EditModeBar() {
             : "scale-0",
         )}
       >
-        {isEditMode ? (
-          <X className="h-4 w-4 shrink-0" strokeWidth={2.5} />
-        ) : (
-          <LayoutDashboard className="h-4 w-4 shrink-0" />
-        )}
+        <X className="h-4 w-4 shrink-0" strokeWidth={2.5} />
         <span className="hidden sm:inline">Cancel</span>
       </button>
       <button

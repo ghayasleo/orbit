@@ -1,6 +1,6 @@
 import { useState, forwardRef, HTMLAttributes } from "react";
 import { GripVertical, X, ChevronUp, ChevronDown } from "lucide-react";
-import { useDashboard } from "@/entities/dashboard";
+import { useDashboardStore } from "@/entities/dashboard";
 import { cn } from "@/shared/lib";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -12,7 +12,7 @@ interface WidgetWrapperProps extends HTMLAttributes<HTMLDivElement> {
 export const WidgetWrapper = forwardRef<HTMLDivElement, WidgetWrapperProps>(
   ({ id, children, className, isHero = false, ...props }, ref) => {
     const { isEditMode, removeWidget, toggleCollapse, collapsedWidgets } =
-      useDashboard();
+      useDashboardStore();
     const isCollapsed = collapsedWidgets.includes(id);
 
     const [showConfirm, setShowConfirm] = useState(false);

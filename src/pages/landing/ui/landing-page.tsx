@@ -1,6 +1,5 @@
-import { HeroSection } from '@/widgets/landing-hero';
 import {
-  SocialProofBar,
+  HeroSection,
   ProblemSection,
   FeaturesGridSection,
   HowItWorksSection,
@@ -25,7 +24,6 @@ export function LandingPage() {
       <div className="flex flex-col min-h-screen font-inter bg-bg-base text-text-primary selection:bg-primary/50 selection:text-white">
         <main className="flex-1">
           <HeroSection />
-          <SocialProofBar />
           <ProblemSection />
           <FeaturesGridSection />
           <HowItWorksSection />

@@ -29,3 +29,4 @@ export { TextEffect } from './text-effect';
 export { Testimonials } from './unique-testimonial';
 export { PageHeader } from './page-header';
 export { SettingsCard } from './settings-card';
+export { Toast } from './toast';

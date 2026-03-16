@@ -1,5 +1,5 @@
 import { cn } from "@/shared/lib";
-import { useDashboard } from "@/entities/dashboard";
+import { useDashboardStore } from "@/entities/dashboard";
 import { ReactNode, forwardRef } from "react";
 
 interface WidgetBodyProps {
@@ -10,7 +10,7 @@ interface WidgetBodyProps {
 
 export const WidgetBody = forwardRef<HTMLDivElement, WidgetBodyProps>(
   ({ id, children, className }, ref) => {
-    const { collapsedWidgets, layouts } = useDashboard();
+    const { collapsedWidgets, layouts } = useDashboardStore();
     
     // Read isOpen flag from any breakpoint (they sync together)
     const layoutItem = layouts?.lg?.find(l => l.i === id) || layouts?.md?.find(l => l.i === id);
