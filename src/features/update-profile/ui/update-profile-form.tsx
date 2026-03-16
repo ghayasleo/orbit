@@ -1,6 +1,6 @@
 // [FEATURES/UPDATE-PROFILE/UI] - update-profile-form
 import { useState, useEffect, useCallback } from "react";
-import { Save, AlertCircle } from "lucide-react";
+import { Save } from "lucide-react";
 import { Button, LabeledInput, SettingsCard, Toast } from "@/shared/ui";
 import { ProfileImageUploader } from "./profile-image-uploader";
 import { useUnsavedChanges } from "@/shared/lib";
@@ -8,9 +8,13 @@ import { useUserStore } from "@/entities/user";
 import { useUpdateProfile } from "../api/use-update-profile";
 import { useUploadAvatar } from "../api/use-upload-avatar";
 import { AnimatePresence } from "framer-motion";
+import type { useBlocker } from "react-router-dom";
 
+interface UpdateProfileFormProps {
+  onBlockerChange?: (blocker: ReturnType<typeof useBlocker>) => void;
+}
 
-export function UpdateProfileForm() {
+export function UpdateProfileForm({ onBlockerChange }: UpdateProfileFormProps) {
   const { user, profile } = useUserStore();
   const { mutateAsync: updateProfile } = useUpdateProfile();
   const { mutateAsync: uploadAvatar } = useUploadAvatar();
@@ -54,6 +58,10 @@ export function UpdateProfileForm() {
   // we might want the warning to be page-level or handle it per form.
   // For now, let's keep it here for the profile form.
   const { blocker } = useUnsavedChanges(hasProfileChanges);
+
+  useEffect(() => {
+    onBlockerChange?.(blocker);
+  }, [blocker, onBlockerChange]);
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,33 +108,7 @@ export function UpdateProfileForm() {
     "U";
 
   return (
-    <>
-      {blocker.state === "blocked" && (
-        <div className="mb-5 flex items-start gap-3 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-sm">
-          <AlertCircle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-          <div className="flex-1">
-            <p className="text-amber-600 dark:text-amber-400 font-medium">
-              Unsaved changes
-            </p>
-            <p className="text-amber-500/80 text-xs mt-0.5">
-              Are you sure you want to leave this page?
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="ghost" size="sm" onClick={() => blocker.reset?.()}>
-              Stay
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => blocker.proceed?.()}
-            >
-              Leave
-            </Button>
-          </div>
-        </div>
-      )}
-      <form onSubmit={handleProfileSubmit} className="h-full">
+    <form onSubmit={handleProfileSubmit} className="h-full">
         <SettingsCard
           title="Profile Update"
           description="Manage your public information"
@@ -196,7 +178,6 @@ export function UpdateProfileForm() {
             description="Email address cannot be changed"
           />
         </SettingsCard>
-      </form>
-    </>
+    </form>
   );
 }
