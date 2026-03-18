@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { Camera } from "lucide-react";
 import { cn } from "@/shared/lib";
 
@@ -66,6 +66,14 @@ export function ProfileImageUploader({
     currentImageUrl || null,
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const hasLocalFile = useRef(false);
+
+  // Sync when the stored image URL loads asynchronously (profile data arrives after mount)
+  useEffect(() => {
+    if (!hasLocalFile.current) {
+      setPreviewUrl(currentImageUrl || null);
+    }
+  }, [currentImageUrl]);
 
 
   const processFile = async (file: File) => {
