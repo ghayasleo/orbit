@@ -1,6 +1,5 @@
 import { Responsive, WidthProvider } from "react-grid-layout/legacy";
 import { useDashboardStore } from "@/entities/dashboard";
-import { useInitDashboard } from "@/entities/dashboard/model/use-init-dashboard";
 import type { Layout, DashboardLayouts } from "@/entities/dashboard";
 import { HeroBanner } from "@/widgets/dashboard-widgets/ui/hero-banner";
 import { HabitStreaksWidget } from "@/widgets/dashboard-widgets/ui/habit-streaks-widget";
@@ -74,8 +73,9 @@ export function DashboardGrid() {
     isEditMode,
     hiddenWidgets,
     collapsedWidgets,
+    isLoading, // Read from store now
   } = useDashboardStore();
-  const { isLoading } = useInitDashboard();
+  
   const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [resizing, setResizing] = useState<string | null>(null);

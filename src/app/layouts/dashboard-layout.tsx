@@ -3,12 +3,24 @@ import { AppSidebar } from '@/widgets/sidebar';
 import { DashboardHeader } from '@/widgets/header';
 import { useUIStore } from '@/shared/store';
 import { cn } from '@/shared/lib';
+import { AnimatePresence } from 'framer-motion';
+import { useDashboardStore } from '@/entities/dashboard';
+import { useInitDashboard } from '@/entities/dashboard';
+import { FullPageLoader } from '@/shared/ui';
 
 export function DashboardLayout() {
   const { sidebarCollapsed: collapsed } = useUIStore();
+  const isHydrated = useDashboardStore((state) => state.isHydrated);
+
+  console.log(isHydrated);
+  
+  // App initialization: Prefetch and stabilize layout for the entire session
+  useInitDashboard();
 
   return (
     <div className="min-h-dvh bg-bg-base font-inter flex flex-col relative w-full overflow-x-hidden">
+        {!isHydrated && <FullPageLoader key="global-loader" />}
+
       <AppSidebar />
 
       <main

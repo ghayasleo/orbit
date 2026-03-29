@@ -12,14 +12,21 @@ export function useInitDashboard() {
   const setLayouts = useDashboardStore((state) => state.setLayouts);
   const setHiddenWidgets = useDashboardStore((state) => state.setHiddenWidgets);
   const setCollapsedWidgets = useDashboardStore((state) => state.setCollapsedWidgets);
+  const isHydrated = useDashboardStore((state) => state.isHydrated);
+  const setIsHydrated = useDashboardStore((state) => state.setIsHydrated);
+  const setIsLoading = useDashboardStore((state) => state.setIsLoading);
 
   useEffect(() => {
-    if (savedData && !isLoading) {
+    // Background sync of loading status
+    setIsLoading(isLoading);
+
+    if (!isLoading && savedData) {
+      // Apply layouts immediately if data is ready
       const savedLayouts: DashboardLayouts = {
-        lg: (savedData.layout_lg) || defaultLayouts.lg,
-        md: (savedData.layout_md) || defaultLayouts.md,
-        sm: (savedData.layout_sm) || defaultLayouts.sm,
-        xs: (savedData.layout_xs) || defaultLayouts.xs,
+        lg: savedData.layout_lg || defaultLayouts.lg,
+        md: savedData.layout_md || defaultLayouts.md,
+        sm: savedData.layout_sm || defaultLayouts.sm,
+        xs: savedData.layout_xs || defaultLayouts.xs,
       };
       const savedCollapsedIds = savedData.collapsed_widgets || [];
       const hiddenWidgets = savedData.hidden_widgets || [];
@@ -34,8 +41,18 @@ export function useInitDashboard() {
       setLayouts(savedLayouts);
       setHiddenWidgets(hiddenWidgets);
       setCollapsedWidgets(savedCollapsedIds);
+
+      // If already hydrated (cached from previous visit in same session), just finish
+      if (isHydrated) return;
+
+      // First time hydration in this session: Wait 1s for stable layout
+      const timer = setTimeout(() => {
+        setIsHydrated(true);
+      }, 1000);
+
+      return () => clearTimeout(timer);
     }
-  }, [savedData, isLoading, setLayouts, setHiddenWidgets, setCollapsedWidgets]);
+  }, [savedData, isLoading, isHydrated, setLayouts, setHiddenWidgets, setCollapsedWidgets, setIsHydrated, setIsLoading]);
 
   return { isLoading };
 }

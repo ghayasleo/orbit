@@ -13,6 +13,11 @@ interface DashboardState {
   collapsedWidgets: string[];
   setCollapsedWidgets: (widgets: string[] | ((prev: string[]) => string[])) => void;
   
+  isLoading: boolean;
+  setIsLoading: (value: boolean) => void;
+  isHydrated: boolean;
+  setIsHydrated: (value: boolean) => void;
+  
   addWidget: (id: string) => void;
   removeWidget: (id: string) => void;
   toggleCollapse: (id: string) => void;
@@ -39,6 +44,11 @@ export const useDashboardStore = create<DashboardState>((set) => ({
       collapsedWidgets:
         typeof widgets === 'function' ? widgets(state.collapsedWidgets) : widgets,
     })),
+
+  isLoading: true,
+  setIsLoading: (value) => set({ isLoading: value }),
+  isHydrated: false,
+  setIsHydrated: (value) => set({ isHydrated: value }),
 
   addWidget: (id) =>
     set((state) => {

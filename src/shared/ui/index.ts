@@ -31,3 +31,4 @@ export { PageHeader } from './page-header';
 export { SettingsCard } from './settings-card';
 export { Toast } from './toast';
 export { UnsavedChangesAlert } from './unsaved-changes-alert';
+export { FullPageLoader } from './full-page-loader';
