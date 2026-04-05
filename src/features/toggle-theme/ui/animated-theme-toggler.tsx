@@ -73,8 +73,6 @@ export const AnimatedThemeToggler = ({
     }
   }, [isDark, duration]);
 
-  console.log(className);
-
   return (
     <button
       type="button"

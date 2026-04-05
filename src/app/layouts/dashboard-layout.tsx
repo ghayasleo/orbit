@@ -11,8 +11,6 @@ import { FullPageLoader } from '@/shared/ui';
 export function DashboardLayout() {
   const { sidebarCollapsed: collapsed } = useUIStore();
   const isHydrated = useDashboardStore((state) => state.isHydrated);
-
-  console.log(isHydrated);
   
   // App initialization: Prefetch and stabilize layout for the entire session
   useInitDashboard();

@@ -20,6 +20,8 @@ export { QuantumTimeline } from './premium-process-timeline';
 export { Separator } from './separator';
 export { ServiceNodeMap } from './service-node-map';
 export { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger } from './sheet';
+export { Calendar, CalendarDayButton } from './calendar';
+export { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from './popover';
 export { Skeleton } from './skeleton';
 export { Toaster } from './sonner';
 export { GlowCard } from './spotlight-card';
