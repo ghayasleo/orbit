@@ -3,7 +3,7 @@ import { AppSidebar } from '@/widgets/sidebar';
 import { DashboardHeader } from '@/widgets/header';
 import { useUIStore } from '@/shared/store';
 import { cn } from '@/shared/lib';
-import { AnimatePresence } from 'framer-motion';
+
 import { useDashboardStore } from '@/entities/dashboard';
 import { useInitDashboard } from '@/entities/dashboard';
 import { FullPageLoader } from '@/shared/ui';

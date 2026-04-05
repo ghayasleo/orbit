@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Particles } from './particles';
+import { Logo } from './logo';
 
 export function FullPageLoader() {
   return (
@@ -52,15 +53,16 @@ export function FullPageLoader() {
           <div className="relative flex items-center justify-center w-24 h-24 rounded-3xl bg-bg-card border border-border-subtle shadow-2xl backdrop-blur-md">
             <motion.div
               animate={{
-                rotate: [0, 180, 360],
+                scale: [1, 1.05, 1],
               }}
               transition={{
-                duration: 4,
+                duration: 2,
                 repeat: Infinity,
-                ease: "linear"
+                ease: "easeInOut"
               }}
-              className="w-12 h-12 border-4 border-t-primary border-r-primary/30 border-b-primary/10 border-l-primary/50 rounded-full"
-            />
+            >
+              <Logo size={48} />
+            </motion.div>
           </div>
         </div>
 

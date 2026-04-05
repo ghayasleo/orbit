@@ -1,14 +1,6 @@
 import { Link } from "react-router-dom";
 import { Github, Phone, Mail } from "lucide-react";
-
-const Logo = ({ className }: { className?: string }) => (
-  <div
-    className={`relative flex h-8 w-8 items-center justify-center ${className ?? ""}`}
-  >
-    <div className="absolute h-6 w-6 rounded-full border-[2.5px] border-brand opacity-80" />
-    <div className="absolute h-3 w-3 rounded-full bg-brand ml-3 mt-3" />
-  </div>
-);
+import { Logo } from "@/shared/ui";
 
 export function LandingFooter() {
   return (

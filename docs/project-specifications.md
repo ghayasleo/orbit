@@ -24,8 +24,10 @@ This document defines the complete product requirements for a Progressive Web Ap
 8. [Module 8 — Notes](#module-8--notes)
 9. [Module 9 — Subscriptions Tracker](#module-9--subscriptions-tracker)
 10. [Module 10 — Goals](#module-10--goals)
-11. [Section 11 — Non-Functional Requirements](#section-11--non-functional-requirements)
-12. [Appendix — Inter-Module Connections](#appendix--inter-module-connections)
+11. [Module 11 — Friends](#module-11--friends)
+12. [Module 12 — Events](#module-12--events)
+13. [Section 13 — Non-Functional Requirements](#section-13--non-functional-requirements)
+14. [Appendix — Inter-Module Connections](#appendix--inter-module-connections)
 
 ---
 
@@ -481,11 +483,40 @@ This document defines the complete product requirements for a Progressive Web Ap
 
 ---
 
-## Section 11 — Non-Functional Requirements
+## Module 11 — Friends
+
+> The Friends module is a simple contact book that connects the people in your life to your daily activities. It allows users to easily add friends and tag them across different modules (like sharing a subscription or noting a loan). The flow is designed to be completely frictionless.
+
+### 11.1 Friend Management
+
+| Feature | Description |
+|---|---|
+| Quick Add | Add a friend by providing just their name and either a phone number or email address. |
+| WhatsApp Invite | One-tap button to send a pre-filled WhatsApp invite link to join Orbit or view a shared item. |
+| Simple Profile | Shows the friend's basic info alongside a summary of any shared activity (active loans, shared subscriptions, and upcoming linked events). |
+
+---
+
+## Module 12 — Events
+
+> The Events module manages important personal dates like birthdays, anniversaries, or casual meetups. It ties perfectly into the Friends module so you can link events to specific people and get reminded effortlessly.
+
+### 12.1 Event Creation & Tracking
+
+| Feature | Description |
+|---|---|
+| Event Details | Simplified creation: just an Event Name (e.g., 'Ali Birthday') and a Date. |
+| Linked Friends | Tag one or more friends from the Friends module to the event. |
+| Automatic Reminders | Automatically creates a reminder 1 day before and on the day of the event. |
+| Recurring Events | Checkbox to mark an event as yearly recurring (ideal for birthdays and anniversaries). |
+
+---
+
+## Section 13 — Non-Functional Requirements
 
 > This section covers technical and quality requirements that apply to the entire application — not just individual modules. These requirements define how the system should behave rather than what it should do.
 
-### 11.1 Performance
+### 13.1 Performance
 
 | Requirement | Description |
 |---|---|
@@ -494,7 +525,7 @@ This document defines the complete product requirements for a Progressive Web Ap
 | Offline Support | All core features must work offline. Data is stored locally and synced when connectivity is restored. No feature should be unavailable offline. |
 | Background Sync | Data sync happens in the background when the app is not in focus. Sync conflicts are resolved by last-write-wins with a conflict log. |
 
-### 11.2 PWA Requirements
+### 13.2 PWA Requirements
 
 | Requirement | Description |
 |---|---|
@@ -504,7 +535,7 @@ This document defines the complete product requirements for a Progressive Web Ap
 | Responsive Design | App must be fully functional and well-designed on mobile (320px+), tablet (768px+), and desktop (1280px+). |
 | App Manifest | Complete manifest.json with name, short_name, icons (all sizes), theme_color, background_color, display: standalone. |
 
-### 11.3 Data & Security
+### 13.3 Data & Security
 
 | Requirement | Description |
 |---|---|
@@ -515,7 +546,7 @@ This document defines the complete product requirements for a Progressive Web Ap
 | Account Authentication | Email + password or social login (Google). Passwords must be hashed server-side (bcrypt). Support 2FA via TOTP. |
 | Privacy First | No tracking, analytics, or advertising. No user data sold or shared. Full GDPR compliance. Right to erasure must be implemented. |
 
-### 11.4 Accessibility & UX
+### 13.4 Accessibility & UX
 
 | Requirement | Description |
 |---|---|
@@ -547,6 +578,10 @@ This document defines the complete product requirements for a Progressive Web Ap
 | Habits → Goals | A habit can be linked to a Goal. Each habit check-in contributes to goal progress tracking. |
 | Tasks → Goals | Tasks can be linked to a Goal. Completing linked tasks is reflected in the goal's progress log. |
 | Goals → Budget Planner | Financial goals can be linked to the Budget Planner — the system calculates required monthly savings and monitors progress automatically. |
+| Friends → Loans | Link a loan to a specific Friend profile. The Friend's profile shows a summary of outstanding balances for them. |
+| Friends → Subscriptions | Assign a Friend to a shared subscription to split costs. The Friend profile reflects their share. |
+| Friends → Events | Tag Friends to specific Events (e.g., tagging a friend to their Birthday event). |
+| Events → Reminders | Creating an Event automatically schedules Reminders based on the event's date and preferences. |
 
 ### A.2 Universal Features (Applies to All Modules)
 

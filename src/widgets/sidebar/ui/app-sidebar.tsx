@@ -1,15 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
 import {
-  LayoutDashboard,
-  CheckSquare,
-  Bell,
-  Wallet,
-  Handshake,
-  Flame,
-  PieChart,
-  StickyNote,
-  RefreshCw,
-  Target,
   Settings,
   Home,
   BarChart3,
@@ -18,6 +8,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/shared/lib";
 import { useUIStore } from "@/shared/store/use-ui-store";
+import { Logo } from "@/shared/ui";
+import { APP_MODULES_ARRAY } from "@/shared/config";
 
 interface NavItem {
   to: string;
@@ -26,18 +18,12 @@ interface NavItem {
   end?: boolean;
 }
 
-const sidebarItems: NavItem[] = [
-  { to: "/app", icon: LayoutDashboard, label: "Home", end: true },
-  { to: "/app/tasks", icon: CheckSquare, label: "Tasks" },
-  { to: "/app/reminders", icon: Bell, label: "Reminders" },
-  { to: "/app/expenses", icon: Wallet, label: "Expenses" },
-  { to: "/app/loans", icon: Handshake, label: "Loans" },
-  { to: "/app/habits", icon: Flame, label: "Habits" },
-  { to: "/app/budget", icon: PieChart, label: "Budget" },
-  { to: "/app/notes", icon: StickyNote, label: "Notes" },
-  { to: "/app/subscriptions", icon: RefreshCw, label: "Subs" },
-  { to: "/app/goals", icon: Target, label: "Goals" },
-];
+const sidebarItems: NavItem[] = APP_MODULES_ARRAY.map((m) => ({
+  to: m.path,
+  icon: m.icon,
+  label: m.name,
+  end: m.path === "/app",
+}));
 
 const bottomNavItems: NavItem[] = [
   { to: "/app", icon: Home, label: "Home", end: true },
@@ -60,17 +46,17 @@ export function AppSidebar() {
         )}
       >
         {/* Logo */}
-        <div className={cn("mb-6 flex w-full items-center gap-3")}>
+        <div className={cn("mb-6 flex w-full items-center gap-3", collapsed ? "px-1" : "px-2")}>
           <NavLink
             to="/app"
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-[#5B6AF0] to-[#9B6BF2] shadow-md"
+            className="flex shrink-0 items-center justify-center"
           >
-            <span className="text-sm font-bold text-white">O</span>
+            <Logo size={28} />
           </NavLink>
           <span
             className={cn(
-              "bg-linear-to-r from-[#5B6AF0] to-[#9B6BF2] bg-clip-text text-transparent animate-in fade-in slide-in-from-left-2 duration-300",
-              collapsed ? "text-[0px]" : "text-lg font-bold",
+              "font-display text-text-primary tracking-tight animate-in fade-in slide-in-from-left-2 duration-300",
+              collapsed ? "text-[0px]" : "text-xl font-bold",
             )}
           >
             Orbit

@@ -1,4 +1,6 @@
 import { ServiceNodeMap } from "@/shared/ui/service-node-map";
+import { LAYER_CONFIG } from "@/shared/config";
+import { cn } from "@/shared/lib";
 import { motion } from "framer-motion";
 
 export function HowItWorksSection() {
@@ -28,24 +30,23 @@ export function HowItWorksSection() {
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-full">
-              <span className="text-sm">🔵</span>
-              <span className="text-[10px] font-bold dark:text-white/60 uppercase tracking-widest">
-                Sources
-              </span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-full">
-              <span className="text-sm">🟡</span>
-              <span className="text-[10px] font-bold dark:text-white/60 uppercase tracking-widest">
-                Orchestration
-              </span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-purple-500/10 border border-purple-500/20 rounded-full">
-              <span className="text-sm">🟣</span>
-              <span className="text-[10px] font-bold dark:text-white/60 uppercase tracking-widest">
-                Insights
-              </span>
-            </div>
+            {Object.entries(LAYER_CONFIG)
+              .filter(([layer]) => layer !== "Core")
+              .map(([layer, config]) => (
+                <div
+                  key={layer}
+                  className={cn(
+                    "flex items-center gap-2 px-3 py-1.5 border rounded-full",
+                    config.bg,
+                    config.border
+                  )}
+                >
+                  <span className="text-sm">{config.icon}</span>
+                  <span className="text-[10px] font-bold dark:text-white/60 uppercase tracking-widest">
+                    {layer}
+                  </span>
+                </div>
+              ))}
           </div>
         </motion.div>
 

@@ -73,14 +73,16 @@ export const AnimatedThemeToggler = ({
     }
   }, [isDark, duration]);
 
+  console.log(className);
+
   return (
     <button
       type="button"
       ref={buttonRef}
       onClick={toggleTheme}
       className={cn(
-        className,
         "flex h-9 w-9 items-center justify-center rounded-full hover:bg-bg-subtle text-text-muted hover:text-text-primary transition-colors cursor-pointer",
+        className,
       )}
       {...props}
     >

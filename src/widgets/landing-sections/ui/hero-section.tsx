@@ -11,6 +11,8 @@ import {
   useReducedMotion,
 } from "framer-motion";
 import { useUserStore } from "@/entities/user";
+import { useSignOut } from "@/features/sign-out";
+import { AnimatedThemeToggler } from "@/features/toggle-theme";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -236,7 +238,8 @@ const Logo = ({ className }: { className?: string }) => {
 const HeroHeader = () => {
   const [menuState, setMenuState] = React.useState(false);
   const [isScrolled, setIsScrolled] = React.useState(false);
-  const { user, profile, signOut, initialized } = useUserStore();
+  const { user, profile, initialized } = useUserStore();
+  const { mutateAsync: signOut } = useSignOut();
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -419,6 +422,10 @@ const HeroHeader = () => {
                     </Button>
                   </>
                 )}
+                
+                <div className="flex items-center">
+                  <AnimatedThemeToggler className="ml-2 bg-transparent border-transparent" />
+                </div>
               </div>
             </div>
           </div>
