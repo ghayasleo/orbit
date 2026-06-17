@@ -90,11 +90,11 @@ export function UpdateProfileForm({ onBlockerChange }: UpdateProfileFormProps) {
       setAvatarFile(null);
       setClearAvatar(false);
       showProfileToast("success", "Profile updated successfully");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Profile update error:", err);
       showProfileToast(
         "error",
-        err?.message || "Failed to update profile",
+        err instanceof Error ? err.message : "Failed to update profile",
       );
     } finally {
       setProfileLoading(false);

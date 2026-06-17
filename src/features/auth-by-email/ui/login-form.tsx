@@ -32,7 +32,7 @@ export function LoginForm({ onNeedsOtp, onSuccess }: LoginFormProps) {
       } else {
         onSuccess();
       }
-    } catch (err) {
+    } catch {
       // Error is handled by React Query / shown in UI
     }
   }

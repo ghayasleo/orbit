@@ -19,7 +19,7 @@ export function ForgotPasswordForm() {
     try {
       await requestReset(email);
       setStep('sent');
-    } catch (err) {
+    } catch {
       // Handled by react-query
     }
   }

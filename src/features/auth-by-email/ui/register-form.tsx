@@ -62,7 +62,7 @@ export function RegisterForm({ onNeedsOtp }: RegisterFormProps) {
       if (result.needsOtp) {
         onNeedsOtp(formData.email, avatarFile);
       }
-    } catch (err) {
+    } catch {
       // Handled by react-query
     }
   }

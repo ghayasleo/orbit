@@ -38,7 +38,6 @@ interface AddLoanSheetProps {
 }
 
 const STEPS = ['contact', 'direction', 'amount', 'confirm'] as const;
-type Step = (typeof STEPS)[number];
 
 const slideVariants = {
   enter: (direction: number) => ({

@@ -1,4 +1,8 @@
 import { Responsive, WidthProvider } from "react-grid-layout/legacy";
+import type {
+  Layout as RGLLayout,
+  ResponsiveLayouts,
+} from "react-grid-layout/legacy";
 import { useDashboardStore } from "@/entities/dashboard";
 import type { Layout, DashboardLayouts } from "@/entities/dashboard";
 import { HeroBanner } from "@/widgets/dashboard-widgets/ui/hero-banner";
@@ -15,7 +19,7 @@ import { NotesWidget } from "@/widgets/dashboard-widgets/ui/notes-widget";
 import { EventsWidget } from "@/widgets/dashboard-widgets/ui/events-widget";
 import { AIAssistantWidget } from "@/widgets/dashboard-widgets/ui/ai-assistant-widget";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useSyncExternalStore } from "react";
 import {
   HeroBannerSkeleton,
   HabitStreaksSkeleton,
@@ -33,6 +37,16 @@ import {
 } from "@/widgets/dashboard-widgets/ui/widget-skeleton";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
+
+const MOBILE_QUERY = "(max-width: 767px)";
+
+const subscribeMobile = (onChange: () => void) => {
+  const mql = window.matchMedia(MOBILE_QUERY);
+  mql.addEventListener("change", onChange);
+  return () => mql.removeEventListener("change", onChange);
+};
+
+const emptySubscribe = () => () => {};
 
 const WIDGET_MAP: Record<string, React.FC> = {
   hero: HeroBanner,
@@ -76,29 +90,30 @@ export function DashboardGrid() {
     isLoading, // Read from store now
   } = useDashboardStore();
   
-  const [mounted, setMounted] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const [resizing, setResizing] = useState<string | null>(null);
 
-  useEffect(() => {
-    setMounted(true);
-    const mql = window.matchMedia("(max-width: 767px)");
-    setIsMobile(mql.matches);
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, []);
+  // Client-only flag to avoid mutating layout during SSR hydration.
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
+  const isMobile = useSyncExternalStore(
+    subscribeMobile,
+    () => window.matchMedia(MOBILE_QUERY).matches,
+    () => false,
+  );
 
   const handleLayoutChange = useCallback(
-    (_currentLayout: Layout[], allLayouts: any) => {
+    (_currentLayout: RGLLayout, allLayouts: ResponsiveLayouts) => {
       // Prevent state updates if unmounted or not really editing layout structure
       // Also only update if we are in edit mode to avoid loop-back updates during initialization/hydration
       if (mounted && isEditMode) {
         setLayouts((prev: DashboardLayouts) => {
-          const mergedLayouts = { ...allLayouts } as DashboardLayouts;
+          const mergedLayouts = { ...allLayouts } as unknown as DashboardLayouts;
           (Object.keys(mergedLayouts) as Array<keyof DashboardLayouts>).forEach(
             (bp) => {
-              mergedLayouts[bp] = mergedLayouts[bp].map((newItem: any) => {
+              mergedLayouts[bp] = mergedLayouts[bp].map((newItem: Layout) => {
                 // Maintain custom properties like restoreH that react-grid-layout might strip
                 const oldItem = prev[bp]?.find(
                   (old: Layout) => old.i === newItem.i,
@@ -184,7 +199,7 @@ export function DashboardGrid() {
       <div className="relative">
         <ResponsiveGridLayout
           className="layout"
-          layouts={layouts as any}
+          layouts={layouts as unknown as ResponsiveLayouts}
           breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
           cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
           rowHeight={80}
@@ -196,9 +211,9 @@ export function DashboardGrid() {
           useCSSTransforms={true}
           preventCollision={false}
           resizeHandles={isEditMode ? ["s", "e", "w", "se", "sw"] : []}
-          onLayoutChange={handleLayoutChange as any}
-          onResizeStart={(_: any, _old: any, newItem: any) =>
-            setResizing(newItem.i)
+          onLayoutChange={handleLayoutChange}
+          onResizeStart={(_layout, _oldItem, newItem) =>
+            setResizing(newItem?.i ?? null)
           }
           onResizeStop={() => setResizing(null)}
           measureBeforeMount={false}

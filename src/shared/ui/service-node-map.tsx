@@ -13,6 +13,7 @@ import {
   MarkerType,
   BackgroundVariant,
   type Node,
+  type Viewport,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { X, Info } from "lucide-react";
@@ -84,37 +85,37 @@ const INITIAL_NODES: Node[] = [
     id: "notes",
     type: "custom",
     position: { x: 50, y: 50 },
-    data: { ...APP_MODULES.notes, connections: CONNECTIONS.notes } as any as Record<string, unknown>,
+    data: { ...APP_MODULES.notes, connections: CONNECTIONS.notes } as Record<string, unknown>,
   },
   {
     id: "habits",
     type: "custom",
     position: { x: 50, y: 127 },
-    data: { ...APP_MODULES.habits, connections: CONNECTIONS.habits } as any as Record<string, unknown>,
+    data: { ...APP_MODULES.habits, connections: CONNECTIONS.habits } as Record<string, unknown>,
   },
   {
     id: "tasks",
     type: "custom",
     position: { x: 50, y: 204 },
-    data: { ...APP_MODULES.tasks, connections: CONNECTIONS.tasks } as any as Record<string, unknown>,
+    data: { ...APP_MODULES.tasks, connections: CONNECTIONS.tasks } as Record<string, unknown>,
   },
   {
     id: "subscriptions",
     type: "custom",
     position: { x: 50, y: 281 },
-    data: { ...APP_MODULES.subscriptions, connections: CONNECTIONS.subscriptions } as any as Record<string, unknown>,
+    data: { ...APP_MODULES.subscriptions, connections: CONNECTIONS.subscriptions } as Record<string, unknown>,
   },
   {
     id: "loans",
     type: "custom",
     position: { x: 50, y: 358 },
-    data: { ...APP_MODULES.loans, connections: CONNECTIONS.loans } as any as Record<string, unknown>,
+    data: { ...APP_MODULES.loans, connections: CONNECTIONS.loans } as Record<string, unknown>,
   },
   {
     id: "events",
     type: "custom",
     position: { x: 50, y: 435 },
-    data: { ...APP_MODULES.events, connections: CONNECTIONS.events } as any as Record<string, unknown>,
+    data: { ...APP_MODULES.events, connections: CONNECTIONS.events } as Record<string, unknown>,
   },
 
   // Column 2: Orchestration (x: 350 - 500)
@@ -122,19 +123,19 @@ const INITIAL_NODES: Node[] = [
     id: "expenses",
     type: "custom",
     position: { x: 450, y: 50 },
-    data: { ...APP_MODULES.expenses, connections: CONNECTIONS.expenses } as any as Record<string, unknown>,
+    data: { ...APP_MODULES.expenses, connections: CONNECTIONS.expenses } as Record<string, unknown>,
   },
   {
     id: "circle",
     type: "custom",
     position: { x: 350, y: 204 },
-    data: { ...APP_MODULES.circle, connections: CONNECTIONS.circle } as any as Record<string, unknown>,
+    data: { ...APP_MODULES.circle, connections: CONNECTIONS.circle } as Record<string, unknown>,
   },
   {
     id: "reminders",
     type: "custom",
     position: { x: 500, y: 358 },
-    data: { ...APP_MODULES.reminders, connections: CONNECTIONS.reminders } as any as Record<string, unknown>,
+    data: { ...APP_MODULES.reminders, connections: CONNECTIONS.reminders } as Record<string, unknown>,
   },
 
   // Column 3: Insights (x: 700)
@@ -142,13 +143,13 @@ const INITIAL_NODES: Node[] = [
     id: "budget",
     type: "custom",
     position: { x: 700, y: 281 },
-    data: { ...APP_MODULES.budget, connections: CONNECTIONS.budget } as any as Record<string, unknown>,
+    data: { ...APP_MODULES.budget, connections: CONNECTIONS.budget } as Record<string, unknown>,
   },
   {
     id: "goals",
     type: "custom",
     position: { x: 400, y: 127 },
-    data: { ...APP_MODULES.goals, connections: CONNECTIONS.goals } as any as Record<string, unknown>,
+    data: { ...APP_MODULES.goals, connections: CONNECTIONS.goals } as Record<string, unknown>,
   },
 ];
 
@@ -286,7 +287,6 @@ interface PopupProps {
 const PopupAtNode = ({ nodeId, onClose, onNavigate }: PopupProps) => {
   const data = APP_MODULES[nodeId as keyof typeof APP_MODULES];
   const connections = CONNECTIONS[nodeId] || [];
-  if (!data) return null;
 
   const incoming = connections.filter((c) => c.dir === "←");
   const outgoing = connections.filter((c) => c.dir === "→");
@@ -328,6 +328,8 @@ const PopupAtNode = ({ nodeId, onClose, onNavigate }: PopupProps) => {
     rafId = requestAnimationFrame(updatePos);
     return () => cancelAnimationFrame(rafId);
   }, [nodeId]);
+
+  if (!data) return null;
 
   return (
     <motion.div
@@ -448,17 +450,9 @@ function FlowMap() {
   const [popupAnchor, setPopupAnchor] = useState<DOMRect | null>(null);
   const { fitView } = useReactFlow();
 
-  useEffect(() => {
-    if (flowRef.current) {
-      const { width, height } = flowRef.current.getBoundingClientRect();
-      setContainerSize({ width, height });
-      // setNodes(getInitialNodes(width, height)); // 👈 add this line
-    }
-  }, []);
-
   // Click on node -> highlight edges + select node
   const handleNodeClick = useCallback(
-    (_event: React.MouseEvent, node: any) => {
+    (_event: React.MouseEvent, node: Node) => {
       setActiveId(node.id);
       setNodes((nds) => nds.map((n) => ({ ...n, selected: n.id === node.id })));
     },
@@ -561,7 +555,7 @@ function FlowMap() {
   const flowRef = useRef<HTMLDivElement>(null);
 
   const onNodeDrag = useCallback(
-    (_: React.MouseEvent, node: any) => {
+    (_: React.MouseEvent, node: Node) => {
       const container = flowRef.current;
       if (!container) return;
 
@@ -599,7 +593,7 @@ function FlowMap() {
 
   const [viewport, setViewport] = useState({ x: 0, y: 0, zoom: 1 });
 
-  const onMove = useCallback((_: any, newViewport: any) => {
+  const onMove = useCallback((_: MouseEvent | TouchEvent | null, newViewport: Viewport) => {
     // If viewport tries to move from origin, reset it immediately
     if (newViewport.x !== 0 || newViewport.y !== 0) {
       setViewport({ x: 0, y: 0, zoom: newViewport.zoom });

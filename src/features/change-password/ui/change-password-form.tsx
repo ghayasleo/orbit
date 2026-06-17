@@ -93,11 +93,11 @@ export function ChangePasswordForm() {
         confirmPassword: "",
       });
       showPasswordToast("success", "Password updated successfully");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Password update error:", err);
       showPasswordToast(
         "error",
-        err?.message || "Failed to update password"
+        err instanceof Error ? err.message : "Failed to update password"
       );
     } finally {
       setPasswordLoading(false);

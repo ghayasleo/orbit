@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useRef } from "react";
 import { Moon, Sun } from "lucide-react";
 import { flushSync } from "react-dom";
 
@@ -25,7 +25,7 @@ export const AnimatedThemeToggler = ({
 
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const toggleTheme = useCallback(() => {
+  const toggleTheme = () => {
     const button = buttonRef.current;
     if (!button) return;
 
@@ -71,7 +71,7 @@ export const AnimatedThemeToggler = ({
         );
       });
     }
-  }, [isDark, duration]);
+  };
 
   return (
     <button

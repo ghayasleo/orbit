@@ -3,7 +3,7 @@ import { HTMLAttributes } from 'react';
 import { useSignOut } from '../api/use-sign-out';
 import { cn } from '@/shared/lib';
 
-interface SignOutButtonProps extends HTMLAttributes<HTMLButtonElement> {}
+type SignOutButtonProps = HTMLAttributes<HTMLButtonElement>;
 
 export function SignOutButton({ className, children, ...props }: SignOutButtonProps) {
   const { mutateAsync: signOut, isPending } = useSignOut();

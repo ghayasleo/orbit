@@ -44,7 +44,7 @@ export function OtpForm({
     try {
       await verifyOtp({ email, token, avatarFile });
       onVerifySuccess();
-    } catch (err) {
+    } catch {
       // Handled by React Query / local error state
     }
   };
@@ -110,8 +110,8 @@ export function OtpForm({
       setCooldown(RESEND_COOLDOWN_S);
       setDigits(Array(OTP_LENGTH).fill(""));
       setTimeout(() => inputRefs.current[0]?.focus(), 50);
-    } catch (err: any) {
-      setResendError(err.message || 'Failed to resend code');
+    } catch (err: unknown) {
+      setResendError(err instanceof Error ? err.message : 'Failed to resend code');
     }
   }
 

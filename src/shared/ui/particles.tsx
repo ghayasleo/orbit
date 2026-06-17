@@ -101,43 +101,6 @@ export const Particles: React.FC<ParticlesProps> = ({
   const onMouseMoveRef = useRef<() => void>(() => {});
   const animateRef = useRef<() => void>(() => {});
 
-  useEffect(() => {
-    if (canvasRef.current) {
-      context.current = canvasRef.current.getContext("2d");
-    }
-    initCanvasRef.current();
-    animateRef.current();
-
-    const handleResize = () => {
-      if (resizeTimeout.current) {
-        clearTimeout(resizeTimeout.current);
-      }
-      resizeTimeout.current = setTimeout(() => {
-        initCanvasRef.current();
-      }, 200);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      if (rafID.current != null) {
-        window.cancelAnimationFrame(rafID.current);
-      }
-      if (resizeTimeout.current) {
-        clearTimeout(resizeTimeout.current);
-      }
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [color]);
-
-  useEffect(() => {
-    onMouseMoveRef.current();
-  }, [mousePosition.x, mousePosition.y]);
-
-  useEffect(() => {
-    initCanvasRef.current();
-  }, [refresh]);
-
   const initCanvas = () => {
     resizeCanvas();
     drawParticles();
@@ -302,9 +265,50 @@ export const Particles: React.FC<ParticlesProps> = ({
     rafID.current = window.requestAnimationFrame(animateRef.current);
   };
 
-  initCanvasRef.current = initCanvas;
-  onMouseMoveRef.current = onMouseMove;
-  animateRef.current = animate;
+  // Keep the latest closures in refs without touching refs during render.
+  // Declared before the consumer effects so the refs are populated first.
+  useEffect(() => {
+    initCanvasRef.current = initCanvas;
+    onMouseMoveRef.current = onMouseMove;
+    animateRef.current = animate;
+  });
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      context.current = canvasRef.current.getContext("2d");
+    }
+    initCanvasRef.current();
+    animateRef.current();
+
+    const handleResize = () => {
+      if (resizeTimeout.current) {
+        clearTimeout(resizeTimeout.current);
+      }
+      resizeTimeout.current = setTimeout(() => {
+        initCanvasRef.current();
+      }, 200);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      if (rafID.current != null) {
+        window.cancelAnimationFrame(rafID.current);
+      }
+      if (resizeTimeout.current) {
+        clearTimeout(resizeTimeout.current);
+      }
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [color]);
+
+  useEffect(() => {
+    onMouseMoveRef.current();
+  }, [mousePosition.x, mousePosition.y]);
+
+  useEffect(() => {
+    initCanvasRef.current();
+  }, [refresh]);
 
   return (
     <div

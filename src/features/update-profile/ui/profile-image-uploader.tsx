@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Camera } from "lucide-react";
 import { cn } from "@/shared/lib";
 
@@ -62,47 +62,40 @@ export function ProfileImageUploader({
   className,
 }: ProfileImageUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(
-    currentImageUrl || null,
-  );
+  // Local preview takes precedence; otherwise fall back to the stored URL
+  // (which may arrive asynchronously after the profile data loads).
+  const [localPreview, setLocalPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const hasLocalFile = useRef(false);
 
-  // Sync when the stored image URL loads asynchronously (profile data arrives after mount)
-  useEffect(() => {
-    if (!hasLocalFile.current) {
-      setPreviewUrl(currentImageUrl || null);
-    }
-  }, [currentImageUrl]);
-
+  const previewUrl = localPreview ?? (currentImageUrl || null);
 
   const processFile = async (file: File) => {
     if (!file.type.startsWith("image/")) return;
     try {
       const resized = await resizeImage(file);
-      setPreviewUrl(URL.createObjectURL(resized));
+      setLocalPreview(URL.createObjectURL(resized));
       onImageSelected(resized);
     } catch (e) {
       console.error("Image processing error:", e);
     }
   };
 
-  const handleDragOver = useCallback((e: React.DragEvent) => {
+  const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
-  }, []);
+  };
 
-  const handleDragLeave = useCallback((e: React.DragEvent) => {
+  const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-  }, []);
+  };
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
+  const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files?.[0];
     if (file) processFile(file);
-  }, []);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
@@ -169,7 +162,7 @@ export function ProfileImageUploader({
           <button
             type="button"
             onClick={() => {
-              setPreviewUrl(currentImageUrl || null);
+              setLocalPreview(null);
               if (fileInputRef.current) fileInputRef.current.value = "";
               onClearImage();
             }}

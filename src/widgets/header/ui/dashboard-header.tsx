@@ -11,9 +11,9 @@ export function DashboardHeader() {
 
   const userInitial = user?.email?.charAt(0).toUpperCase() || "U";
   const userName =
-    `${profile?.first_name} ${profile?.last_name}` ||
-    user?.email?.split("@")[0] ||
-    "User";
+    profile?.first_name || profile?.last_name
+      ? `${profile?.first_name ?? ""} ${profile?.last_name ?? ""}`.trim()
+      : user?.email?.split("@")[0] || "User";
   const userEmail = user?.email || "user@example.com";
   const avatarUrl = profile?.profile_image;
 

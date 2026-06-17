@@ -41,7 +41,7 @@ export function ResetPasswordForm() {
       await resetPassword(formData.password);
       setSuccess(true);
       setTimeout(() => navigate('/login'), 2500);
-    } catch (err) {
+    } catch {
       // Handled by react-query
     }
   }

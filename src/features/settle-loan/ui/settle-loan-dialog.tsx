@@ -19,6 +19,17 @@ interface SettleLoanDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
+const CONFETTI_COLORS = ['#f59e0b', '#10b981', '#f43f5e', '#3b82f6', '#a855f7'];
+
+// Precomputed once at module load so render stays pure (no Math.random in render).
+const CONFETTI = Array.from({ length: 12 }).map((_, i) => ({
+  left: 50 + (Math.random() - 0.5) * 60,
+  y: -100 - Math.random() * 100,
+  x: (Math.random() - 0.5) * 200,
+  rotate: Math.random() * 720,
+  color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+}));
+
 export function SettleLoanDialog({ loan, open, onOpenChange }: SettleLoanDialogProps) {
   const [settled, setSettled] = useState(false);
   const { mutate: settle, isPending } = useSettleLoan();
@@ -69,22 +80,22 @@ export function SettleLoanDialog({ loan, open, onOpenChange }: SettleLoanDialogP
 
               {/* Confetti particles */}
               <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                {Array.from({ length: 12 }).map((_, i) => (
+                {CONFETTI.map((c, i) => (
                   <motion.div
                     key={i}
                     className="absolute w-2 h-2 rounded-full"
                     style={{
-                      left: `${50 + (Math.random() - 0.5) * 60}%`,
+                      left: `${c.left}%`,
                       top: '50%',
-                      backgroundColor: ['#f59e0b', '#10b981', '#f43f5e', '#3b82f6', '#a855f7'][i % 5],
+                      backgroundColor: c.color,
                     }}
                     initial={{ y: 0, opacity: 1, scale: 1 }}
                     animate={{
-                      y: -100 - Math.random() * 100,
-                      x: (Math.random() - 0.5) * 200,
+                      y: c.y,
+                      x: c.x,
                       opacity: 0,
                       scale: 0,
-                      rotate: Math.random() * 720,
+                      rotate: c.rotate,
                     }}
                     transition={{ duration: 1.2, delay: 0.1 + i * 0.05, ease: 'easeOut' }}
                   />
